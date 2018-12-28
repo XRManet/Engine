@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <ExecutablePath>C:\Users\Logada\Documents\Works\glfw-3.2.1\src\Release;C:\Users\Logada\Documents\Works\glew-2.1.0-win32\glew-2.1.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Users\Logada\Documents\Works\glfw-3.2.1\include;C:\Users\Logada\Documents\Works\glew-2.1.0-win32\glew-2.1.0\include;C:\Users\Logada\Documents\Works\rapidjson\include;$(SolutionDir);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Logada\Documents\Works\glfw-3.2.1\src\Release;C:\Users\Logada\Documents\Works\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup />
+</Project>

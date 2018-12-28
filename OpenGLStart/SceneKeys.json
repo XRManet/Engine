@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "scenes": [
+    {
+      "key": "main",
+      "dso_name": "XRSceneMain.dll",
+      "CreateScene": "CreateSceneMain"
+    }
+  ]
+}
