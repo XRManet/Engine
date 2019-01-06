@@ -112,11 +112,8 @@ class XRModel
 private:
   XRModelData * _data;
 
+
 public:
-  static XRModel* GenerateModelFromData(XRModelData* loadableData);
-
-
-private:
   XRModel(XRModelData* data);
 };
 
@@ -125,8 +122,9 @@ class XRObject
 private:
   XRModel * _model;
 
+
 public:
-  XRObject() {}
+  XRObject(XRModel* model) : _model(model) {}
 };
 
 class XRObjectManager
@@ -136,10 +134,11 @@ private:
 
 
 public:
-  XRObjectManager() {}
+  XRObjectManager() { _instanced_objects.reserve(PAGE_SIZE / sizeof(XRObject*)); }
 
 
 public:
+  void GenerateObjects(XRModel * model, int count);
 };
 
 class XRResourceManager
@@ -150,6 +149,11 @@ private:
 
 public:
   XRResourceManager();
+
+
+public:
+  std::vector<std::string>&& QueryListOfModels();
+  XRModel* GetModelByKey(std::string&& key) noexcept;
 };
 
 class XRBaseExport XRScene

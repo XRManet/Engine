@@ -76,6 +76,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 
       if (_memory.size() + sizeof(unit) > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
+        header = GetHeader();
       }
       _memory.resize(_memory.size() + sizeof(unit));
       memcpy(_memory.data() + _memory.size(), &unit, sizeof(unit));
@@ -95,6 +96,7 @@ bool XRWavefrontObject::LoadDataFromFile()
       size_t index_buffer_size = available_count * sizeof(int);
       if (_memory.size() + index_buffer_size > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
+        header = GetHeader();
       }
       _memory.resize(_memory.size() + index_buffer_size);
       memcpy(_memory.data() + _memory.size(), &unit, index_buffer_size);
@@ -110,27 +112,42 @@ bool XRWavefrontObject::LoadDataFromFile()
   return true;
 }
 
-XRModel* XRModel::GenerateModelFromData(XRModelData* loadableData)
+XRModel::XRModel(XRModelData* loadableData) : _data(loadableData)
 {
-  XRModel* model = nullptr;
-  if (loadableData->LoadDataFromFile() == true)
-  {
-    model = new XRModel(loadableData);
-  }
-
-  return model;
+  if (_data->LoadDataFromFile() == true);
+  else throw loadableData;
 }
 
-XRModel::XRModel(XRModelData* lodableData) : _data(lodableData)
+void XRObjectManager::GenerateObjects(XRModel * model, int count)
 {
-
+  for (int i = 0; i < count; ++i)
+  {
+    _instanced_objects.push_back(new XRObject(model));
+  }
 }
 
 XRResourceManager::XRResourceManager()
 {
   // TODO) Parse manifest for resources and enroll those.
   XRModelData * loadable = new XRWavefrontObject("../Resources/teapot.obj");
-  XRModel * model = XRModel::GenerateModelFromData(loadable);
+  XRModel * model = new XRModel(loadable);
+
+  _models["teapot"] = model;
+}
+
+std::vector<std::string>&& XRResourceManager::QueryListOfModels()
+{
+  std::vector<std::string> keys;
+
+  keys.push_back("teapot");
+
+  return std::move(keys);
+}
+
+XRModel* XRResourceManager::GetModelByKey(std::string&& key)
+{
+  if (_models.find(key) != _models.end()) return _models[key];
+  else nullptr;
 }
 
 XRScene::XRScene()

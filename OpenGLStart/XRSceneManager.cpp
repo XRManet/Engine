@@ -60,11 +60,11 @@ XRSceneManager::XRSceneManager()
 
     if (info.IsAvailable())
     {
-      // refresh dso_name
-      info.dso_name = _list_of_dsos.find(dso_name)->first.c_str();
-      
       _list_of_scenes[key] = info;
       _list_of_dsos[dso_name] = dso;
+
+      // refresh dso_name
+      info.dso_name = _list_of_dsos.find(dso_name)->first.c_str();
     }
     else if (has_already == false)
     {
