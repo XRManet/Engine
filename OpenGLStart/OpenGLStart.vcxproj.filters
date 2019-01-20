@@ -28,6 +28,9 @@
     <Filter Include="소스 파일\Platform">
       <UniqueIdentifier>{92d7ff7b-4757-4d10-bf82-a3a789d5726e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{ca11e88c-073a-4a00-8f14-081a81f1c3ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

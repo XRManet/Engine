@@ -16,6 +16,27 @@
     <Filter Include="소스 파일\Scene">
       <UniqueIdentifier>{97ad5759-0558-4795-83ee-37e27b17fd61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Object">
+      <UniqueIdentifier>{14a9b490-8b53-4b42-8802-49e4e0ded24c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Resource">
+      <UniqueIdentifier>{3e8fec42-b155-4e32-8c9e-e295d6404418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Resource\Model">
+      <UniqueIdentifier>{0bb41082-50b2-4a7b-a61e-9ba73c7d275e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Resource\Material">
+      <UniqueIdentifier>{75fbaaaf-afc4-44b6-93f1-61584068342b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Resource">
+      <UniqueIdentifier>{333265a2-5f24-47a6-9e84-5200d3ab963b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Resource\Model">
+      <UniqueIdentifier>{2f5b8f1a-fecf-44b2-af0a-aadf37706622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{8e12d167-1e2e-41ec-ab86-b5433cdbfd4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -28,6 +49,36 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="XRScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRResourceManager.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="XRObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="XRObjectManager.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="XRTexture.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="XRModel.h">
+      <Filter>헤더 파일\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="XRModelData.h">
+      <Filter>헤더 파일\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="XRLoadable.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="XRWavefrontObject.h">
+      <Filter>헤더 파일\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="XRWavefrontMaterial.h">
+      <Filter>헤더 파일\Resource\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="XRSavable.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -43,6 +94,24 @@
     </ClCompile>
     <ClCompile Include="XRScene.cpp">
       <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="XRLoadable.cpp">
+      <Filter>소스 파일\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="XRModelData.cpp">
+      <Filter>소스 파일\Resource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="XRWavefrontObject.cpp">
+      <Filter>소스 파일\Resource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="XRModel.cpp">
+      <Filter>소스 파일\Resource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="XRObjectManager.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="XRResourceManager.cpp">
+      <Filter>소스 파일\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

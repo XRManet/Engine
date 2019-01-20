@@ -2,6 +2,11 @@
 
 #include "stdafx.h"
 
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #if defined(_M_X64) || defined(_M_AMD64)
 struct XRBaseExport XRSize {
   float _width;
