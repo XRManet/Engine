@@ -4,6 +4,8 @@
 
 #include "XRLoadable.h"
 
+// XRModelData
+// A default representation data form of XRModel
 class XRModelData : public XRLoadable
 {
 public:

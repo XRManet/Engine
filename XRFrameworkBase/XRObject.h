@@ -2,14 +2,94 @@
 
 #include "stdafx.h"
 
+#include "XRGeometry.h"
+
 class XRModel;
+class XRBody;
 
 class XRBaseExport XRObject
 {
 private:
-  XRModel * _model;
+  glm::vec4 _position;
+  glm::quat _quaternion;
+
+
+private:
+  XRModel * _model = nullptr;
+  XRBody * _body = nullptr;
+
 
 public:
-  XRObject(XRModel* model) : _model(model) {}
+  XRObject() {}
+
+
+public:
+  void BindModel(XRModel* model) { _model = model; }
+  void BindBody(XRBody* body) { _body = body; }
+
+  
+public:
+  void SetPosition(const glm::vec4& position) { _position = position; }
+  void SetQuaternion(const glm::quat& quaternion) { _quaternion = quaternion; }
+
+
+public:
+  void Move(const glm::vec3& distance) { _position += glm::vec4(distance, 0); }
+  void Rotate(float angle, const glm::vec3& v) { _quaternion = glm::rotate(_quaternion, angle, v); }
+
+
+public:
+  glm::mat4 GetTransform() {
+    glm::mat4 transform = glm::mat4_cast(_quaternion);
+    transform[3] = _position;
+    return transform;
+  }
+
+  glm::mat4 GetInvTransform() {
+    glm::mat4 inv_transform = glm::transpose(glm::mat4_cast(_quaternion));
+    inv_transform[3] = - (inv_transform * _position);
+    return inv_transform;
+  }
 };
 
+typedef enum XRCameraProjectionMode {
+  Perspective,
+  Orthogonal,
+  Size
+} CPM;
+
+class XRBaseExport XRCamera : public XRObject
+{
+private:
+  XRSize _half_size {};
+  float _near_positive {};
+  float _far_positive {};
+  CPM _projection_mode { CPM::Perspective };
+
+
+public:
+  CPM GetProjectionMode() { return _projection_mode; }
+  void SetProjectionMode(const CPM& projection_mode) { _projection_mode = projection_mode; }
+
+public:
+  glm::mat4 GetProjectionTransform() {
+    return glm::frustum(-_half_size._width, _half_size._width,
+      -_half_size._height, _half_size._height,
+      _near_positive, _far_positive);
+    //return glm::perspective(atan(_half_size._height / _near_positive) * 2, _half_size._width / _half_size._height, _near_positive, _far_positive);
+  }
+
+  void SetFrustum(const XRSize& size, float near_positive, float far_positive) {
+    _half_size._width = size._width / 2.f;
+    _half_size._height = size._height / 2.f;
+
+    _near_positive = near_positive;
+    _far_positive = far_positive;
+  }
+};
+
+class XRBaseExport XRViewport
+{
+private:
+  XRBound _viewport;
+};

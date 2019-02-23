@@ -3,7 +3,6 @@
 #include "stdafx.h"
 
 class XRObject;
-class XRModel;
 
 class XRBaseExport XRObjectManager
 {
@@ -16,5 +15,5 @@ public:
 
 
 public:
-  void GenerateObjects(XRModel * model, int count);
+  std::vector<XRObject*> GenerateObjects(int count);
 };

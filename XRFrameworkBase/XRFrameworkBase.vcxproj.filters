@@ -37,6 +37,12 @@
     <Filter Include="소스 파일\Object">
       <UniqueIdentifier>{8e12d167-1e2e-41ec-ab86-b5433cdbfd4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Resource\Body">
+      <UniqueIdentifier>{e0707604-e854-4f17-adb5-6b25e0d85360}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Resource\Body">
+      <UniqueIdentifier>{5218152c-cad6-4671-9c78-f598ee726a28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -81,6 +87,18 @@
     <ClInclude Include="XRSavable.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="XRLogging.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBody.h">
+      <Filter>헤더 파일\Resource\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBodyData.h">
+      <Filter>헤더 파일\Resource\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRigidBody.h">
+      <Filter>헤더 파일\Resource\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -112,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="XRResourceManager.cpp">
       <Filter>소스 파일\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="XRBody.cpp">
+      <Filter>소스 파일\Resource\Body</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
