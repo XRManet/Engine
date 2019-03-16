@@ -43,6 +43,9 @@
     <Filter Include="헤더 파일\Resource\Body">
       <UniqueIdentifier>{5218152c-cad6-4671-9c78-f598ee726a28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Utility">
+      <UniqueIdentifier>{5692d764-d573-4d2f-90a8-4401daff921d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -98,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="XRRigidBody.h">
       <Filter>헤더 파일\Resource\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="XRUtility.h">
+      <Filter>헤더 파일\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

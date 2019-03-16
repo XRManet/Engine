@@ -88,8 +88,13 @@ public:
   }
 };
 
+class XRScene;
+
 class XRBaseExport XRViewport
 {
 private:
   XRBound _viewport;
+  
+private:
+  std::vector<XRScene*> _scenes;
 };

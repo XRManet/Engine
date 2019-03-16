@@ -173,6 +173,7 @@
     <ClInclude Include="XRSavable.h" />
     <ClInclude Include="XRScene.h" />
     <ClInclude Include="XRTexture.h" />
+    <ClInclude Include="XRUtility.h" />
     <ClInclude Include="XRWavefrontMaterial.h" />
     <ClInclude Include="XRWavefrontObject.h" />
   </ItemGroup>
