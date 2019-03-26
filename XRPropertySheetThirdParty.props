@@ -7,7 +7,7 @@
   <PropertyGroup>
     <ExecutablePath>$(ThirdParty)glfw-3.2.1\src\Release;$(ThirdParty)glew-2.1.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(ThirdParty)glfw-3.2.1\include;$(ThirdParty)glew-2.1.0\include;$(ThirdParty)glm;$(ThirdParty)rapidjson\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ThirdParty)glfw-3.2.1\src\Release;$(ThirdParty)glew-2.1.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ThirdParty)glfw-3.2.1\lib\Release\$(PlatformTarget);$(ThirdParty)glew-2.1.0\lib\Release\$(PlatformTarget);$(LibraryPath)</LibraryPath>
     <_PropertySheetDisplayName>XRPropertySheetThirdParty</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
