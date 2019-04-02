@@ -10,8 +10,11 @@ class XRBody;
 class XRBaseExport XRObject
 {
 private:
+  __int64   _id;
+  void*     _context;
+
   glm::vec4 _position;
-  glm::quat _quaternion;
+  glm::quat _orientation;
 
 
 private:
@@ -30,23 +33,23 @@ public:
   
 public:
   void SetPosition(const glm::vec4& position) { _position = position; }
-  void SetQuaternion(const glm::quat& quaternion) { _quaternion = quaternion; }
+  void SetQuaternion(const glm::quat& quaternion) { _orientation = quaternion; }
 
 
 public:
   void Move(const glm::vec3& distance) { _position += glm::vec4(distance, 0); }
-  void Rotate(float angle, const glm::vec3& v) { _quaternion = glm::rotate(_quaternion, angle, v); }
+  void Rotate(float angle, const glm::vec3& v) { _orientation = glm::rotate(_orientation, angle, v); }
 
 
 public:
   glm::mat4 GetTransform() {
-    glm::mat4 transform = glm::mat4_cast(_quaternion);
+    glm::mat4 transform = glm::mat4_cast(_orientation);
     transform[3] = _position;
     return transform;
   }
 
   glm::mat4 GetInvTransform() {
-    glm::mat4 inv_transform = glm::transpose(glm::mat4_cast(_quaternion));
+    glm::mat4 inv_transform = glm::transpose(glm::mat4_cast(_orientation));
     inv_transform[3] = - (inv_transform * _position);
     return inv_transform;
   }

@@ -1,19 +1,25 @@
 #pragma once
 
-namespace XR { namespace utils
+namespace XR { namespace util
 {
 
-constexpr bool strings_equal(const char* a, const char* b)
+/********************************************************
+ * StringsEqual
+ */
+constexpr bool StringsEqual(const char* a, const char* b)
 {
-  return *a == *b && (*a == '\0' || strings_equal(a + 1, b + 1));
+  return *a == *b && (*a == '\0' || StringsEqual(a + 1, b + 1));
 }
 
+/*************************************
+ * GetIndexOfLiteralStringList
+ */
 template<int i, typename string_tuple>
 struct LiteralStringListIndexGetter
 {
   static constexpr int Get(string_tuple tuple, const char* find_string)
   {
-    return strings_equal(std::get<i>(tuple), find_string) ? i : LiteralStringListIndexGetter<i - 1, string_tuple>::Get(tuple, find_string);
+    return StringsEqual(std::get<i>(tuple), find_string) ? i : LiteralStringListIndexGetter<i - 1, string_tuple>::Get(tuple, find_string);
   }
 };
 
@@ -22,7 +28,7 @@ struct LiteralStringListIndexGetter<0, string_tuple>
 {
   static constexpr int Get(string_tuple tuple, const char* find_string)
   {
-    return strings_equal(std::get<0>(tuple), find_string) ? 0 : -1;
+    return StringsEqual(std::get<0>(tuple), find_string) ? 0 : -1;
   }
 };
 
