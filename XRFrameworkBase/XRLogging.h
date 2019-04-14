@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 
-// Todo) µð¹ö±× ·Î±ë ºÐ¸®
+// Todo) ë””ë²„ê·¸ ë¡œê¹… ë¶„ë¦¬
 #if defined(_DEBUG) || defined(DEBUG)
 #if defined(_WINDOWS)
 void DebugOutput(const char* szFormat, ...)

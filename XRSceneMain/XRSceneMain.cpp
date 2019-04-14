@@ -15,7 +15,7 @@ XRCamera camera;
 
 #include <stdio.h>
 
-// Todo) Menifest¸¦ º°µµ·Î µÖ¼­ scene¿¡¼­ ÀĞÀ» ¼ö ÀÖ´Â Çü½ÄÀ» °®Ãâ °Í
+// Todo) Menifestë¥¼ ë³„ë„ë¡œ ë‘¬ì„œ sceneì—ì„œ ì½ì„ ìˆ˜ ìˆëŠ” í˜•ì‹ì„ ê°–ì¶œ ê²ƒ
 XRSceneMain::XRSceneMain()
 {
   auto model = _resource_manager.GetModelByKey("teapot");
