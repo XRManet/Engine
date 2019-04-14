@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <ThirdParty>$(SolutionDir)ThirdParty\Windows\</ThirdParty>
+    <ThirdParty>$(SolutionDir)ThirdParty\</ThirdParty>
   </PropertyGroup>
   <PropertyGroup>
-    <ExecutablePath>$(ThirdParty)glfw-3.2.1\src\Release;$(ThirdParty)glew-2.1.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(ThirdParty)glfw-3.2.1\include;$(ThirdParty)glew-2.1.0\include;$(ThirdParty)glm;$(ThirdParty)rapidjson\include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ThirdParty)glfw-3.2.1\lib\Release\$(PlatformTarget);$(ThirdParty)glew-2.1.0\lib\Release\$(PlatformTarget);$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(ThirdParty)Common\glfw-3.2.1\include;$(ThirdParty)Common\glew-2.1.0\include;$(ThirdParty)Common\glm;$(ThirdParty)Common\rapidjson\include;$(SolutionDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(ThirdParty)Windows\glfw-3.2.1\lib\Release\$(PlatformTarget);$(ThirdParty)Windows\glew-2.1.0\lib\Release\$(PlatformTarget);$(LibraryPath)</LibraryPath>
     <_PropertySheetDisplayName>XRPropertySheetThirdParty</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>

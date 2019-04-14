@@ -123,7 +123,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ThirdParty)CopyThirdParty.bat $(ThirdParty) $(PlatformTarget) $(OutDir)</Command>
+      <Command>$(ThirdParty)Windows\CopyThirdParty.bat $(ThirdParty)Windows\ $(PlatformTarget) $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -167,7 +167,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ThirdParty)CopyThirdParty.bat $(ThirdParty) $(OutDir)</Command>
+      <Command>$(ThirdParty)Windows\CopyThirdParty.bat $(ThirdParty)Windows\ $(PlatformTarget) $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
