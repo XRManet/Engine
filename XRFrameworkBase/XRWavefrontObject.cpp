@@ -10,7 +10,7 @@ bool XRWavefrontObject::LoadDataFromFile()
   char line[MAX_LINE_CHARACTERS] = { 0, };
   FILE* fp = fopen(GetPath().c_str(), "r");
   ReadUnit unit;
-  ModelHeader *header = GetHeader();
+  ModelHeader *header = GetHeaderData();
 
   while (fgets(line, MAX_LINE_CHARACTERS, fp) != nullptr)
   {
@@ -60,7 +60,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 
       if (_memory.size() + sizeof(unit) > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
-        header = GetHeader();
+        header = GetHeaderData();
       }
       _memory.resize(_memory.size() + sizeof(unit));
       memcpy(_memory.data() + _memory.size(), &unit, sizeof(unit));
@@ -80,7 +80,7 @@ bool XRWavefrontObject::LoadDataFromFile()
       size_t index_buffer_size = available_count * sizeof(int);
       if (_memory.size() + index_buffer_size > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
-        header = GetHeader();
+        header = GetHeaderData();
       }
       _memory.resize(_memory.size() + index_buffer_size);
       memcpy(_memory.data() + _memory.size(), &unit, index_buffer_size);

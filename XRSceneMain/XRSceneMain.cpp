@@ -21,8 +21,11 @@ XRSceneMain::XRSceneMain()
   auto model = _resource_manager.GetModelByKey("teapot");
   auto objects = _object_manager.GenerateObjects(5);
 
+  glm::vec4 position {-2, 0, 0, 1};
   for (auto object : objects) {
     object->BindModel(model);
+    object->SetPosition(position);
+    position.x += 1;
   }
 
   camera.SetFrustum({16, 9}, 10, 100);

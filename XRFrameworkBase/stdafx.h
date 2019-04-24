@@ -27,3 +27,7 @@ int const PAGE_SIZE = 4'096;
 #else
 #define XRBaseExport __declspec(dllimport)
 #endif
+
+#ifndef XRRENDERENGINEGL_EXPORTS
+#define XRRenderExport __declspec(dllimport)
+#endif

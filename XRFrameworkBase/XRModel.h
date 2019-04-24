@@ -1,15 +1,15 @@
 #pragma once
 
-#include "stdafx.h"
+#include <stdafx.h>
 
 class XRMaterial {};
 
 class XRModelData;
 // #include "ModelDataRepresentation.h"
 
-class XRModel
+class XRBaseExport XRModel
 {
-private:
+protected:
   union {
     XRModelData * _data;
     // Todo) Other types of data for its own rendering engine would be given.
@@ -20,4 +20,7 @@ private:
 
 public:
   XRModel(XRModelData* data);
+  virtual ~XRModel();
 };
+
+XRRenderExport XRModel* xrCreateModel(XRModelData * loadable);
