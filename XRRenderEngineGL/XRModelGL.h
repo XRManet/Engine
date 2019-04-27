@@ -2,6 +2,16 @@
 
 #include <XRFrameworkBase/XRModel.h>
 
+class XRInputLayoutGL : public XRInputLayout
+{
+private:
+  unsigned vao;
+
+public:
+  XRInputLayoutGL(XRModel* model);
+  virtual ~XRInputLayoutGL();
+};
+
 class XRModelGL : public XRModel
 {
 private:

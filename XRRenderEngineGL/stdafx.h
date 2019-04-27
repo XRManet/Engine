@@ -16,12 +16,18 @@
 
 #endif
 
+#include <assert.h>
 
-// 여기서 프로그램에 필요한 추가 헤더를 참조합니다.
 #ifdef XRRENDERENGINEGL_EXPORTS
 #define XRRenderExport __declspec(dllexport)
 #endif
 
 #ifndef XRFRAMEWORKBASE_EXPORTS
 #define XRBaseExport __declspec(dllimport)
+#endif
+
+#ifdef _DEBUG
+#define GL_CALL(glcall) { glcall; GLenum error = glGetError(); assert(error == GL_NO_ERROR); }
+#else
+#define GL_CALL(x) x
 #endif

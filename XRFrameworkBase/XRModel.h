@@ -7,6 +7,15 @@ class XRMaterial {};
 class XRModelData;
 // #include "ModelDataRepresentation.h"
 
+class XRModel;
+
+class XRBaseExport XRInputLayout
+{
+public:
+  XRInputLayout() {}
+  virtual ~XRInputLayout() {}
+};
+
 class XRBaseExport XRModel
 {
 protected:
@@ -16,7 +25,7 @@ protected:
     // To support them, the XRModel has to bind data dynamically.
     // The XRModel introduces common interfaces of model data to a XRObject.
   };
-
+  XRInputLayout* _inputLayout;
 
 public:
   XRModel(XRModelData* data);
