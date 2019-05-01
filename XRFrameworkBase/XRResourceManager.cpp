@@ -11,7 +11,9 @@ XRResourceManager::XRResourceManager()
 {
   // TODO) Parse manifest for resources and enroll those.
   XRModelData * loadable = new XRWavefrontObject("../Resources/teapot.obj");
-  XRModel * model = new XRModel(loadable);
+  loadable->LoadDataFromFile();
+
+  XRModel * model = xrCreateModel(loadable);
 
   _models["teapot"] = model;
 }

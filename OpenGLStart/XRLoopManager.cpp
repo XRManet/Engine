@@ -6,9 +6,18 @@
 
 void XRRenderingStratagyForward::Render()
 {
-  glClearColor(1, 0, 0, 1);
+  glClearColor(1, 1, 1, 1);
 
   glClear(GL_COLOR_BUFFER_BIT);
+
+  GLuint vao;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+ 
+  GLuint vbo;
+  glGenBuffers(1, &vbo);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
 }
 
 XRFrameWalker::XRFrameWalker()

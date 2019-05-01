@@ -33,3 +33,7 @@
 #include <memory>
 
 int const PAGE_SIZE = 4'096;
+
+#ifndef XRRENDERENGINEGL_EXPORTS
+#define XRRenderExport __declspec(dllimport)
+#endif

@@ -46,6 +46,18 @@
     <Filter Include="헤더 파일\Utility">
       <UniqueIdentifier>{5692d764-d573-4d2f-90a8-4401daff921d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Engine">
+      <UniqueIdentifier>{d840f0e6-58ba-460a-a30f-dc3e2d8fe597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Render">
+      <UniqueIdentifier>{5c950f1f-bdd2-415e-a72c-e92660524da8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Engine">
+      <UniqueIdentifier>{dd5226cc-e88e-4c68-a0d6-76235cc5b12f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Engine\Render">
+      <UniqueIdentifier>{04980c5b-bfde-468c-8bbc-f69a9806bf18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -71,9 +83,6 @@
     </ClInclude>
     <ClInclude Include="XRTexture.h">
       <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="XRModel.h">
-      <Filter>헤더 파일\Resource\Model</Filter>
     </ClInclude>
     <ClInclude Include="XRModelData.h">
       <Filter>헤더 파일\Resource\Model</Filter>
@@ -105,6 +114,12 @@
     <ClInclude Include="XRUtility.h">
       <Filter>헤더 파일\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="XRFrameworkBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRModel.h">
+      <Filter>헤더 파일\Engine\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -128,9 +143,6 @@
     <ClCompile Include="XRWavefrontObject.cpp">
       <Filter>소스 파일\Resource\Model</Filter>
     </ClCompile>
-    <ClCompile Include="XRModel.cpp">
-      <Filter>소스 파일\Resource\Model</Filter>
-    </ClCompile>
     <ClCompile Include="XRObjectManager.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
@@ -139,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="XRBody.cpp">
       <Filter>소스 파일\Resource\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="XRModel.cpp">
+      <Filter>소스 파일\Engine\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
