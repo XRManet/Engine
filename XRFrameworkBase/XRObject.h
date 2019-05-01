@@ -3,6 +3,7 @@
 #include "stdafx.h"
 
 #include "XRGeometry.h"
+#include "XRType.h"
 
 class XRModel;
 class XRBody;
@@ -10,7 +11,7 @@ class XRBody;
 class XRBaseExport XRObject
 {
 private:
-  __int64   _id;
+  int64_t   _id;
   void*     _context;
 
   glm::vec4 _position;

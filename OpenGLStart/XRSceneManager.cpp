@@ -4,24 +4,6 @@
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
 
-namespace XRPlatform
-{
-XRDSO LoadDSO(char const* dso_name)
-{
-  return ::LoadLibraryA(dso_name);
-}
-
-void UnloadDSO(XRDSO dso)
-{
-  ::FreeLibrary(dso);
-}
-
-void* GetProcAddress(XRDSO dso, char const* proc)
-{
-  return ::GetProcAddress(dso, proc);
-}
-}
-
 char const* XRSceneManager::MANIFEST_NAME = "SceneKeys.json";
 
 XRSceneManager::XRSceneManager()
@@ -42,7 +24,7 @@ XRSceneManager::XRSceneManager()
     char const* dso_name = scene["dso_name"].GetString();
     char const* func_name_CreateScene = scene["CreateScene"].GetString();
 
-    XRPlatform::XRDSO dso;
+    XRPlatform::XRDSO* dso;
     bool has_already = false;
     if (_list_of_dsos.find(dso_name) == _list_of_dsos.end())
     {

@@ -7,17 +7,7 @@
 #include "stdafx.h" // XRPlatform
 
 #include <XRFrameworkBase/XRScene.h>
-
-namespace XRPlatform
-{
-  typedef HMODULE XRDSO;
-
-  XRDSO LoadDSO(char const* dso_name);
-  void UnloadDSO(XRDSO dso);
-
-  void* GetProcAddress(XRDSO dso, char const* proc);
-};
-
+#include "XRPlatform.h"
 
 class XRScene;
 struct XRSceneInfo;
@@ -26,7 +16,7 @@ class XRSceneManager
 {
 private:
   std::map<std::string, XRSceneInfo> _list_of_scenes;
-  std::map<std::string, XRPlatform::XRDSO> _list_of_dsos;
+  std::map<std::string, XRPlatform::XRDSO*> _list_of_dsos;
 
   XRScene* _primary_scene = nullptr;
 

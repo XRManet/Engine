@@ -5,13 +5,25 @@
 
 #pragma once
 
+#if defined(_WIN32) || defined(_WIN64)
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일:
 #include <windows.h>
 
+#ifdef XRFRAMEWORKBASE_EXPORTS
+#define XRBaseExport __declspec(dllexport)
+#else
+#define XRBaseExport __declspec(dllimport)
+#endif
+#define XRBaseHidden
 
+#else
+#define XRBaseExport __attribute__((visibility("default")))
+#define XRBaseHidden __attribute__((visibility("hidden")))
+
+#endif
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include <thread>
@@ -21,9 +33,3 @@
 #include <memory>
 
 int const PAGE_SIZE = 4'096;
-
-#ifdef XRFRAMEWORKBASE_EXPORTS
-#define XRBaseExport __declspec(dllexport)
-#else
-#define XRBaseExport __declspec(dllimport)
-#endif
