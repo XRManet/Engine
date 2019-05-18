@@ -66,13 +66,22 @@ public:
 class XRRenderingStratagy
 {
 public:
+  virtual ~XRRenderingStratagy() {}
+
+public:
+  virtual void Initialize() {}
+
+public:
   virtual void Render() {}
 };
 
 class XRRenderingStratagyForward : public XRRenderingStratagy
 {
 public:
+  XRRenderingStratagyForward();
+
   virtual void Render();
+  virtual void Initialize();
 };
 
 #include <memory>
@@ -85,6 +94,10 @@ private:
 public:
   XRFrameWalker();
 
+  void Initialize()
+  {
+    _rendering_stratagy->Initialize();
+  }
 
 public:
   void UpdateFrame();
@@ -110,6 +123,11 @@ public:
 
 
 public:
+  void Initialize()
+  {
+    _frame_walker.Initialize();
+  }
+
   void Run()
   {
     while (_infra.WindowShouldClose() == false)

@@ -14,6 +14,8 @@ int main(void)
   
   sceneManager->BindPrimaryScene("main");
 
+  loopManager.Initialize();
+
   loopManager.Run();
 
   return 0;

@@ -27,7 +27,7 @@
 #endif
 
 #ifdef _DEBUG
-#define GL_CALL(glcall) { glcall; GLenum error = glGetError(); assert(error == GL_NO_ERROR); }
+#define GL_CALL(glCall) { glCall; GLenum error = glGetError(); assert(error == GL_NO_ERROR); }
 #else
 #define GL_CALL(x) x
 #endif

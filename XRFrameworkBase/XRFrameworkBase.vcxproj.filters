@@ -5,28 +5,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="소스 파일\Scene">
       <UniqueIdentifier>{97ad5759-0558-4795-83ee-37e27b17fd61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Object">
-      <UniqueIdentifier>{14a9b490-8b53-4b42-8802-49e4e0ded24c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Resource">
-      <UniqueIdentifier>{3e8fec42-b155-4e32-8c9e-e295d6404418}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Resource\Model">
-      <UniqueIdentifier>{0bb41082-50b2-4a7b-a61e-9ba73c7d275e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Resource\Material">
-      <UniqueIdentifier>{75fbaaaf-afc4-44b6-93f1-61584068342b}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Resource">
       <UniqueIdentifier>{333265a2-5f24-47a6-9e84-5200d3ab963b}</UniqueIdentifier>
@@ -40,95 +24,101 @@
     <Filter Include="소스 파일\Resource\Body">
       <UniqueIdentifier>{e0707604-e854-4f17-adb5-6b25e0d85360}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Resource\Body">
-      <UniqueIdentifier>{5218152c-cad6-4671-9c78-f598ee726a28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Utility">
-      <UniqueIdentifier>{5692d764-d573-4d2f-90a8-4401daff921d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Engine">
       <UniqueIdentifier>{d840f0e6-58ba-460a-a30f-dc3e2d8fe597}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Engine\Render">
       <UniqueIdentifier>{5c950f1f-bdd2-415e-a72c-e92660524da8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Engine">
-      <UniqueIdentifier>{dd5226cc-e88e-4c68-a0d6-76235cc5b12f}</UniqueIdentifier>
+    <Filter Include="소스 파일\Heterogeneous">
+      <UniqueIdentifier>{9aa3936d-479c-465d-a395-2cad97d22a38}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Engine\Render">
-      <UniqueIdentifier>{04980c5b-bfde-468c-8bbc-f69a9806bf18}</UniqueIdentifier>
+    <Filter Include="소스 파일\Resource\Material">
+      <UniqueIdentifier>{75fbaaaf-afc4-44b6-93f1-61584068342b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utility">
+      <UniqueIdentifier>{5692d764-d573-4d2f-90a8-4401daff921d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{242f1aaf-3f06-4ae1-88c7-99e822f61c04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Heterogeneous\GPU">
+      <UniqueIdentifier>{744fa485-baf7-4e62-97ac-6c4b7e5593bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Heterogeneous\GPU\Pipeline">
+      <UniqueIdentifier>{be32a507-8bf8-4365-9ef4-54c7f51b818a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Heterogeneous\GPU\Permutation">
+      <UniqueIdentifier>{f5c16d4f-2ce1-41b5-a1ba-df558f1695bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRGeometry.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRResourceManager.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="XRObject.h">
-      <Filter>헤더 파일\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="XRObjectManager.h">
-      <Filter>헤더 파일\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="XRTexture.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="XRModelData.h">
-      <Filter>헤더 파일\Resource\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="XRLoadable.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="XRWavefrontObject.h">
-      <Filter>헤더 파일\Resource\Model</Filter>
-    </ClInclude>
     <ClInclude Include="XRWavefrontMaterial.h">
-      <Filter>헤더 파일\Resource\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="XRSavable.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRLogging.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRBody.h">
-      <Filter>헤더 파일\Resource\Body</Filter>
-    </ClInclude>
-    <ClInclude Include="XRBodyData.h">
-      <Filter>헤더 파일\Resource\Body</Filter>
-    </ClInclude>
-    <ClInclude Include="XRRigidBody.h">
-      <Filter>헤더 파일\Resource\Body</Filter>
+      <Filter>소스 파일\Resource\Material</Filter>
     </ClInclude>
     <ClInclude Include="XRUtility.h">
-      <Filter>헤더 파일\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="XRFrameworkBase.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\Utility</Filter>
     </ClInclude>
     <ClInclude Include="XRModel.h">
-      <Filter>헤더 파일\Engine\Render</Filter>
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="XRObject.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="XRObjectManager.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBody.h">
+      <Filter>소스 파일\Resource\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBodyData.h">
+      <Filter>소스 파일\Resource\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRigidBody.h">
+      <Filter>소스 파일\Resource\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="XRModelData.h">
+      <Filter>소스 파일\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="XRWavefrontObject.h">
+      <Filter>소스 파일\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="XRLoadable.h">
+      <Filter>소스 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="XRResourceManager.h">
+      <Filter>소스 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="XRTexture.h">
+      <Filter>소스 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="XRFrameworkBase.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRGeometry.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRLogging.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRPrimitiveTypes.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRSavable.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRScene.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="XRFrameworkBase.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="XRScene.cpp">
@@ -154,6 +144,12 @@
     </ClCompile>
     <ClCompile Include="XRModel.cpp">
       <Filter>소스 파일\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Win32</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

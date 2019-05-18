@@ -5,6 +5,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/vec4.hpp>
 
 XRInputLayoutGL::XRInputLayoutGL(XRModel* model)
 {
@@ -13,7 +14,7 @@ XRInputLayoutGL::XRInputLayoutGL(XRModel* model)
 
   GLuint size = 0;
   GLuint num = 0;
-  GLuint offset = size * num;
+  size_t offset = size * num;
   GL_CALL(glEnableVertexAttribArray(0));
   GL_CALL(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
 
@@ -23,7 +24,6 @@ XRInputLayoutGL::XRInputLayoutGL(XRModel* model)
   GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
 
   GL_CALL(glBindVertexArray(0));
-
 }
 
 XRInputLayoutGL::~XRInputLayoutGL()
@@ -34,19 +34,43 @@ XRInputLayoutGL::~XRInputLayoutGL()
 XRModelGL::XRModelGL(XRModelData* data) : XRModel(data)
 {
   const auto* header = _data->GetHeader();
+  GL_CALL(glGenBuffers(2, GL.vbo));
 
-  glGenBuffers(2, GL.vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(XRModelData::VertexPosition) * header->vertex_count + sizeof(XRModelData::VertexNormal) * header->normal_count,
-    nullptr, GL_STATIC_DRAW);
+  {
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, GL.vertex));
 
-  GLuint offset = 0;
-  GLuint size = sizeof(XRModelData::VertexPosition) * header->vertex_count;
-  glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->vertex_offset);
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * header->vertex_count * 2,
+      nullptr, GL_STATIC_DRAW));
 
-  offset = size;
-  size = sizeof(XRModelData::VertexNormal) * header->normal_count;
-  glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->normal_offset);
+    assert(header->vertex_count > 0);
+    GLuint offset = 0;
+    GLuint size = sizeof(XRModelData::VertexPosition) * header->vertex_count;
+    GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->vertex_offset));
+
+    if (header->normal_offset > 0)
+    {
+      offset = size;
+      size += sizeof(XRModelData::VertexNormal) * header->vertex_count;
+      GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->normal_offset));
+    }
+
+    if (header->texture_offset > 0)
+    {
+      offset = size;
+      size += sizeof(XRModelData::TextureCoordinate) * header->vertex_count;
+      GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->texture_offset));
+    }
+  }
+
+  if (header->IsIndexed())
+  {
+    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index));
+
+    GLuint size = sizeof(XRModelData::FaceIndexTriangle) * header->index_count;
+    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, header + header->index_offset, GL_STATIC_DRAW));
+  }
+  
+  GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 XRModelGL::~XRModelGL()

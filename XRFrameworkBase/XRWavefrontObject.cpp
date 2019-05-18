@@ -12,6 +12,9 @@ bool XRWavefrontObject::LoadDataFromFile()
   ReadUnit unit;
   ModelHeader *header = GetHeaderData();
 
+  size_t texture_coordinate_count = 0;
+  size_t vertex_normal_count = 0;
+
   while (fgets(line, MAX_LINE_CHARACTERS, fp) != nullptr)
   {
     static const float default_value[4] = { 0.f, 0.f, 0.f, 1.f };
@@ -20,6 +23,8 @@ bool XRWavefrontObject::LoadDataFromFile()
     int available_count = 0;
     int * p_count = nullptr;
 
+    size_t size = _memory.size();
+
     if (line[0] == 'v')
     {
       if (line[1] == ' ') // vertex position
@@ -27,23 +32,23 @@ bool XRWavefrontObject::LoadDataFromFile()
         header->vertex_count++;
 
         if (header->vertex_offset == 0) {
-          header->vertex_offset = _memory.size();
+          header->vertex_offset = size;
         }
       }
       else if (line[1] == 't') // texture coordinate
       {
-        header->texture_count++;
+        texture_coordinate_count++;
 
         if (header->texture_offset == 0) {
-          header->texture_offset = _memory.size();
+          header->texture_offset = size;
         }
       }
       else if (line[1] == 'n') // vertex normal
       {
-        header->normal_count++;
+        vertex_normal_count++;
 
         if (header->normal_offset == 0) {
-          header->normal_offset = _memory.size();
+          header->normal_offset = size;
         }
       }
       else if (line[1] == 'p') // parameter space coordinate
@@ -55,20 +60,20 @@ bool XRWavefrontObject::LoadDataFromFile()
         "%f %f %f %f",
         unit.f + 0, unit.f + 1, unit.f + 2, unit.f + 3);
 
-      for (int i = available_count; i < 4; ++i)
-        unit.f[i] = default_value[i];
+      memcpy(unit.f + available_count, default_value + available_count, sizeof(default_value[0]) * (4 - available_count));
 
-      if (_memory.size() + sizeof(unit) > _memory.capacity()) {
+      if (size + sizeof(unit) > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
         header = GetHeaderData();
       }
-      _memory.resize(_memory.size() + sizeof(unit));
-      memcpy(_memory.data() + _memory.size(), &unit, sizeof(unit));
+
+      _memory.resize(size + sizeof(unit));
+      memcpy(_memory.data() + size, &unit, sizeof(unit));
     }
     else if (line[0] == 'f') // Face element
     {
       if (header->index_offset == 0) {
-        header->index_offset = _memory.size();
+        header->index_offset = size;
       }
 
       available_count = sscanf(line + read_pos,
@@ -78,18 +83,22 @@ bool XRWavefrontObject::LoadDataFromFile()
       header->index_count += available_count;
 
       size_t index_buffer_size = available_count * sizeof(int);
-      if (_memory.size() + index_buffer_size > _memory.capacity()) {
+      if (size + index_buffer_size > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
         header = GetHeaderData();
       }
-      _memory.resize(_memory.size() + index_buffer_size);
-      memcpy(_memory.data() + _memory.size(), &unit, index_buffer_size);
+
+      _memory.resize(size + index_buffer_size);
+      memcpy(_memory.data() + size, &unit, index_buffer_size);
     }
     else if (line[0] == 'l') assert(0);
     else if (line[0] == 'o') assert(0);
     else if (line[0] == 'g') assert(0);
     else if (line[0] == 's') assert(0);
   }
+
+  assert(texture_coordinate_count == 0 || texture_coordinate_count == header->vertex_count);
+  assert(vertex_normal_count == 0 || vertex_normal_count == header->vertex_count);
 
   fclose(fp);
 

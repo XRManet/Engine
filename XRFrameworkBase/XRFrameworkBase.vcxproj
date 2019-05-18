@@ -169,6 +169,7 @@
     <ClInclude Include="XRModelData.h" />
     <ClInclude Include="XRObject.h" />
     <ClInclude Include="XRObjectManager.h" />
+    <ClInclude Include="XRPrimitiveTypes.h" />
     <ClInclude Include="XRResourceManager.h" />
     <ClInclude Include="XRRigidBody.h" />
     <ClInclude Include="XRSavable.h" />

@@ -10,6 +10,7 @@ struct RenderEngineGLInitializer
 {
   RenderEngineGLInitializer()
   {
+    // glewInit() must be called after makeCurrent-like functions
     GLenum result = glewInit();
     if (result != GLEW_OK)
     {
