@@ -32,4 +32,8 @@ public:
   virtual ~XRModel();
 };
 
+#ifdef XRRENDERENGINEGL_EXPORTS
 XRRenderExport XRModel* xrCreateModel(XRModelData * loadable);
+#else
+extern XRModel* (*xrCreateModel)(XRModelData* loadable);
+#endif

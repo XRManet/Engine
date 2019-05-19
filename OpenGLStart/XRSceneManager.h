@@ -4,20 +4,8 @@
 #include <map>
 #include <string>
 
-#include "stdafx.h" // XRPlatform
-
 #include <XRFrameworkBase/XRScene.h>
-
-namespace XRPlatform
-{
-  typedef HMODULE XRDSO;
-
-  XRDSO LoadDSO(char const* dso_name);
-  void UnloadDSO(XRDSO dso);
-
-  void* GetProcAddress(XRDSO dso, char const* proc);
-};
-
+#include <XRFrameworkBase/XRPlatform.h>
 
 class XRScene;
 struct XRSceneInfo;

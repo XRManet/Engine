@@ -4,24 +4,6 @@
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
 
-namespace XRPlatform
-{
-XRDSO LoadDSO(char const* dso_name)
-{
-  return ::LoadLibraryA(dso_name);
-}
-
-void UnloadDSO(XRDSO dso)
-{
-  ::FreeLibrary(dso);
-}
-
-void* GetProcAddress(XRDSO dso, char const* proc)
-{
-  return ::GetProcAddress(dso, proc);
-}
-}
-
 char const* XRSceneManager::MANIFEST_NAME = "SceneKeys.json";
 
 XRSceneManager::XRSceneManager()

@@ -51,6 +51,12 @@
     <Filter Include="소스 파일\Heterogeneous\GPU\Permutation">
       <UniqueIdentifier>{f5c16d4f-2ce1-41b5-a1ba-df558f1695bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Platform">
+      <UniqueIdentifier>{4bd694c2-2bac-4996-b444-11985e8d125b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Render\Linker">
+      <UniqueIdentifier>{f3b24feb-c8c9-42c0-bdfc-03daee2298b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XRWavefrontMaterial.h">
@@ -116,6 +122,9 @@
     <ClInclude Include="stdafx.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="XRPlatform.h">
+      <Filter>소스 파일\Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -150,6 +159,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="XRPlatformWindows.cpp">
+      <Filter>소스 파일\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRenderEngineLinker.cpp">
+      <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
