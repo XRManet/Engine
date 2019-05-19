@@ -60,21 +60,21 @@ XRRenderingStratagyForward::XRRenderingStratagyForward()
 void XRRenderingStratagyForward::Initialize()
 {
   // TODO) separate
-  GLuint glProgram;         GL_CALL(glProgram = glCreateProgram());
+  GL_CALL(_glProgram = glCreateProgram());
 
-  GLuint glVertexShader;    GL_CALL(glVertexShader = glCreateShader(GL_VERTEX_SHADER));
-  GLuint glFragmentShader;  GL_CALL(glFragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
+  GL_CALL(_glVertexShader = glCreateShader(GL_VERTEX_SHADER));
+  GL_CALL(_glFragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
 
   const char* vertexShaders[]{ "SimpleVertex.glsl" };
-  CompileShader(glVertexShader, std::size(vertexShaders), vertexShaders);
+  CompileShader(_glVertexShader, std::size(vertexShaders), vertexShaders);
 
   const char* fragmentShaders[]{ "SimpleFragment.glsl" };
-  CompileShader(glFragmentShader, std::size(fragmentShaders), fragmentShaders);
+  CompileShader(_glFragmentShader, std::size(fragmentShaders), fragmentShaders);
 
-  GL_CALL(glAttachShader(glProgram, glVertexShader));
-  GL_CALL(glAttachShader(glProgram, glFragmentShader));
+  GL_CALL(glAttachShader(_glProgram, _glVertexShader));
+  GL_CALL(glAttachShader(_glProgram, _glFragmentShader));
 
-  GL_CALL(glLinkProgram(glProgram));
+  GL_CALL(glLinkProgram(_glProgram));
 }
 
 void XRRenderingStratagyForward::Render()
@@ -83,7 +83,7 @@ void XRRenderingStratagyForward::Render()
 
   glClear(GL_COLOR_BUFFER_BIT);
 
-
+  ;
 
   //GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 }
