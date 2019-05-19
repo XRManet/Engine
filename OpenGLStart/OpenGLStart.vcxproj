@@ -192,6 +192,8 @@
     <ResourceCompile Include="OpenGLStart.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Resources\Shaders\OpenGL\SimpleFragment.glsl" />
+    <None Include="..\Resources\Shaders\OpenGL\SimpleVertex.glsl" />
     <None Include="SceneKeys.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
