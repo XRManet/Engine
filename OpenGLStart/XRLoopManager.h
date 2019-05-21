@@ -85,8 +85,23 @@ class XRRenderingStratagyForward : public XRRenderingStratagy
   GLuint _glVertexShader;
   GLuint _glFragmentShader;
 
+  GLuint _uniformBuffers;
+
+  struct Light
+  {
+    float position[4];
+    float intensity[3];
+    float attenuation;
+  };
+
+  struct Material
+  {
+    float diffuse[4];
+  };
+
 public:
   XRRenderingStratagyForward();
+  ~XRRenderingStratagyForward();
 
   virtual void Render();
   virtual void Initialize();

@@ -99,6 +99,20 @@ namespace
   }
 }
 
+void GLAPIENTRY
+MessageCallback(GLenum source,
+  GLenum type,
+  GLuint id,
+  GLenum severity,
+  GLsizei length,
+  const GLchar* message,
+  const void* userParam)
+{
+  fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+    (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+    type, severity, message);
+}
+
 XRRenderingStratagyForward::XRRenderingStratagyForward()
 {
   // TODO) Initialize()의 내용을 glew 초기화 특정되는 순간 할 수 있는게 좋음.
@@ -106,8 +120,17 @@ XRRenderingStratagyForward::XRRenderingStratagyForward()
   // 2. 아니면 람다를 등록해서 라이브러리 준비가 끝나면 그 즉시 호출되도록
 }
 
+XRRenderingStratagyForward::~XRRenderingStratagyForward()
+{
+}
+
+static GLint MAX_UNIFORM_BUFFER_BINDINGS = 0;
+static GLint UNIFORM_BUFFER_OFFSET_ALIGNMENT = 0;
 void XRRenderingStratagyForward::Initialize()
 {
+  glEnable(GL_DEBUG_OUTPUT);
+  glDebugMessageCallback(MessageCallback, 0);
+
   // TODO) separate
   GL_CALL(_glProgram = glCreateProgram());
 
@@ -125,6 +148,14 @@ void XRRenderingStratagyForward::Initialize()
     _glFragmentShader
   };
   BuildProgram(_glProgram, shaders, std::size(shaders));
+
+  GL_CALL(glDeleteShader(_glVertexShader));
+  GL_CALL(glDeleteShader(_glFragmentShader));
+  
+  glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &MAX_UNIFORM_BUFFER_BINDINGS);
+  glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+
+  glGenBuffers(1, &_uniformBuffers);
 }
 
 void XRRenderingStratagyForward::Render()
@@ -133,10 +164,32 @@ void XRRenderingStratagyForward::Render()
 
   glClear(GL_COLOR_BUFFER_BIT);
 
-  glUseProgram(_glProgram);
-
-  glGetUniformLocation(_glProgram, "");
+  GL_CALL(glUseProgram(_glProgram));
   
+  //GLuint uniformTransformView = -1;
+  //GLuint uniformTransformVP = -1;
+  GLuint uniformIndexTransform = -1;
+
+  //GL_CALL(uniformTransformView = glGetUniformLocation(_glProgram, "transformView"));
+  //GL_CALL(uniformTransformVP = glGetUniformLocation(_glProgram, "transformVP"));
+
+  uniformIndexTransform = glGetUniformBlockIndex(_glProgram, "MatrixBlock");
+  assert(uniformIndexTransform == glGetProgramResourceIndex(_glProgram, GL_UNIFORM_BLOCK, "MatrixBlock"));
+
+  GL_CALL(glUniformBlockBinding(_glProgram, uniformIndexTransform, 0));
+  GLint uniformTransformNum = 0;
+  glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformTransformNum);
+  std::vector<GLint> uniformTransformIndices(uniformTransformNum);
+  glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniformTransformIndices.data());
+
+  GLuint offset = 0;
+  glBindBufferRange(GL_UNIFORM_BUFFER, uniformIndexTransform, _uniformBuffers, offset, sizeof(Light));    offset += sizeof(Light);
+
+  offset = (offset + UNIFORM_BUFFER_OFFSET_ALIGNMENT - 1) / UNIFORM_BUFFER_OFFSET_ALIGNMENT * UNIFORM_BUFFER_OFFSET_ALIGNMENT;
+  glBindBufferRange(GL_UNIFORM_BUFFER, 2, _uniformBuffers, offset, sizeof(Material)); offset += sizeof(Material);
+
+  //glUniformMatrix4fv(uniformTransformVP, 1, false, );
+  //glUniformBufferEXT(_glProgram, uniformLight, );
 
   //GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 }
