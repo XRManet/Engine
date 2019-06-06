@@ -1,38 +1,42 @@
-#version 420 core
+#version 430 core
 
 #extension GL_ARB_separate_shader_objects : enable
 
 layout (location = 0) in vec4 position;
 layout (location = 1) in vec3 normal;
 
-layout (binding = 0, column_major) uniform MatrixBlock
+layout (std140, column_major) uniform MatrixBlock
 {
 	mat4 view;
 	mat4 viewProj;
-} transform;
+};
 
 struct Light {
 	vec4 position;
 	vec3 intensity;
 	float attenuation;
+	float test;
+};
+
+layout (shared) uniform LightBlock
+{
+	Light light;
 };
 
 struct Material {
 	vec4 diffuse;
 };
 
-uniform Light light;
-
 uniform Material matereials;
-
+uniform vec4 test;
 
 out vec3 frag_normal;
 
 void main()
 {
-	gl_Position = transform.viewProj * position;
+	gl_Position = viewProj * position;
 
-	frag_normal = mat3(transform.view) * normal;
+	frag_normal = mat3(view) * normal + test.xyz;
 
 	
 //	vec3 normal;

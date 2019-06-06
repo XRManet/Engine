@@ -85,7 +85,17 @@ class XRRenderingStratagyForward : public XRRenderingStratagy
   GLuint _glVertexShader;
   GLuint _glFragmentShader;
 
-  GLuint _uniformBuffers;
+  struct UNIFORM_BUFFER_NAME
+  {
+    enum : GLuint
+    {
+      Transform,
+      Light,
+      Count
+    };
+  };
+  
+  GLuint _uniformBuffers[UNIFORM_BUFFER_NAME::Count];
 
   struct Light
   {
