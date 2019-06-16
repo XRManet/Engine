@@ -19,9 +19,15 @@
 #endif
 #define XRBaseHidden
 
+#ifndef XRRENDERENGINEGL_EXPORTS
+#define XRRenderExport __declspec(dllimport)
+#endif
+
 #else
 #define XRBaseExport __attribute__((visibility("default")))
 #define XRBaseHidden __attribute__((visibility("hidden")))
+
+#define XRRenderExport __attribute__((visibility("default")))
 
 #endif
 
@@ -33,7 +39,3 @@
 #include <memory>
 
 int const PAGE_SIZE = 4'096;
-
-#ifndef XRRENDERENGINEGL_EXPORTS
-#define XRRenderExport __declspec(dllimport)
-#endif

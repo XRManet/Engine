@@ -3,6 +3,7 @@
 #include <stdafx.h>
 
 #include "XRLoadable.h"
+#include "XRPrimitiveTypes.h"
 
 // XRModelData
 // A default representation data form of XRModel
@@ -24,12 +25,12 @@ public:
     size_t index_offset = 0;
 
     int vertex_count = 0;
-    int normal_count = 0;
-    int texture_count = 0;
     int index_count = 0;
 
     int primitive_type = 0;
     int vertex_number_in_face = 0;
+
+    bool IsIndexed() const { return (index_count > 0); }
   };
 
 public:

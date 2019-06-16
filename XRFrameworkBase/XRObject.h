@@ -8,14 +8,16 @@
 class XRModel;
 class XRBody;
 
+static const int64_t    NO_ID = static_cast<__int64>(-1);
+
 class XRBaseExport XRObject
 {
 private:
-  int64_t   _id;
-  void*     _context;
+  int64_t   _id = NO_ID;
+  void*     _context = nullptr;
 
-  glm::vec4 _position;
-  glm::quat _orientation;
+  glm::vec4 _position {};
+  glm::quat _orientation {};
 
 
 private:

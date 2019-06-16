@@ -16,14 +16,8 @@
     <Filter Include="소스 파일\Scenes">
       <UniqueIdentifier>{47cd9c76-f850-4787-bd8f-a48a2a4485b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Scenes">
-      <UniqueIdentifier>{b207269b-141c-401c-853d-38e753bcdbaf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="외부 참조">
       <UniqueIdentifier>{0073f9f1-d98e-47fd-b311-742c3f1355d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Platform">
-      <UniqueIdentifier>{ce19b87c-de9f-43d1-9e3f-f61ce15dd0a3}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Platform">
       <UniqueIdentifier>{92d7ff7b-4757-4d10-bf82-a3a789d5726e}</UniqueIdentifier>
@@ -42,11 +36,11 @@
     <ClInclude Include="resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="XRSceneManager.h">
-      <Filter>헤더 파일\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="XRLoopManager.h">
-      <Filter>헤더 파일\Platform</Filter>
+      <Filter>소스 파일\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="XRSceneManager.h">
+      <Filter>소스 파일\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
