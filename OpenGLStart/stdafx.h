@@ -26,6 +26,8 @@
 
 // TODO) 나중엔 GL 관련부로 치워야함
 #ifdef _DEBUG
+
+#if TEST_BLOCK_JIMAN_1
 template<typename glCall>
 auto GL_CALL_AUTO(glCall glFunc) -> decltype(glFunc())
 {
@@ -49,6 +51,7 @@ void GL_CALL_VOID(glVoidCall glFunc)
   assert(error == GL_NO_ERROR); \
   return res; \
 }()
+#endif
 
 #define GL_CALL(glCall) { glCall; GLenum error = glGetError(); assert(error == GL_NO_ERROR); }
 

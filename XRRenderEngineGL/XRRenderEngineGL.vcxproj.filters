@@ -42,12 +42,4 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="SimpleVertex.glsl">
-      <Filter>리소스 파일\Shaders</Filter>
-    </None>
-    <None Include="SimpleFragment.glsl">
-      <Filter>리소스 파일\Shaders</Filter>
-    </None>
-  </ItemGroup>
 </Project>

@@ -4,10 +4,8 @@
 #include <map>
 #include <string>
 
-#include "stdafx.h" // XRPlatform
-
 #include <XRFrameworkBase/XRScene.h>
-#include "XRPlatform.h"
+#include <XRFrameworkBase/XRPlatform.h>
 
 class XRScene;
 struct XRSceneInfo;

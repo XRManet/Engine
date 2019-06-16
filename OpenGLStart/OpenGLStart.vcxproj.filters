@@ -25,6 +25,12 @@
     <Filter Include="소스 파일\Object">
       <UniqueIdentifier>{ca11e88c-073a-4a00-8f14-081a81f1c3ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="리소스 파일\Shaders">
+      <UniqueIdentifier>{66ed632e-7586-437a-a647-e7f49b30a0ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\Shaders\OpenGL">
+      <UniqueIdentifier>{7bfe0a2d-1447-4aa7-afbb-fa94c62266b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -65,6 +71,12 @@
   <ItemGroup>
     <None Include="SceneKeys.json">
       <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="..\Resources\Shaders\OpenGL\SimpleVertex.glsl">
+      <Filter>리소스 파일\Shaders\OpenGL</Filter>
+    </None>
+    <None Include="..\Resources\Shaders\OpenGL\SimpleFragment.glsl">
+      <Filter>리소스 파일\Shaders\OpenGL</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -170,10 +170,6 @@
     <ClCompile Include="XRModelGL.cpp" />
     <ClCompile Include="XRRenderEngineGL.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="SimpleFragment.glsl" />
-    <None Include="SimpleVertex.glsl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

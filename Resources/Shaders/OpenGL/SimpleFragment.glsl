@@ -20,7 +20,7 @@ void main()
 {
 	if(light.position.w == 0)
 	{
-		light.position - gl_Position;
+		light.position;
 	}
 	
 	color = vec3(1, 0, 0);

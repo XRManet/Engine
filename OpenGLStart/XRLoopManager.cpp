@@ -19,6 +19,8 @@ namespace
     {
       strcpy(RESOURCE_PATH + RESOURCE_PATH_END, filename[i]);
       FILE* fp = fopen(RESOURCE_PATH, "r");
+      
+      assert(fp != nullptr);
       if (fp == nullptr) continue;
 
       bool result = (fseek(fp, 0, SEEK_END) == 0);
@@ -27,9 +29,9 @@ namespace
         long size = ftell(fp);
         rewind(fp);
 
-        char* buffer = new char[size];
+        char* buffer = new char[size + 1]();
 
-        fread(shaderSources, sizeof(char), size, fp);
+        fread(buffer, sizeof(char), size, fp);
         
         shaderSources[i] = buffer;
         sizes[i] = size;
@@ -41,12 +43,59 @@ namespace
     GL_CALL(glShaderSource(shader, fileCount, shaderSources, sizes));
     GL_CALL(glCompileShader(shader));
 
+    GLint result = GL_FALSE;
+    GL_CALL(glGetShaderiv(shader, GL_COMPILE_STATUS, &result));
+    if (result == GL_FALSE)
+    {
+      GLint logLength = 0;
+      GL_CALL(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength));
+
+      if (logLength > 0)
+      {
+        GLchar* failedLog = new GLchar[logLength]();
+        GL_CALL(glGetShaderInfoLog(shader, logLength, &logLength, failedLog));
+
+        printf("%s", failedLog);
+      }
+    }
+
     for (GLsizei i = 0; i < fileCount; ++i)
     {
       delete shaderSources[i];
     }
     delete[] shaderSources;
     delete[] sizes;
+  }
+
+  void BuildProgram(GLuint glProgram, GLuint glShaders[], GLuint counts)
+  {
+    for (GLuint i = 0; i < counts; ++i)
+    {
+      GL_CALL(glAttachShader(glProgram, glShaders[i]));
+    }
+
+    GL_CALL(glLinkProgram(glProgram));
+
+    GLint result = GL_FALSE;
+    GL_CALL(glGetProgramiv(glProgram, GL_LINK_STATUS, &result));
+    if (result == GL_FALSE)
+    {
+      GLint logLength = 0;
+      GL_CALL(glGetProgramiv(glProgram, GL_INFO_LOG_LENGTH, &logLength));
+
+      if (logLength > 0)
+      {
+        GLchar* failedLog = new GLchar[logLength]();
+        GL_CALL(glGetProgramInfoLog(glProgram, logLength, &logLength, failedLog));
+
+        printf("%s", failedLog);
+      }
+    }
+
+    for (GLuint i = 0; i < counts; ++i)
+    {
+      GL_CALL(glDetachShader(glProgram, glShaders[i]));
+    }
   }
 }
 
@@ -60,21 +109,22 @@ XRRenderingStratagyForward::XRRenderingStratagyForward()
 void XRRenderingStratagyForward::Initialize()
 {
   // TODO) separate
-  GLuint glProgram;         GL_CALL(glProgram = glCreateProgram());
+  GL_CALL(_glProgram = glCreateProgram());
 
-  GLuint glVertexShader;    GL_CALL(glVertexShader = glCreateShader(GL_VERTEX_SHADER));
-  GLuint glFragmentShader;  GL_CALL(glFragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
+  GL_CALL(_glVertexShader = glCreateShader(GL_VERTEX_SHADER));
+  GL_CALL(_glFragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
 
   const char* vertexShaders[]{ "SimpleVertex.glsl" };
-  CompileShader(glVertexShader, std::size(vertexShaders), vertexShaders);
+  CompileShader(_glVertexShader, std::size(vertexShaders), vertexShaders);
 
   const char* fragmentShaders[]{ "SimpleFragment.glsl" };
-  CompileShader(glFragmentShader, std::size(fragmentShaders), fragmentShaders);
+  CompileShader(_glFragmentShader, std::size(fragmentShaders), fragmentShaders);
 
-  GL_CALL(glAttachShader(glProgram, glVertexShader));
-  GL_CALL(glAttachShader(glProgram, glFragmentShader));
-
-  GL_CALL(glLinkProgram(glProgram));
+  GLuint shaders[] = {
+    _glVertexShader,
+    _glFragmentShader
+  };
+  BuildProgram(_glProgram, shaders, std::size(shaders));
 }
 
 void XRRenderingStratagyForward::Render()
@@ -83,7 +133,10 @@ void XRRenderingStratagyForward::Render()
 
   glClear(GL_COLOR_BUFFER_BIT);
 
+  glUseProgram(_glProgram);
 
+  glGetUniformLocation(_glProgram, "");
+  
 
   //GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 }

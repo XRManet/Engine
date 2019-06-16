@@ -19,7 +19,7 @@
 #include <assert.h>
 
 #ifdef XRRENDERENGINEGL_EXPORTS
-#define XRRenderExport __declspec(dllexport)
+#define XRRenderExport extern "C" __declspec(dllexport)
 #endif
 
 #ifndef XRFRAMEWORKBASE_EXPORTS

@@ -77,6 +77,14 @@ public:
 
 class XRRenderingStratagyForward : public XRRenderingStratagy
 {
+  // Todo) 일단 렌더링 되는지 테스트해보려고 여기다 선언해서 그냥 써봄.
+  // 아래 멤버변수들은 그래픽스 파이프라인에서나 선언해다 쓰고
+  // 나중엔 Rendering stratagy와 pipeline 간의 관계를 정립한 뒤,
+  // 렌더링으로 연결될 수 있게 변경할 것.
+  GLuint _glProgram;
+  GLuint _glVertexShader;
+  GLuint _glFragmentShader;
+
 public:
   XRRenderingStratagyForward();
 

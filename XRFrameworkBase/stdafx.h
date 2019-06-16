@@ -20,7 +20,7 @@
 #define XRBaseHidden
 
 #ifndef XRRENDERENGINEGL_EXPORTS
-#define XRRenderExport __declspec(dllimport)
+#define XRRenderExport extern "C" __declspec(dllimport)
 #endif
 
 #else
@@ -37,5 +37,6 @@
 #include <map>
 #include <unordered_map>
 #include <memory>
+#include <assert.h>
 
 int const PAGE_SIZE = 4'096;
