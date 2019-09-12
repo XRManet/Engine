@@ -101,18 +101,51 @@ namespace
   }
 }
 
-void GLAPIENTRY
-MessageCallback(GLenum source,
-  GLenum type,
-  GLuint id,
-  GLenum severity,
-  GLsizei length,
-  const GLchar* message,
-  const void* userParam)
+const char* GetGlMeaningDebugType(GLenum debugType)
 {
-  fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-    (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-    type, severity, message);
+#if defined(GL_KHR_debug)
+	switch (debugType)
+	{
+	case GL_DEBUG_TYPE_ERROR:				return "Error";
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:	return "Deprecated behavior";
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:	return "Undefined behavior";
+	case GL_DEBUG_TYPE_PORTABILITY:			return "Portability";
+	case GL_DEBUG_TYPE_PERFORMANCE:			return "Performance";
+	case GL_DEBUG_TYPE_OTHER:				return "Other";
+	case GL_DEBUG_TYPE_MARKER:				return "Marker";
+	case GL_DEBUG_TYPE_PUSH_GROUP:			return "Push group";
+	case GL_DEBUG_TYPE_POP_GROUP:			return "Pop group";
+	}
+#endif
+	return "<ERROR>";
+}
+
+const char* GetGlMeaningSeverity(GLenum severity)
+{
+#if defined(GL_KHR_debug)
+	switch (severity)
+	{
+	case GL_DEBUG_SEVERITY_NOTIFICATION:	return "NOTIFICATION";
+	case GL_DEBUG_SEVERITY_HIGH:			return "HIGH";
+	case GL_DEBUG_SEVERITY_MEDIUM:			return "MEDIUM";
+	case GL_DEBUG_SEVERITY_LOW:				return "LOW";
+	}
+#endif
+	return "<ERROR>";
+}
+
+void GLAPIENTRY MessageCallback(
+	GLenum source,
+	GLenum type,
+	GLuint id,
+	GLenum severity,
+	GLsizei length,
+	const GLchar* message,
+	const void* userParam)
+{
+	fprintf(stderr, "GL CALLBACK: %s type = %s, severity = %s, message = %s\n",
+		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+		GetGlMeaningDebugType(type), GetGlMeaningSeverity(severity), message);
 }
 
 XRRenderingStratagyForward::XRRenderingStratagyForward()
@@ -185,6 +218,8 @@ void XRRenderingStratagyForward::Initialize()
   glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, &MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
   printf("Max compute texture image units: %d\n", MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
 
+  printf("=============================================\n\n");
+
   glGenBuffers(UNIFORM_BUFFER_NAME::Count, _uniformBuffers);
 }
 
@@ -207,28 +242,31 @@ void XRRenderingStratagyForward::Render()
   GLint numGlobalMaxUniformBlockVariables = 0;
   GLint numUniformBlocks = 0;
   std::vector<GLint> uniformBlockCount;
-  glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &numUniformBlocks);
+  GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &numUniformBlocks));
   printf("Number of uniform block resources: %d\n", numUniformBlocks);
-  glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_MAX_NUM_ACTIVE_VARIABLES, &numGlobalMaxUniformBlockVariables);
+  GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_MAX_NUM_ACTIVE_VARIABLES, &numGlobalMaxUniformBlockVariables));
   printf("Max number of uniform block variables: %d\n", numGlobalMaxUniformBlockVariables);
   GLint numActiveUniform = 0;
-  glGetProgramInterfaceiv(_glProgram, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniform);
+  GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniform));
   printf("Number of uniform resources:  %d\n", numActiveUniform);
+
+  GLenum props[3] = {
+    GL_NUM_ACTIVE_VARIABLES, GL_ACTIVE_VARIABLES
+  };
+  GLsizei length;
+  GLint resultParams[64] = { -1, -1 };
   for (GLint i = 0; i < numUniformBlocks; ++i)
   {
     const GLsizei bufSize = 256;
 
     GLchar blockName[bufSize];
-    glGetProgramResourceName(_glProgram, GL_UNIFORM_BLOCK, i, bufSize, nullptr, blockName);
+    GL_CALL(glGetProgramResourceName(_glProgram, GL_UNIFORM_BLOCK, i, bufSize, nullptr, blockName));
     printf("Uniform Block Name: %s, (%d/%d)\n", blockName, i, numUniformBlocks);
 
-    
-    GLenum props[2] = {
-      GL_NUM_ACTIVE_VARIABLES, GL_ACTIVE_VARIABLES
-    };
-    GLsizei length[2] = { 0, 0 };
-    GLint resultParams[2] = { -1, -1 };
-    glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, bufSize, length, resultParams);
+    glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 1, props, 1, &length, resultParams);
+
+    glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, 64, &length, resultParams);
+    glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, bufSize, &length, resultParams);
 
     GLchar uniformName[bufSize];
     GLint numActiveVariables = resultParams[0];
@@ -236,7 +274,7 @@ void XRRenderingStratagyForward::Render()
     printf("Uniform NumActiveVariables: %d\n", numActiveVariables);
     for (GLint activeVariableIndex = resultParams[1]; activeVariableIndex < countGlobalMaxUniformBlockVariables; ++activeVariableIndex)
     {
-      glGetActiveUniformName(_glProgram, activeVariableIndex, bufSize, nullptr, uniformName);
+      GL_CALL(glGetActiveUniformName(_glProgram, activeVariableIndex, bufSize, nullptr, uniformName));
       printf("\tUniform [%d] Name: %s\n", activeVariableIndex, uniformName);
     }
   }
@@ -250,7 +288,7 @@ void XRRenderingStratagyForward::Render()
 
   //glGetProgramResourceIndex(_glProgram, );
   //glGetProgramResourceiv(_glProgram, GL_UNIFORM, );
-  uniformIndexTransform = glGetUniformBlockIndex(_glProgram, "MatrixBlock");
+  GL_CALL(uniformIndexTransform = glGetUniformBlockIndex(_glProgram, "MatrixBlock"));
   assert(uniformIndexTransform == glGetProgramResourceIndex(_glProgram, GL_UNIFORM_BLOCK, "MatrixBlock"));
 
   GLint uniformTransformNum = 0;
@@ -281,6 +319,8 @@ void XRRenderingStratagyForward::Render()
   //glUniformBufferEXT(_glProgram, uniformLight, );
 
   //GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
+
+  printf("\n");
 }
 
 XRFrameWalker::XRFrameWalker()

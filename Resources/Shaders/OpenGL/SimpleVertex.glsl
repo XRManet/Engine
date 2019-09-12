@@ -15,10 +15,12 @@ struct Light {
 	vec4 position;
 	vec3 intensity;
 	float attenuation;
+	vec3 test2;
 	float test;
 };
 
 layout (shared) uniform LightBlock
+//layout (std140) uniform LightBlock
 {
 	Light light;
 };
@@ -37,15 +39,4 @@ void main()
 	gl_Position = viewProj * position;
 
 	frag_normal = mat3(view) * normal + test.xyz;
-
-	
-//	vec3 normal;
-//	if(light.position.w == 0)
-//	{
-//		normal = -light.position.xyz;
-//	}
-//	else
-//	{
-//		normal = light.position.xyz;
-//	}
 }
