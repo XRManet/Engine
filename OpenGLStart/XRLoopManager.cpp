@@ -148,14 +148,14 @@ void GLAPIENTRY MessageCallback(
 		GetGlMeaningDebugType(type), GetGlMeaningSeverity(severity), message);
 }
 
-XRRenderingStratagyForward::XRRenderingStratagyForward()
+XRRenderingStratagyTest::XRRenderingStratagyTest()
 {
   // TODO) Initialize()의 내용을 glew 초기화 특정되는 순간 할 수 있는게 좋음.
   // 1. Observer를 둬서 라이브러리 준비가 끝나면 Initialize()가 호출되도록,
   // 2. 아니면 람다를 등록해서 라이브러리 준비가 끝나면 그 즉시 호출되도록
 }
 
-XRRenderingStratagyForward::~XRRenderingStratagyForward()
+XRRenderingStratagyTest::~XRRenderingStratagyTest()
 {
 }
 
@@ -173,7 +173,7 @@ GLuint UNIFORM_BINDING[] = {
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 };
 
-void XRRenderingStratagyForward::Initialize()
+void XRRenderingStratagyTest::Initialize()
 {
   glEnable(GL_DEBUG_OUTPUT);
   glDebugMessageCallback(MessageCallback, 0);
@@ -223,7 +223,15 @@ void XRRenderingStratagyForward::Initialize()
   glGenBuffers(UNIFORM_BUFFER_NAME::Count, _uniformBuffers);
 }
 
-void XRRenderingStratagyForward::Render()
+void XRRenderingStratagyTest::Update(XRScene* scene)
+{
+	//glm::mat4 viewing = scene->_cameras[0].GetInvTransform();
+	//glm::mat4 projection = scene->_cameras[0].GetProjectionTransform();
+
+	//glm::mat4 transform_vp = projection * viewing;
+}
+
+void XRRenderingStratagyTest::Render()
 {
   glClearColor(1, 1, 1, 1);
 
@@ -326,7 +334,7 @@ void XRRenderingStratagyForward::Render()
 XRFrameWalker::XRFrameWalker()
 {
   // TODO) select a stratagy by reading from manifest.
-  _rendering_stratagy.reset(new XRRenderingStratagyForward);
+  _rendering_stratagy.reset(new XRRenderingStratagyTest);
 }
 
 void XRFrameWalker::UpdateFrame()

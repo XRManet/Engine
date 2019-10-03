@@ -63,19 +63,21 @@ public:
   }
 };
 
+class XRScene;
 class XRRenderingStratagy
 {
 public:
-  virtual ~XRRenderingStratagy() {}
+	virtual ~XRRenderingStratagy() {}
 
 public:
-  virtual void Initialize() {}
+	virtual void Initialize() {}
 
 public:
-  virtual void Render() {}
+	virtual void Update(XRScene* scene) {}
+	virtual void Render() {}
 };
 
-class XRRenderingStratagyForward : public XRRenderingStratagy
+class XRRenderingStratagyTest : public XRRenderingStratagy
 {
   // Todo) 일단 렌더링 되는지 테스트해보려고 여기다 선언해서 그냥 써봄.
   // 아래 멤버변수들은 그래픽스 파이프라인에서나 선언해다 쓰고
@@ -110,11 +112,13 @@ class XRRenderingStratagyForward : public XRRenderingStratagy
   };
 
 public:
-  XRRenderingStratagyForward();
-  ~XRRenderingStratagyForward();
+  XRRenderingStratagyTest();
+  ~XRRenderingStratagyTest();
 
-  virtual void Render();
   virtual void Initialize();
+
+  virtual void Update(XRScene* scene);
+  virtual void Render();
 };
 
 #include <memory>
