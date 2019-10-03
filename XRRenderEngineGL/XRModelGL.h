@@ -24,6 +24,6 @@ private:
   } GL;
 
 public:
-  XRModelGL(XRModelData* data);
+  XRModelGL(XRModelData const* data);
   virtual ~XRModelGL();
 };

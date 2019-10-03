@@ -26,7 +26,7 @@ struct RenderEngineGLInitializer
   }
 };
 
-XRModel* xrCreateModel(XRModelData * loadable)
+XRModel* xrCreateModel(XRModelData const* loadable)
 {
   RenderEngineGLInitializer::GetInitializer();
   return new XRModelGL(loadable);

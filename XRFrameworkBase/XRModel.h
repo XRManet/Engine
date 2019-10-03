@@ -20,7 +20,7 @@ class XRBaseExport XRModel
 {
 protected:
   union {
-    XRModelData * _data;
+    XRModelData const* _data;
     // Todo) Other types of data for its own rendering engine would be given.
     // To support them, the XRModel has to bind data dynamically.
     // The XRModel introduces common interfaces of model data to a XRObject.
@@ -28,12 +28,12 @@ protected:
   XRInputLayout* _inputLayout;
 
 public:
-  XRModel(XRModelData* data);
+  XRModel(XRModelData const* data);
   virtual ~XRModel();
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRModel* xrCreateModel(XRModelData * loadable);
+XRRenderExport XRModel* xrCreateModel(XRModelData const* loadable);
 #else
-extern XRModel* (*xrCreateModel)(XRModelData* loadable);
+extern XRModel* (*xrCreateModel)(XRModelData const* loadable);
 #endif

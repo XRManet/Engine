@@ -31,7 +31,7 @@ XRInputLayoutGL::~XRInputLayoutGL()
 
 }
 
-XRModelGL::XRModelGL(XRModelData* data) : XRModel(data)
+XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 {
   const auto* header = _data->GetHeader();
   GL_CALL(glGenBuffers(2, GL.vbo));
