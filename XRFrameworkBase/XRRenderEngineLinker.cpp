@@ -4,9 +4,14 @@
 #include "XRModel.h"
 XRModel* (*xrCreateModel)(XRModelData* loadable) = nullptr;
 
+#ifndef XRRENDER_ENGINE
+#define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineingGL"
+#define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
+#endif
+
 static struct XRRenderEngineLinker
 {
-  XRPlatform::XRDSO _dso = nullptr;
+  XRPlatform::XRDSO* _dso;
 
   XRRenderEngineLinker()
   {
@@ -30,7 +35,7 @@ private:
   template<typename func>
   void GetProcAddress(func& outFunction, const char* name)
   {
-    outFunction = static_cast<func>(XRPlatform::GetProcAddress(_dso, name));
+    outFunction = reinterpret_cast<func>(XRPlatform::GetProcAddress(_dso, name));
     assert(outFunction != nullptr);
   }
 

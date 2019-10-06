@@ -1,0 +1,970 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E80F3662226B8AF6007414A1 /* XRType.h in Headers */ = {isa = PBXBuildFile; fileRef = E80F3661226B8AF6007414A1 /* XRType.h */; };
+		E8C1BA3C22B621B9006EDA1E /* XRPrimitiveTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */; };
+		E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */; };
+		E8C1BA3F22B621B9006EDA1E /* XRRenderEngineLinker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */; };
+		E8C1BA4622B62365006EDA1E /* XRPlatform.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA4122B62365006EDA1E /* XRPlatform.h */; };
+		E8C1BA4722B62365006EDA1E /* XRPlatformWindows.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA4222B62365006EDA1E /* XRPlatformWindows.hpp */; };
+		E8C1BA4822B62365006EDA1E /* XRPlatformOSX.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA4322B62365006EDA1E /* XRPlatformOSX.hpp */; };
+		E8C1BA4922B62365006EDA1E /* XRPlatform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA4422B62365006EDA1E /* XRPlatform.cpp */; };
+		E8C1BA6E22B63283006EDA1E /* XRLoopManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6122B63283006EDA1E /* XRLoopManager.cpp */; };
+		E8C1BA6F22B63283006EDA1E /* XRSceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6222B63283006EDA1E /* XRSceneManager.cpp */; };
+		E8C1BA7022B63283006EDA1E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6822B63283006EDA1E /* main.cpp */; };
+		E8C1BA7122B63283006EDA1E /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6922B63283006EDA1E /* stdafx.cpp */; };
+		E8C1BA7322B634BB006EDA1E /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E8C1BA7722B63658006EDA1E /* GLEW.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; };
+		E8C1BA7922B6368A006EDA1E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7822B6368A006EDA1E /* OpenGL.framework */; };
+		E8C1BA7B22B636D7006EDA1E /* libglfw.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */; };
+		E8C1BA7D22B63981006EDA1E /* GLEW.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; };
+		E8C1BA9022B63BBB006EDA1E /* XRRenderEngineGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */; };
+		E8C1BA9122B63BBB006EDA1E /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8822B63BBB006EDA1E /* stdafx.h */; };
+		E8C1BA9322B63BBB006EDA1E /* XRModelGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8C22B63BBB006EDA1E /* XRModelGL.cpp */; };
+		E8C1BA9422B63BBB006EDA1E /* targetver.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8D22B63BBB006EDA1E /* targetver.h */; };
+		E8C1BA9522B63BBB006EDA1E /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8E22B63BBB006EDA1E /* stdafx.cpp */; };
+		E8C1BA9622B63BBB006EDA1E /* XRModelGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8F22B63BBB006EDA1E /* XRModelGL.h */; };
+		E8C1BA9D22B63C88006EDA1E /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E8C1BA9E22B6429E006EDA1E /* GLEW.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; };
+		E8E59183226AF68200164749 /* XRLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59163226AF68200164749 /* XRLogging.h */; };
+		E8E59184226AF68200164749 /* XRBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E59164226AF68200164749 /* XRBody.cpp */; };
+		E8E59185226AF68200164749 /* XRResourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59165226AF68200164749 /* XRResourceManager.h */; };
+		E8E59186226AF68200164749 /* XRBodyData.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59166226AF68200164749 /* XRBodyData.h */; };
+		E8E59187226AF68200164749 /* XRObject.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59167226AF68200164749 /* XRObject.h */; };
+		E8E59188226AF68200164749 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59168226AF68200164749 /* stdafx.h */; };
+		E8E59189226AF68200164749 /* XRGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59169226AF68200164749 /* XRGeometry.h */; };
+		E8E5918A226AF68200164749 /* XRFrameworkBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5916A226AF68200164749 /* XRFrameworkBase.cpp */; };
+		E8E5918C226AF68200164749 /* XRObjectManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5916C226AF68200164749 /* XRObjectManager.cpp */; };
+		E8E5918D226AF68200164749 /* XRScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5916D226AF68200164749 /* XRScene.cpp */; };
+		E8E5918E226AF68200164749 /* XRWavefrontObject.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E5916E226AF68200164749 /* XRWavefrontObject.h */; };
+		E8E5918F226AF68200164749 /* XRBody.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E5916F226AF68200164749 /* XRBody.h */; };
+		E8E59190226AF68200164749 /* XRSavable.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59170226AF68200164749 /* XRSavable.h */; };
+		E8E59191226AF68200164749 /* XRModelData.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59171226AF68200164749 /* XRModelData.h */; };
+		E8E59192226AF68200164749 /* targetver.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59173226AF68200164749 /* targetver.h */; };
+		E8E59193226AF68200164749 /* XRResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E59174226AF68200164749 /* XRResourceManager.cpp */; };
+		E8E59194226AF68200164749 /* XRModelData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E59175226AF68200164749 /* XRModelData.cpp */; };
+		E8E59195226AF68200164749 /* XRTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59177226AF68200164749 /* XRTexture.h */; };
+		E8E59196226AF68200164749 /* XRLoadable.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59178226AF68200164749 /* XRLoadable.h */; };
+		E8E59197226AF68200164749 /* XRUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59179226AF68200164749 /* XRUtility.h */; };
+		E8E59198226AF68200164749 /* XRLoadable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5917A226AF68200164749 /* XRLoadable.cpp */; };
+		E8E59199226AF68200164749 /* XRModel.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E5917B226AF68200164749 /* XRModel.h */; };
+		E8E5919A226AF68200164749 /* XRWavefrontObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5917C226AF68200164749 /* XRWavefrontObject.cpp */; };
+		E8E5919B226AF68200164749 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5917D226AF68200164749 /* stdafx.cpp */; };
+		E8E5919C226AF68200164749 /* XRModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E5917E226AF68200164749 /* XRModel.cpp */; };
+		E8E5919D226AF68200164749 /* XRWavefrontMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E5917F226AF68200164749 /* XRWavefrontMaterial.h */; };
+		E8E5919E226AF68200164749 /* XRObjectManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59180226AF68200164749 /* XRObjectManager.h */; };
+		E8E5919F226AF68200164749 /* XRScene.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59181226AF68200164749 /* XRScene.h */; };
+		E8E591A0226AF68200164749 /* XRRigidBody.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59182226AF68200164749 /* XRRigidBody.h */; };
+		E8E67C2A234A59B40015A403 /* Resources in Copy Files */ = {isa = PBXBuildFile; fileRef = E8E67C29234A59B40015A403 /* Resources */; };
+		E8E67C2B234A5B420015A403 /* XRSceneMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E812F864226345A600C87624 /* XRSceneMain.cpp */; };
+		E8E67C2C234A5B420015A403 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E812F86A226345A600C87624 /* stdafx.cpp */; };
+		E8E67C2D234A5B620015A403 /* XRSceneMain.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F861226345A600C87624 /* XRSceneMain.h */; };
+		E8E67C2E234A5B620015A403 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F862226345A600C87624 /* stdafx.h */; };
+		E8E67C30234A5B950015A403 /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E8C1BA7422B634C9006EDA1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E812F83E2263417E00C87624 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E8E5915D226AF66300164749;
+			remoteInfo = XRFrameworkBase;
+		};
+		E8C1BA9722B63BCD006EDA1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E812F83E2263417E00C87624 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E8E5915D226AF66300164749;
+			remoteInfo = XRFrameworkBase;
+		};
+		E8C1BA9B22B63C41006EDA1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E812F83E2263417E00C87624 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E8E5915D226AF66300164749;
+			remoteInfo = XRFrameworkBase;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E8C1BA5822B6319F006EDA1E /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				E8E67C2A234A59B40015A403 /* Resources in Copy Files */,
+				E8C1BA7D22B63981006EDA1E /* GLEW.framework in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E80F3661226B8AF6007414A1 /* XRType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRType.h; sourceTree = "<group>"; };
+		E812F861226345A600C87624 /* XRSceneMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSceneMain.h; sourceTree = "<group>"; };
+		E812F862226345A600C87624 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		E812F863226345A600C87624 /* dllmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dllmain.cpp; sourceTree = "<group>"; };
+		E812F864226345A600C87624 /* XRSceneMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRSceneMain.cpp; sourceTree = "<group>"; };
+		E812F865226345A600C87624 /* XRSceneMain.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRSceneMain.vcxproj.filters; sourceTree = "<group>"; };
+		E812F866226345A600C87624 /* XRSceneMain.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRSceneMain.vcxproj; sourceTree = "<group>"; };
+		E812F867226345A600C87624 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		E812F869226345A600C87624 /* DeferredSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeferredSample.h; sourceTree = "<group>"; };
+		E812F86A226345A600C87624 /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
+		E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRPrimitiveTypes.h; sourceTree = "<group>"; };
+		E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRFrameworkBase.h; sourceTree = "<group>"; };
+		E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderEngineLinker.cpp; sourceTree = "<group>"; };
+		E8C1BA4122B62365006EDA1E /* XRPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRPlatform.h; sourceTree = "<group>"; };
+		E8C1BA4222B62365006EDA1E /* XRPlatformWindows.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = XRPlatformWindows.hpp; sourceTree = "<group>"; };
+		E8C1BA4322B62365006EDA1E /* XRPlatformOSX.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = XRPlatformOSX.hpp; sourceTree = "<group>"; };
+		E8C1BA4422B62365006EDA1E /* XRPlatform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRPlatform.cpp; sourceTree = "<group>"; };
+		E8C1BA5222B630FE006EDA1E /* libXRSceneTest.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libXRSceneTest.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8C1BA5A22B6319F006EDA1E /* XREntrypoint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XREntrypoint; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8C1BA6122B63283006EDA1E /* XRLoopManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRLoopManager.cpp; sourceTree = "<group>"; };
+		E8C1BA6222B63283006EDA1E /* XRSceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRSceneManager.cpp; sourceTree = "<group>"; };
+		E8C1BA6322B63283006EDA1E /* OpenGLStart.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OpenGLStart.vcxproj; sourceTree = "<group>"; };
+		E8C1BA6422B63283006EDA1E /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resource.h; sourceTree = "<group>"; };
+		E8C1BA6522B63283006EDA1E /* OpenGLStart.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OpenGLStart.vcxproj.filters; sourceTree = "<group>"; };
+		E8C1BA6622B63283006EDA1E /* OpenGLStart.rc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenGLStart.rc; sourceTree = "<group>"; };
+		E8C1BA6722B63283006EDA1E /* XRSceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSceneManager.h; sourceTree = "<group>"; };
+		E8C1BA6822B63283006EDA1E /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E8C1BA6922B63283006EDA1E /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
+		E8C1BA6A22B63283006EDA1E /* XRLoopManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRLoopManager.h; sourceTree = "<group>"; };
+		E8C1BA6B22B63283006EDA1E /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		E8C1BA6C22B63283006EDA1E /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		E8C1BA6D22B63283006EDA1E /* SceneKeys.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SceneKeys.json; sourceTree = "<group>"; };
+		E8C1BA7622B63658006EDA1E /* GLEW.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLEW.framework; path = "ThirdParty/OSX/glew-2.1.0/bin/Release/GLEW.framework"; sourceTree = "<group>"; };
+		E8C1BA7822B6368A006EDA1E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.dylib; path = "ThirdParty/OSX/glfw-3.2.1/bin/Release/libglfw.dylib"; sourceTree = "<group>"; };
+		E8C1BA8222B63B8A006EDA1E /* libXRRenderingEngineGL.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libXRRenderingEngineGL.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderEngineGL.cpp; sourceTree = "<group>"; };
+		E8C1BA8822B63BBB006EDA1E /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		E8C1BA8922B63BBB006EDA1E /* XRRenderEngineGL.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRRenderEngineGL.vcxproj.filters; sourceTree = "<group>"; };
+		E8C1BA8A22B63BBB006EDA1E /* dllmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dllmain.cpp; sourceTree = "<group>"; };
+		E8C1BA8B22B63BBB006EDA1E /* XRRenderEngineGL.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRRenderEngineGL.vcxproj; sourceTree = "<group>"; };
+		E8C1BA8C22B63BBB006EDA1E /* XRModelGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRModelGL.cpp; sourceTree = "<group>"; };
+		E8C1BA8D22B63BBB006EDA1E /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		E8C1BA8E22B63BBB006EDA1E /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
+		E8C1BA8F22B63BBB006EDA1E /* XRModelGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRModelGL.h; sourceTree = "<group>"; };
+		E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libXRFrameworkBase.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8E59163226AF68200164749 /* XRLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRLogging.h; sourceTree = "<group>"; };
+		E8E59164226AF68200164749 /* XRBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRBody.cpp; sourceTree = "<group>"; };
+		E8E59165226AF68200164749 /* XRResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRResourceManager.h; sourceTree = "<group>"; };
+		E8E59166226AF68200164749 /* XRBodyData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRBodyData.h; sourceTree = "<group>"; };
+		E8E59167226AF68200164749 /* XRObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRObject.h; sourceTree = "<group>"; };
+		E8E59168226AF68200164749 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		E8E59169226AF68200164749 /* XRGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRGeometry.h; sourceTree = "<group>"; };
+		E8E5916A226AF68200164749 /* XRFrameworkBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRFrameworkBase.cpp; sourceTree = "<group>"; };
+		E8E5916B226AF68200164749 /* dllmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dllmain.cpp; sourceTree = "<group>"; };
+		E8E5916C226AF68200164749 /* XRObjectManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRObjectManager.cpp; sourceTree = "<group>"; };
+		E8E5916D226AF68200164749 /* XRScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRScene.cpp; sourceTree = "<group>"; };
+		E8E5916E226AF68200164749 /* XRWavefrontObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRWavefrontObject.h; sourceTree = "<group>"; };
+		E8E5916F226AF68200164749 /* XRBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRBody.h; sourceTree = "<group>"; };
+		E8E59170226AF68200164749 /* XRSavable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSavable.h; sourceTree = "<group>"; };
+		E8E59171226AF68200164749 /* XRModelData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRModelData.h; sourceTree = "<group>"; };
+		E8E59172226AF68200164749 /* XRFrameworkBase.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRFrameworkBase.vcxproj; sourceTree = "<group>"; };
+		E8E59173226AF68200164749 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		E8E59174226AF68200164749 /* XRResourceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRResourceManager.cpp; sourceTree = "<group>"; };
+		E8E59175226AF68200164749 /* XRModelData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRModelData.cpp; sourceTree = "<group>"; };
+		E8E59176226AF68200164749 /* XRFrameworkBase.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRFrameworkBase.vcxproj.filters; sourceTree = "<group>"; };
+		E8E59177226AF68200164749 /* XRTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTexture.h; sourceTree = "<group>"; };
+		E8E59178226AF68200164749 /* XRLoadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRLoadable.h; sourceTree = "<group>"; };
+		E8E59179226AF68200164749 /* XRUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRUtility.h; sourceTree = "<group>"; };
+		E8E5917A226AF68200164749 /* XRLoadable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRLoadable.cpp; sourceTree = "<group>"; };
+		E8E5917B226AF68200164749 /* XRModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRModel.h; sourceTree = "<group>"; };
+		E8E5917C226AF68200164749 /* XRWavefrontObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRWavefrontObject.cpp; sourceTree = "<group>"; };
+		E8E5917D226AF68200164749 /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
+		E8E5917E226AF68200164749 /* XRModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRModel.cpp; sourceTree = "<group>"; };
+		E8E5917F226AF68200164749 /* XRWavefrontMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRWavefrontMaterial.h; sourceTree = "<group>"; };
+		E8E59180226AF68200164749 /* XRObjectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRObjectManager.h; sourceTree = "<group>"; };
+		E8E59181226AF68200164749 /* XRScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRScene.h; sourceTree = "<group>"; };
+		E8E59182226AF68200164749 /* XRRigidBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRigidBody.h; sourceTree = "<group>"; };
+		E8E67C29234A59B40015A403 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E8C1BA5022B630FE006EDA1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8E67C30234A5B950015A403 /* libXRFrameworkBase.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8C1BA5722B6319F006EDA1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8C1BA7922B6368A006EDA1E /* OpenGL.framework in Frameworks */,
+				E8C1BA7322B634BB006EDA1E /* libXRFrameworkBase.dylib in Frameworks */,
+				E8C1BA7B22B636D7006EDA1E /* libglfw.dylib in Frameworks */,
+				E8C1BA7722B63658006EDA1E /* GLEW.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8C1BA8022B63B8A006EDA1E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8C1BA9D22B63C88006EDA1E /* libXRFrameworkBase.dylib in Frameworks */,
+				E8C1BA9E22B6429E006EDA1E /* GLEW.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8E5915C226AF66300164749 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E812F83D2263417E00C87624 = {
+			isa = PBXGroup;
+			children = (
+				E8E67C29234A59B40015A403 /* Resources */,
+				E8C1BA8622B63BBB006EDA1E /* XRRenderEngineGL */,
+				E8E59162226AF68200164749 /* XRFrameworkBase */,
+				E812F860226345A600C87624 /* XRSceneMain */,
+				E8C1BA5B22B6319F006EDA1E /* XREntrypoint */,
+				E812F8472263417E00C87624 /* Products */,
+				E8C1BA7222B634BB006EDA1E /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E812F8472263417E00C87624 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */,
+				E8C1BA5222B630FE006EDA1E /* libXRSceneTest.dylib */,
+				E8C1BA5A22B6319F006EDA1E /* XREntrypoint */,
+				E8C1BA8222B63B8A006EDA1E /* libXRRenderingEngineGL.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E812F860226345A600C87624 /* XRSceneMain */ = {
+			isa = PBXGroup;
+			children = (
+				E812F861226345A600C87624 /* XRSceneMain.h */,
+				E812F862226345A600C87624 /* stdafx.h */,
+				E812F863226345A600C87624 /* dllmain.cpp */,
+				E812F864226345A600C87624 /* XRSceneMain.cpp */,
+				E812F865226345A600C87624 /* XRSceneMain.vcxproj.filters */,
+				E812F866226345A600C87624 /* XRSceneMain.vcxproj */,
+				E812F867226345A600C87624 /* targetver.h */,
+				E812F868226345A600C87624 /* Shader */,
+				E812F86A226345A600C87624 /* stdafx.cpp */,
+			);
+			path = XRSceneMain;
+			sourceTree = "<group>";
+		};
+		E812F868226345A600C87624 /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+				E812F869226345A600C87624 /* DeferredSample.h */,
+			);
+			path = Shader;
+			sourceTree = "<group>";
+		};
+		E8C1BA5B22B6319F006EDA1E /* XREntrypoint */ = {
+			isa = PBXGroup;
+			children = (
+				E8C1BA6822B63283006EDA1E /* main.cpp */,
+				E8C1BA6622B63283006EDA1E /* OpenGLStart.rc */,
+				E8C1BA6322B63283006EDA1E /* OpenGLStart.vcxproj */,
+				E8C1BA6522B63283006EDA1E /* OpenGLStart.vcxproj.filters */,
+				E8C1BA6422B63283006EDA1E /* resource.h */,
+				E8C1BA6D22B63283006EDA1E /* SceneKeys.json */,
+				E8C1BA6922B63283006EDA1E /* stdafx.cpp */,
+				E8C1BA6B22B63283006EDA1E /* stdafx.h */,
+				E8C1BA6C22B63283006EDA1E /* targetver.h */,
+				E8C1BA6122B63283006EDA1E /* XRLoopManager.cpp */,
+				E8C1BA6A22B63283006EDA1E /* XRLoopManager.h */,
+				E8C1BA6222B63283006EDA1E /* XRSceneManager.cpp */,
+				E8C1BA6722B63283006EDA1E /* XRSceneManager.h */,
+			);
+			path = XREntrypoint;
+			sourceTree = "<group>";
+		};
+		E8C1BA7222B634BB006EDA1E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */,
+				E8C1BA7822B6368A006EDA1E /* OpenGL.framework */,
+				E8C1BA7622B63658006EDA1E /* GLEW.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E8C1BA8622B63BBB006EDA1E /* XRRenderEngineGL */ = {
+			isa = PBXGroup;
+			children = (
+				E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */,
+				E8C1BA8822B63BBB006EDA1E /* stdafx.h */,
+				E8C1BA8922B63BBB006EDA1E /* XRRenderEngineGL.vcxproj.filters */,
+				E8C1BA8A22B63BBB006EDA1E /* dllmain.cpp */,
+				E8C1BA8B22B63BBB006EDA1E /* XRRenderEngineGL.vcxproj */,
+				E8C1BA8C22B63BBB006EDA1E /* XRModelGL.cpp */,
+				E8C1BA8D22B63BBB006EDA1E /* targetver.h */,
+				E8C1BA8E22B63BBB006EDA1E /* stdafx.cpp */,
+				E8C1BA8F22B63BBB006EDA1E /* XRModelGL.h */,
+			);
+			path = XRRenderEngineGL;
+			sourceTree = "<group>";
+		};
+		E8E59162226AF68200164749 /* XRFrameworkBase */ = {
+			isa = PBXGroup;
+			children = (
+				E8C1BA4422B62365006EDA1E /* XRPlatform.cpp */,
+				E8C1BA4122B62365006EDA1E /* XRPlatform.h */,
+				E8C1BA4322B62365006EDA1E /* XRPlatformOSX.hpp */,
+				E8C1BA4222B62365006EDA1E /* XRPlatformWindows.hpp */,
+				E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */,
+				E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */,
+				E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */,
+				E8E59163226AF68200164749 /* XRLogging.h */,
+				E8E59164226AF68200164749 /* XRBody.cpp */,
+				E8E59165226AF68200164749 /* XRResourceManager.h */,
+				E8E59166226AF68200164749 /* XRBodyData.h */,
+				E8E59167226AF68200164749 /* XRObject.h */,
+				E8E59168226AF68200164749 /* stdafx.h */,
+				E8E59169226AF68200164749 /* XRGeometry.h */,
+				E8E5916A226AF68200164749 /* XRFrameworkBase.cpp */,
+				E8E5916B226AF68200164749 /* dllmain.cpp */,
+				E8E5916C226AF68200164749 /* XRObjectManager.cpp */,
+				E8E5916D226AF68200164749 /* XRScene.cpp */,
+				E8E5916E226AF68200164749 /* XRWavefrontObject.h */,
+				E8E5916F226AF68200164749 /* XRBody.h */,
+				E8E59170226AF68200164749 /* XRSavable.h */,
+				E8E59171226AF68200164749 /* XRModelData.h */,
+				E8E59172226AF68200164749 /* XRFrameworkBase.vcxproj */,
+				E8E59173226AF68200164749 /* targetver.h */,
+				E8E59174226AF68200164749 /* XRResourceManager.cpp */,
+				E8E59175226AF68200164749 /* XRModelData.cpp */,
+				E8E59176226AF68200164749 /* XRFrameworkBase.vcxproj.filters */,
+				E8E59177226AF68200164749 /* XRTexture.h */,
+				E8E59178226AF68200164749 /* XRLoadable.h */,
+				E8E59179226AF68200164749 /* XRUtility.h */,
+				E8E5917A226AF68200164749 /* XRLoadable.cpp */,
+				E8E5917B226AF68200164749 /* XRModel.h */,
+				E8E5917C226AF68200164749 /* XRWavefrontObject.cpp */,
+				E8E5917D226AF68200164749 /* stdafx.cpp */,
+				E8E5917E226AF68200164749 /* XRModel.cpp */,
+				E8E5917F226AF68200164749 /* XRWavefrontMaterial.h */,
+				E8E59180226AF68200164749 /* XRObjectManager.h */,
+				E8E59181226AF68200164749 /* XRScene.h */,
+				E8E59182226AF68200164749 /* XRRigidBody.h */,
+				E80F3661226B8AF6007414A1 /* XRType.h */,
+			);
+			path = XRFrameworkBase;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		E8C1BA4E22B630FE006EDA1E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8E67C2D234A5B620015A403 /* XRSceneMain.h in Headers */,
+				E8E67C2E234A5B620015A403 /* stdafx.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8C1BA7E22B63B8A006EDA1E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8C1BA9122B63BBB006EDA1E /* stdafx.h in Headers */,
+				E8C1BA9622B63BBB006EDA1E /* XRModelGL.h in Headers */,
+				E8C1BA9422B63BBB006EDA1E /* targetver.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8E5915A226AF66300164749 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8C1BA3C22B621B9006EDA1E /* XRPrimitiveTypes.h in Headers */,
+				E8C1BA4622B62365006EDA1E /* XRPlatform.h in Headers */,
+				E8E5919D226AF68200164749 /* XRWavefrontMaterial.h in Headers */,
+				E8E59186226AF68200164749 /* XRBodyData.h in Headers */,
+				E8E59190226AF68200164749 /* XRSavable.h in Headers */,
+				E8C1BA4722B62365006EDA1E /* XRPlatformWindows.hpp in Headers */,
+				E8C1BA4822B62365006EDA1E /* XRPlatformOSX.hpp in Headers */,
+				E8E59187226AF68200164749 /* XRObject.h in Headers */,
+				E8E59188226AF68200164749 /* stdafx.h in Headers */,
+				E8E59196226AF68200164749 /* XRLoadable.h in Headers */,
+				E8E59195226AF68200164749 /* XRTexture.h in Headers */,
+				E8E5919F226AF68200164749 /* XRScene.h in Headers */,
+				E8E59191226AF68200164749 /* XRModelData.h in Headers */,
+				E8E59199226AF68200164749 /* XRModel.h in Headers */,
+				E8E59197226AF68200164749 /* XRUtility.h in Headers */,
+				E8E59185226AF68200164749 /* XRResourceManager.h in Headers */,
+				E8E5918E226AF68200164749 /* XRWavefrontObject.h in Headers */,
+				E8E59192226AF68200164749 /* targetver.h in Headers */,
+				E8E59189226AF68200164749 /* XRGeometry.h in Headers */,
+				E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */,
+				E8E5918F226AF68200164749 /* XRBody.h in Headers */,
+				E8E591A0226AF68200164749 /* XRRigidBody.h in Headers */,
+				E8E5919E226AF68200164749 /* XRObjectManager.h in Headers */,
+				E8E59183226AF68200164749 /* XRLogging.h in Headers */,
+				E80F3662226B8AF6007414A1 /* XRType.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		E8C1BA5122B630FE006EDA1E /* XRSceneTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8C1BA5322B630FE006EDA1E /* Build configuration list for PBXNativeTarget "XRSceneTest" */;
+			buildPhases = (
+				E8C1BA4E22B630FE006EDA1E /* Headers */,
+				E8C1BA4F22B630FE006EDA1E /* Sources */,
+				E8C1BA5022B630FE006EDA1E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E8C1BA9822B63BCD006EDA1E /* PBXTargetDependency */,
+			);
+			name = XRSceneTest;
+			productName = XRSceneTest;
+			productReference = E8C1BA5222B630FE006EDA1E /* libXRSceneTest.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E8C1BA5922B6319F006EDA1E /* XREntrypoint */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8C1BA5E22B6319F006EDA1E /* Build configuration list for PBXNativeTarget "XREntrypoint" */;
+			buildPhases = (
+				E8C1BA5622B6319F006EDA1E /* Sources */,
+				E8C1BA5722B6319F006EDA1E /* Frameworks */,
+				E8C1BA5822B6319F006EDA1E /* Copy Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E8C1BA7522B634C9006EDA1E /* PBXTargetDependency */,
+			);
+			name = XREntrypoint;
+			productName = XREntrypoint;
+			productReference = E8C1BA5A22B6319F006EDA1E /* XREntrypoint */;
+			productType = "com.apple.product-type.tool";
+		};
+		E8C1BA8122B63B8A006EDA1E /* XRRenderingEngineGL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8C1BA8322B63B8A006EDA1E /* Build configuration list for PBXNativeTarget "XRRenderingEngineGL" */;
+			buildPhases = (
+				E8C1BA7E22B63B8A006EDA1E /* Headers */,
+				E8C1BA7F22B63B8A006EDA1E /* Sources */,
+				E8C1BA8022B63B8A006EDA1E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E8C1BA9C22B63C41006EDA1E /* PBXTargetDependency */,
+			);
+			name = XRRenderingEngineGL;
+			productName = XRRenderingEngineGL;
+			productReference = E8C1BA8222B63B8A006EDA1E /* libXRRenderingEngineGL.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E8E5915D226AF66300164749 /* XRFrameworkBase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8E5915F226AF66300164749 /* Build configuration list for PBXNativeTarget "XRFrameworkBase" */;
+			buildPhases = (
+				E8E5915A226AF66300164749 /* Headers */,
+				E8E5915B226AF66300164749 /* Sources */,
+				E8E5915C226AF66300164749 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XRFrameworkBase;
+			productName = XRFrameworkBase;
+			productReference = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E812F83E2263417E00C87624 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = XRManet;
+				TargetAttributes = {
+					E8C1BA5122B630FE006EDA1E = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					E8C1BA5922B6319F006EDA1E = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					E8C1BA8122B63B8A006EDA1E = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					E8E5915D226AF66300164749 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = E812F8412263417E00C87624 /* Build configuration list for PBXProject "Engine" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E812F83D2263417E00C87624;
+			productRefGroup = E812F8472263417E00C87624 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E8E5915D226AF66300164749 /* XRFrameworkBase */,
+				E8C1BA8122B63B8A006EDA1E /* XRRenderingEngineGL */,
+				E8C1BA5122B630FE006EDA1E /* XRSceneTest */,
+				E8C1BA5922B6319F006EDA1E /* XREntrypoint */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E8C1BA4F22B630FE006EDA1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8E67C2B234A5B420015A403 /* XRSceneMain.cpp in Sources */,
+				E8E67C2C234A5B420015A403 /* stdafx.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8C1BA5622B6319F006EDA1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8C1BA6F22B63283006EDA1E /* XRSceneManager.cpp in Sources */,
+				E8C1BA7122B63283006EDA1E /* stdafx.cpp in Sources */,
+				E8C1BA6E22B63283006EDA1E /* XRLoopManager.cpp in Sources */,
+				E8C1BA7022B63283006EDA1E /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8C1BA7F22B63B8A006EDA1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8C1BA9022B63BBB006EDA1E /* XRRenderEngineGL.cpp in Sources */,
+				E8C1BA9522B63BBB006EDA1E /* stdafx.cpp in Sources */,
+				E8C1BA9322B63BBB006EDA1E /* XRModelGL.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8E5915B226AF66300164749 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8E5918C226AF68200164749 /* XRObjectManager.cpp in Sources */,
+				E8E59194226AF68200164749 /* XRModelData.cpp in Sources */,
+				E8E59184226AF68200164749 /* XRBody.cpp in Sources */,
+				E8E5919A226AF68200164749 /* XRWavefrontObject.cpp in Sources */,
+				E8E5918D226AF68200164749 /* XRScene.cpp in Sources */,
+				E8E59193226AF68200164749 /* XRResourceManager.cpp in Sources */,
+				E8E59198226AF68200164749 /* XRLoadable.cpp in Sources */,
+				E8E5918A226AF68200164749 /* XRFrameworkBase.cpp in Sources */,
+				E8E5919C226AF68200164749 /* XRModel.cpp in Sources */,
+				E8E5919B226AF68200164749 /* stdafx.cpp in Sources */,
+				E8C1BA3F22B621B9006EDA1E /* XRRenderEngineLinker.cpp in Sources */,
+				E8C1BA4922B62365006EDA1E /* XRPlatform.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E8C1BA7522B634C9006EDA1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E8E5915D226AF66300164749 /* XRFrameworkBase */;
+			targetProxy = E8C1BA7422B634C9006EDA1E /* PBXContainerItemProxy */;
+		};
+		E8C1BA9822B63BCD006EDA1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E8E5915D226AF66300164749 /* XRFrameworkBase */;
+			targetProxy = E8C1BA9722B63BCD006EDA1E /* PBXContainerItemProxy */;
+		};
+		E8C1BA9C22B63C41006EDA1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E8E5915D226AF66300164749 /* XRFrameworkBase */;
+			targetProxy = E8C1BA9B22B63C41006EDA1E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E812F84E2263417E00C87624 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$PROJECT_DIR/ThirdParty/Common/glfw-3.2.1/include",
+					"$PROJECT_DIR/ThirdParty/Common/glew-2.1.0/include",
+					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
+					$PROJECT_DIR/ThirdParty/Common/glm,
+					$PROJECT_DIR,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E8C1BA4A22B6300A006EDA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$PROJECT_DIR/ThirdParty/Common/glfw-3.2.1/include",
+					"$PROJECT_DIR/ThirdParty/Common/glew-2.1.0/include",
+					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
+					$PROJECT_DIR/ThirdParty/Common/glm,
+					$PROJECT_DIR,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E8C1BA4D22B6300A006EDA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					XRFRAMEWORKBASE_EXPORTS,
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$PROJECT_DIR/ThirdParty/Common/glfw-3.2.1/include",
+					"$PROJECT_DIR/ThirdParty/Common/glew-2.1.0/include",
+					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
+					$PROJECT_DIR/ThirdParty/Common/glm,
+					$PROJECT_DIR,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E8C1BA5422B630FE006EDA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		E8C1BA5522B630FE006EDA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_TESTABILITY = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E8C1BA5F22B6319F006EDA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
+				);
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		E8C1BA6022B6319F006EDA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E8C1BA8422B63B8A006EDA1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = XRRENDERENGINEGL_EXPORTS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		E8C1BA8522B63B8A006EDA1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_TESTABILITY = YES;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					XRRENDERENGINEGL_EXPORTS,
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E8E59161226AF66300164749 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = XRFRAMEWORKBASE_EXPORTS;
+				HEADER_SEARCH_PATHS = (
+					"$PROJECT_DIR/ThirdParty/Common/glfw-3.2.1/include",
+					"$PROJECT_DIR/ThirdParty/Common/glew-2.1.0/include",
+					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
+					$PROJECT_DIR/ThirdParty/Common/glm,
+					$PROJECT_DIR,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E812F8412263417E00C87624 /* Build configuration list for PBXProject "Engine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E812F84E2263417E00C87624 /* Release */,
+				E8C1BA4A22B6300A006EDA1E /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8C1BA5322B630FE006EDA1E /* Build configuration list for PBXNativeTarget "XRSceneTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8C1BA5422B630FE006EDA1E /* Release */,
+				E8C1BA5522B630FE006EDA1E /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8C1BA5E22B6319F006EDA1E /* Build configuration list for PBXNativeTarget "XREntrypoint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8C1BA5F22B6319F006EDA1E /* Release */,
+				E8C1BA6022B6319F006EDA1E /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8C1BA8322B63B8A006EDA1E /* Build configuration list for PBXNativeTarget "XRRenderingEngineGL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8C1BA8422B63B8A006EDA1E /* Release */,
+				E8C1BA8522B63B8A006EDA1E /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8E5915F226AF66300164749 /* Build configuration list for PBXNativeTarget "XRFrameworkBase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8E59161226AF66300164749 /* Release */,
+				E8C1BA4D22B6300A006EDA1E /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E812F83E2263417E00C87624 /* Project object */;
+}

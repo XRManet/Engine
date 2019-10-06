@@ -80,7 +80,12 @@ bool XRWavefrontObject::LoadDataFromFile()
         "%d %d %d %d",
         unit.i + 0, unit.i + 1, unit.i + 2, unit.i + 3);
 
-      header->index_count += available_count;
+      header->index_count++;
+      if(header->primitive_type != 0) {
+        assert(header->primitive_type == available_count);
+      } else {
+        header->primitive_type = available_count;
+      }
 
       size_t index_buffer_size = available_count * sizeof(int);
       if (size + index_buffer_size > _memory.capacity()) {

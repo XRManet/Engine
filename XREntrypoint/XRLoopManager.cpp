@@ -6,7 +6,7 @@
 
 namespace
 {
-#define DEFAULT_RESOURCE_PATH "../Resources/Shaders/OpenGL/"
+#define DEFAULT_RESOURCE_PATH "Resources/Shaders/OpenGL/"
   constexpr size_t RESOURCE_PATH_END = sizeof(DEFAULT_RESOURCE_PATH) - 1;
 
   void CompileShader(GLuint shader, GLsizei fileCount, const char** filename)
@@ -34,7 +34,7 @@ namespace
         fread(buffer, sizeof(char), size, fp);
         
         shaderSources[i] = buffer;
-        sizes[i] = size;
+        sizes[i] = static_cast<int>(size);
       }
       
       fclose(fp);

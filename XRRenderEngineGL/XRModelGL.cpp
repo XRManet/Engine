@@ -34,6 +34,7 @@ XRInputLayoutGL::~XRInputLayoutGL()
 XRModelGL::XRModelGL(XRModelData* data) : XRModel(data)
 {
   const auto* header = _data->GetHeader();
+  const GLubyte* address = _data->GetData();
   GL_CALL(glGenBuffers(2, GL.vbo));
 
   {
@@ -45,20 +46,20 @@ XRModelGL::XRModelGL(XRModelData* data) : XRModel(data)
     assert(header->vertex_count > 0);
     GLuint offset = 0;
     GLuint size = sizeof(XRModelData::VertexPosition) * header->vertex_count;
-    GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->vertex_offset));
+    GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->vertex_offset));
 
     if (header->normal_offset > 0)
     {
       offset = size;
       size += sizeof(XRModelData::VertexNormal) * header->vertex_count;
-      GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->normal_offset));
+      GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->normal_offset));
     }
 
     if (header->texture_offset > 0)
     {
       offset = size;
       size += sizeof(XRModelData::TextureCoordinate) * header->vertex_count;
-      GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header + header->texture_offset));
+      GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->texture_offset));
     }
   }
 
@@ -67,7 +68,7 @@ XRModelGL::XRModelGL(XRModelData* data) : XRModel(data)
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index));
 
     GLuint size = sizeof(XRModelData::FaceIndexTriangle) * header->index_count;
-    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, header + header->index_offset, GL_STATIC_DRAW));
+    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, address + header->index_offset, GL_STATIC_DRAW));
   }
   
   GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));

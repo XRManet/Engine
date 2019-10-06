@@ -4,12 +4,15 @@
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
 
-char const* XRSceneManager::MANIFEST_NAME = "SceneKeys.json";
+char const* XRSceneManager::MANIFEST_NAME = "Resources/SceneKeys.json";
 
 XRSceneManager::XRSceneManager()
 {
   FILE * fp_manifest = fopen(XRSceneManager::MANIFEST_NAME, "rb");
-  int const len_manifest = (fseek(fp_manifest, 0, SEEK_END), ftell(fp_manifest));
+  if(fp_manifest == nullptr)
+      throw;
+    
+  int const len_manifest = (static_cast<void>(fseek(fp_manifest, 0, SEEK_END)), static_cast<int>(ftell(fp_manifest)));
   rewind(fp_manifest);
   
   char * read_stream_buffer = new char[len_manifest];

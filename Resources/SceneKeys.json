@@ -3,7 +3,7 @@
   "scenes": [
     {
       "key": "main",
-      "dso_name": "XRSceneMain.dll",
+      "dso_name": "XRSceneTest",
       "CreateScene": "CreateSceneMain"
     }
   ]

@@ -21,22 +21,41 @@ class XRRenderingInfra<GLFW>
 public:
   XRRenderingInfra(XRSize const& size)
   {
-    if (glfwInit() != 0) {
-      // Todo: Retrieve proper version for OpenGL.
-      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    }
-    else throw;
-
-
-    _window = glfwCreateWindow(size._width, size._height,
-      "Hello world!", NULL, NULL);
-
-    if (_window != nullptr) {
-      glfwMakeContextCurrent(_window);
-    }
-
-    else throw;
+      static const GLuint versions[][2] = {
+          {4, 6}, {4, 5}, {4, 3}, {4, 0}, {3, 3}, {3, 0}, {2, 1}, {2, 0}, {1, 1}, {1, 0}
+      };
+      GLuint version_try = 0;
+      
+      if (glfwInit() == 0)
+          throw;
+      
+      while(1)
+      {
+          static const GLuint max_try = static_cast<GLuint>(sizeof(versions) / sizeof(versions[0]));
+          if(version_try < max_try)
+          {
+              glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, versions[version_try][0]);
+              glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, versions[version_try][1]);
+          }
+          else
+          {
+              glfwDefaultWindowHints();
+          }
+          
+          _window = glfwCreateWindow(size._width, size._height,
+                                     "Hello world!", NULL, NULL);
+          
+          if (_window != nullptr)
+          {
+              printf("Open GL version is %d.%d\n", versions[version_try][0], versions[version_try][1]);
+              glfwMakeContextCurrent(_window);
+              break;
+          }
+          else
+          {
+              ++version_try;
+          }
+      }
   }
 
   ~XRRenderingInfra()

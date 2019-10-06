@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdafx.h"
+#include <stdafx.h>
 
 // TODO) File Manager
 class XRLoadable
@@ -26,5 +26,5 @@ public:
   virtual bool LoadDataFromFile() { return false; }
 
 public:
-
+  const uint8_t* GetData() const { return _memory.data(); }
 };

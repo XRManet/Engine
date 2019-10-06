@@ -22,7 +22,14 @@ namespace XRPlatform
         
         XRDSOImpl(const char* dso_name)
         {
-            _handle = dlopen(dso_name, RTLD_LOCAL);
+            char open_name[256] = {0, };
+            sprintf(open_name, "lib%s.dylib", dso_name);
+            _handle = dlopen(open_name, RTLD_LOCAL);
+            if(_handle == nullptr)
+            {
+                const char* fallback_name = "libXRRenderingEngineGL.dylib";
+                _handle = dlopen(fallback_name, RTLD_LOCAL);
+            }
         }
         virtual ~XRDSOImpl()
         {
@@ -33,6 +40,11 @@ namespace XRPlatform
         void* GetProcAddress(const char* proc)
         {
             return dlsym(_handle, proc);
+        }
+        
+        void ListDllFunctions(std::vector<std::string>& listOfFunctionNames)
+        {
+            listOfFunctionNames.push_back("xrCreateModel");
         }
     };
 }

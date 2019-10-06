@@ -8,7 +8,7 @@
 class XRModel;
 class XRBody;
 
-static const int64_t    NO_ID = static_cast<__int64>(-1);
+static const int64_t    NO_ID = static_cast<int64_t>(-1);
 
 class XRBaseExport XRObject
 {
