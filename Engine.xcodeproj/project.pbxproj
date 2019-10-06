@@ -27,7 +27,6 @@
 		E8C1BA9022B63BBB006EDA1E /* XRRenderEngineGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */; };
 		E8C1BA9122B63BBB006EDA1E /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8822B63BBB006EDA1E /* stdafx.h */; };
 		E8C1BA9322B63BBB006EDA1E /* XRModelGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8C22B63BBB006EDA1E /* XRModelGL.cpp */; };
-		E8C1BA9422B63BBB006EDA1E /* targetver.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8D22B63BBB006EDA1E /* targetver.h */; };
 		E8C1BA9522B63BBB006EDA1E /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8E22B63BBB006EDA1E /* stdafx.cpp */; };
 		E8C1BA9622B63BBB006EDA1E /* XRModelGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8F22B63BBB006EDA1E /* XRModelGL.h */; };
 		E8C1BA9D22B63C88006EDA1E /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
@@ -67,6 +66,15 @@
 		E8E67C2D234A5B620015A403 /* XRSceneMain.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F861226345A600C87624 /* XRSceneMain.h */; };
 		E8E67C2E234A5B620015A403 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F862226345A600C87624 /* stdafx.h */; };
 		E8E67C30234A5B950015A403 /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E8E67C37234A7AAE0015A403 /* XRTextureData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C31234A7AAD0015A403 /* XRTextureData.cpp */; };
+		E8E67C38234A7AAE0015A403 /* XRTextureData.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E67C32234A7AAD0015A403 /* XRTextureData.h */; };
+		E8E67C39234A7AAE0015A403 /* XRBmp.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E67C33234A7AAD0015A403 /* XRBmp.h */; };
+		E8E67C3A234A7AAE0015A403 /* XRDXTC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C34234A7AAD0015A403 /* XRDXTC.cpp */; };
+		E8E67C3B234A7AAE0015A403 /* XRBmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C35234A7AAD0015A403 /* XRBmp.cpp */; };
+		E8E67C3C234A7AAE0015A403 /* XRDXTC.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E67C36234A7AAD0015A403 /* XRDXTC.h */; };
+		E8E67C3F234A7DB10015A403 /* XRTextureGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E67C3D234A7DB10015A403 /* XRTextureGL.h */; };
+		E8E67C40234A7DB10015A403 /* XRTextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */; };
+		E8E67C43234A80860015A403 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7822B6368A006EDA1E /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -188,6 +196,15 @@
 		E8E59181226AF68200164749 /* XRScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRScene.h; sourceTree = "<group>"; };
 		E8E59182226AF68200164749 /* XRRigidBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRigidBody.h; sourceTree = "<group>"; };
 		E8E67C29234A59B40015A403 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
+		E8E67C31234A7AAD0015A403 /* XRTextureData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTextureData.cpp; sourceTree = "<group>"; };
+		E8E67C32234A7AAD0015A403 /* XRTextureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTextureData.h; sourceTree = "<group>"; };
+		E8E67C33234A7AAD0015A403 /* XRBmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRBmp.h; sourceTree = "<group>"; };
+		E8E67C34234A7AAD0015A403 /* XRDXTC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRDXTC.cpp; sourceTree = "<group>"; };
+		E8E67C35234A7AAD0015A403 /* XRBmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRBmp.cpp; sourceTree = "<group>"; };
+		E8E67C36234A7AAD0015A403 /* XRDXTC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRDXTC.h; sourceTree = "<group>"; };
+		E8E67C3D234A7DB10015A403 /* XRTextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTextureGL.h; sourceTree = "<group>"; };
+		E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTextureGL.cpp; sourceTree = "<group>"; };
+		E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = "ThirdParty/OSX/glfw-3.2.1/bin/Release/libglfw.3.2.dylib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +231,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8E67C43234A80860015A403 /* OpenGL.framework in Frameworks */,
 				E8C1BA9D22B63C88006EDA1E /* libXRFrameworkBase.dylib in Frameworks */,
 				E8C1BA9E22B6429E006EDA1E /* GLEW.framework in Frameworks */,
 			);
@@ -300,6 +318,7 @@
 		E8C1BA7222B634BB006EDA1E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */,
 				E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */,
 				E8C1BA7822B6368A006EDA1E /* OpenGL.framework */,
 				E8C1BA7622B63658006EDA1E /* GLEW.framework */,
@@ -310,6 +329,8 @@
 		E8C1BA8622B63BBB006EDA1E /* XRRenderEngineGL */ = {
 			isa = PBXGroup;
 			children = (
+				E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */,
+				E8E67C3D234A7DB10015A403 /* XRTextureGL.h */,
 				E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */,
 				E8C1BA8822B63BBB006EDA1E /* stdafx.h */,
 				E8C1BA8922B63BBB006EDA1E /* XRRenderEngineGL.vcxproj.filters */,
@@ -326,6 +347,12 @@
 		E8E59162226AF68200164749 /* XRFrameworkBase */ = {
 			isa = PBXGroup;
 			children = (
+				E8E67C35234A7AAD0015A403 /* XRBmp.cpp */,
+				E8E67C33234A7AAD0015A403 /* XRBmp.h */,
+				E8E67C34234A7AAD0015A403 /* XRDXTC.cpp */,
+				E8E67C36234A7AAD0015A403 /* XRDXTC.h */,
+				E8E67C31234A7AAD0015A403 /* XRTextureData.cpp */,
+				E8E67C32234A7AAD0015A403 /* XRTextureData.h */,
 				E8C1BA4422B62365006EDA1E /* XRPlatform.cpp */,
 				E8C1BA4122B62365006EDA1E /* XRPlatform.h */,
 				E8C1BA4322B62365006EDA1E /* XRPlatformOSX.hpp */,
@@ -387,8 +414,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8C1BA9122B63BBB006EDA1E /* stdafx.h in Headers */,
+				E8E67C3F234A7DB10015A403 /* XRTextureGL.h in Headers */,
 				E8C1BA9622B63BBB006EDA1E /* XRModelGL.h in Headers */,
-				E8C1BA9422B63BBB006EDA1E /* targetver.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +426,7 @@
 				E8C1BA3C22B621B9006EDA1E /* XRPrimitiveTypes.h in Headers */,
 				E8C1BA4622B62365006EDA1E /* XRPlatform.h in Headers */,
 				E8E5919D226AF68200164749 /* XRWavefrontMaterial.h in Headers */,
+				E8E67C39234A7AAE0015A403 /* XRBmp.h in Headers */,
 				E8E59186226AF68200164749 /* XRBodyData.h in Headers */,
 				E8E59190226AF68200164749 /* XRSavable.h in Headers */,
 				E8C1BA4722B62365006EDA1E /* XRPlatformWindows.hpp in Headers */,
@@ -414,9 +442,11 @@
 				E8E59185226AF68200164749 /* XRResourceManager.h in Headers */,
 				E8E5918E226AF68200164749 /* XRWavefrontObject.h in Headers */,
 				E8E59192226AF68200164749 /* targetver.h in Headers */,
+				E8E67C38234A7AAE0015A403 /* XRTextureData.h in Headers */,
 				E8E59189226AF68200164749 /* XRGeometry.h in Headers */,
 				E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */,
 				E8E5918F226AF68200164749 /* XRBody.h in Headers */,
+				E8E67C3C234A7AAE0015A403 /* XRDXTC.h in Headers */,
 				E8E591A0226AF68200164749 /* XRRigidBody.h in Headers */,
 				E8E5919E226AF68200164749 /* XRObjectManager.h in Headers */,
 				E8E59183226AF68200164749 /* XRLogging.h in Headers */,
@@ -568,6 +598,7 @@
 			files = (
 				E8C1BA9022B63BBB006EDA1E /* XRRenderEngineGL.cpp in Sources */,
 				E8C1BA9522B63BBB006EDA1E /* stdafx.cpp in Sources */,
+				E8E67C40234A7DB10015A403 /* XRTextureGL.cpp in Sources */,
 				E8C1BA9322B63BBB006EDA1E /* XRModelGL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -580,10 +611,13 @@
 				E8E59194226AF68200164749 /* XRModelData.cpp in Sources */,
 				E8E59184226AF68200164749 /* XRBody.cpp in Sources */,
 				E8E5919A226AF68200164749 /* XRWavefrontObject.cpp in Sources */,
+				E8E67C3A234A7AAE0015A403 /* XRDXTC.cpp in Sources */,
 				E8E5918D226AF68200164749 /* XRScene.cpp in Sources */,
 				E8E59193226AF68200164749 /* XRResourceManager.cpp in Sources */,
 				E8E59198226AF68200164749 /* XRLoadable.cpp in Sources */,
 				E8E5918A226AF68200164749 /* XRFrameworkBase.cpp in Sources */,
+				E8E67C37234A7AAE0015A403 /* XRTextureData.cpp in Sources */,
+				E8E67C3B234A7AAE0015A403 /* XRBmp.cpp in Sources */,
 				E8E5919C226AF68200164749 /* XRModel.cpp in Sources */,
 				E8E5919B226AF68200164749 /* stdafx.cpp in Sources */,
 				E8C1BA3F22B621B9006EDA1E /* XRRenderEngineLinker.cpp in Sources */,
@@ -858,6 +892,10 @@
 					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = XRRENDERENGINEGL_EXPORTS;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -885,6 +923,10 @@
 					XRRENDERENGINEGL_EXPORTS,
 					"DEBUG=1",
 					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;

@@ -33,7 +33,7 @@ static GLFormatInfo GetTextureFormatFromXR(XRTextureFormat format)
 	case XRTextureFormat::BGR_888: // pixel / block
 		return { GL_RGBA, 3, GL_BGR };
 	};
-	assert("Unknown format uses" == false);
+	assert("Unknown format uses" == nullptr);
 	return { GL_NONE, 0 };
 }
 
@@ -60,7 +60,7 @@ static GLuint GetTextureTypeFromXR(XRTextureType type)
 	case XRTextureType::Tex2DMSArray:
 		return GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
 	}
-	assert("Unknown type uses" == false);
+	assert("Unknown type uses" == nullptr);
 	return GL_NONE;
 }
 
