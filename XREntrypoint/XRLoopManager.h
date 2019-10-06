@@ -82,19 +82,21 @@ public:
   }
 };
 
+class XRScene;
 class XRRenderingStratagy
 {
 public:
-  virtual ~XRRenderingStratagy() {}
+	virtual ~XRRenderingStratagy() {}
 
 public:
-  virtual void Initialize() {}
+	virtual void Initialize() {}
 
 public:
-  virtual void Render() {}
+	virtual void Update(XRScene* scene) {}
+	virtual void Render() {}
 };
 
-class XRRenderingStratagyForward : public XRRenderingStratagy
+class XRRenderingStratagyTest : public XRRenderingStratagy
 {
   // Todo) 일단 렌더링 되는지 테스트해보려고 여기다 선언해서 그냥 써봄.
   // 아래 멤버변수들은 그래픽스 파이프라인에서나 선언해다 쓰고
@@ -104,11 +106,38 @@ class XRRenderingStratagyForward : public XRRenderingStratagy
   GLuint _glVertexShader;
   GLuint _glFragmentShader;
 
-public:
-  XRRenderingStratagyForward();
+  struct UNIFORM_BUFFER_NAME
+  {
+    enum : GLuint
+    {
+      Transform,
+      Light,
+      Count
+    };
+  };
+  
+  GLuint _uniformBuffers[UNIFORM_BUFFER_NAME::Count];
 
-  virtual void Render();
+  struct Light
+  {
+    float position[4];
+    float intensity[3];
+    float attenuation;
+  };
+
+  struct Material
+  {
+    float diffuse[4];
+  };
+
+public:
+  XRRenderingStratagyTest();
+  ~XRRenderingStratagyTest();
+
   virtual void Initialize();
+
+  virtual void Update(XRScene* scene);
+  virtual void Render();
 };
 
 #include <memory>

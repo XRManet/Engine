@@ -31,7 +31,7 @@ XRInputLayoutGL::~XRInputLayoutGL()
 
 }
 
-XRModelGL::XRModelGL(XRModelData* data) : XRModel(data)
+XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 {
   const auto* header = _data->GetHeader();
   const GLubyte* address = _data->GetData();

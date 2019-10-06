@@ -40,9 +40,6 @@ public:
 private:
   void Initialize();
 
-public:
-  ModelHeader const* GetHeader() const { return reinterpret_cast<ModelHeader const*>(_memory.data()); }
-
-protected:
-  ModelHeader * GetHeaderData() { return reinterpret_cast<ModelHeader*>(_memory.data()); }
+public:		ModelHeader const*	GetHeader() const	{ return reinterpret_cast<ModelHeader const*>(_memory.data()); }
+protected:	ModelHeader *		GetHeader()			{ return reinterpret_cast<ModelHeader*>(_memory.data()); }
 };

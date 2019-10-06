@@ -2,7 +2,10 @@
 #include "XRPlatform.h"
 
 #include "XRModel.h"
-XRModel* (*xrCreateModel)(XRModelData* loadable) = nullptr;
+XRModel* (*xrCreateModel)(XRModelData const* loadable) = nullptr;
+
+#include "XRTexture.h"
+XRTexture* (*xrCreateTexture)(XRTextureData const* loadable) = nullptr;
 
 #ifndef XRRENDER_ENGINE
 #define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineingGL"
@@ -24,6 +27,7 @@ static struct XRRenderEngineLinker
     XRPlatform::ListDLLFunctions(_dso, dllLists);
 
     GetProcAddress(xrCreateModel, "xrCreateModel");
+	GetProcAddress(xrCreateTexture, "xrCreateTexture");
   }
 
   ~XRRenderEngineLinker()

@@ -9,8 +9,11 @@ bool XRWavefrontObject::LoadDataFromFile()
   int const MAX_LINE_CHARACTERS = 256;
   char line[MAX_LINE_CHARACTERS] = { 0, };
   FILE* fp = fopen(GetPath().c_str(), "r");
+  if (fp == nullptr)
+	  return false;
+
   ReadUnit unit;
-  ModelHeader *header = GetHeaderData();
+  ModelHeader *header = GetHeader();
 
   size_t texture_coordinate_count = 0;
   size_t vertex_normal_count = 0;
@@ -64,7 +67,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 
       if (size + sizeof(unit) > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
-        header = GetHeaderData();
+        header = GetHeader();
       }
 
       _memory.resize(size + sizeof(unit));
@@ -90,7 +93,7 @@ bool XRWavefrontObject::LoadDataFromFile()
       size_t index_buffer_size = available_count * sizeof(int);
       if (size + index_buffer_size > _memory.capacity()) {
         _memory.reserve(_memory.capacity() * 2);
-        header = GetHeaderData();
+        header = GetHeader();
       }
 
       _memory.resize(size + index_buffer_size);

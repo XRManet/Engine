@@ -5,12 +5,22 @@
 #include "XRGeometry.h"
 #include "XRType.h"
 
+class XRBaseExport XRInteractive
+{
+public:
+};
+
+class XRBaseExport XRBackground : XRInteractive
+{
+public:
+};
+
 class XRModel;
 class XRBody;
 
 static const int64_t    NO_ID = static_cast<int64_t>(-1);
 
-class XRBaseExport XRObject
+class XRBaseExport XRObject : XRInteractive
 {
 private:
   int64_t   _id = NO_ID;
@@ -27,7 +37,7 @@ private:
 
 public:
   XRObject() {}
-
+  virtual ~XRObject() {}
 
 public:
   void BindModel(XRModel* model) { _model = model; }
@@ -103,4 +113,14 @@ private:
   
 private:
   std::vector<XRScene*> _scenes;
+};
+
+class XRBaseExport XRNonInteractive
+{
+public:
+};
+
+class XRBaseExport XREffect : XRNonInteractive
+{
+public:
 };

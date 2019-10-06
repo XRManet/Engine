@@ -7,5 +7,5 @@ void XRModelData::Initialize()
   _memory.reserve(PAGE_SIZE);
 
   _memory.resize(sizeof(ModelHeader));
-  new (GetHeaderData()) ModelHeader;
+  new (GetHeader()) ModelHeader;
 }

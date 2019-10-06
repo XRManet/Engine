@@ -11,8 +11,6 @@
 
 #include <GL/glew.h>
 
-XRCamera camera;
-
 #include <stdio.h>
 
 // Todo) Menifest를 별도로 둬서 scene에서 읽을 수 있는 형식을 갖출 것
@@ -28,9 +26,11 @@ XRSceneMain::XRSceneMain()
     position.x += 1;
   }
 
-  camera.SetFrustum({16, 9}, 10, 100);
-  camera.SetPosition(glm::vec4 { 0, 0, 10, 1 });
-  camera.SetQuaternion({});
+  _cameras.resize(1);
+
+  _cameras[0].SetFrustum({16, 9}, 10, 100);
+  _cameras[0].SetPosition(glm::vec4 { 0, 0, 10, 1 });
+  _cameras[0].SetQuaternion({});
 
   constexpr GLuint var_test1 = XR::util::GetIndexOfLiteralStringList(g_deferredVar, "var_test1");
 
@@ -46,13 +46,8 @@ XRSceneMain::~XRSceneMain()
 
 void XRSceneMain::Update(float dt)
 {
-  //camera.Move({});
-  //camera.Rotate(0, {});
-
-  glm::mat4 viewing = camera.GetInvTransform();
-  glm::mat4 projection = camera.GetProjectionTransform();
-
-  glm::mat4 transform_vp = projection * viewing;
+  //_default_camera.Move({});
+  //_default_camera.Rotate(0, {});
 }
 
 

@@ -5,11 +5,14 @@
 #include "XRObjectManager.h"
 #include "XRResourceManager.h"
 
+class XRCamera;
+
 class XRBaseExport XRScene
 {
 protected:
   XRObjectManager _object_manager;
   XRResourceManager _resource_manager;
+  std::vector<XRCamera> _cameras;
 
 
 public:
