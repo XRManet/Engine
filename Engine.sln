@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLStart", "OpenGLStart\OpenGLStart.vcxproj", "{77214991-5C66-4213-9FA1-C447596F3EFC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XREntrypoint", "XREntrypoint\XREntrypoint.vcxproj", "{77214991-5C66-4213-9FA1-C447596F3EFC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{97949D4A-FD50-45B9-B0EB-6F231564EA3E} = {97949D4A-FD50-45B9-B0EB-6F231564EA3E}
 		{F8BF6CF0-A168-4EE7-A71C-9462A21B2386} = {F8BF6CF0-A168-4EE7-A71C-9462A21B2386}
@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLStart", "OpenGLStart\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XRFrameworkBase", "XRFrameworkBase\XRFrameworkBase.vcxproj", "{F8BF6CF0-A168-4EE7-A71C-9462A21B2386}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XRSceneMain", "XRSceneMain\XRSceneMain.vcxproj", "{97949D4A-FD50-45B9-B0EB-6F231564EA3E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XRSceneTest", "XRSceneTest\XRSceneTest.vcxproj", "{97949D4A-FD50-45B9-B0EB-6F231564EA3E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F8BF6CF0-A168-4EE7-A71C-9462A21B2386} = {F8BF6CF0-A168-4EE7-A71C-9462A21B2386}
 	EndProjectSection

@@ -6,6 +6,8 @@
 //  Copyright © 2019 XRManet. All rights reserved.
 //
 
+#include "stdafx.h"
+
 #include "XRPlatform.h"
 
 #if defined(_WIN32) || defined(_WIN64)

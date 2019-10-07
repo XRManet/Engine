@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "XRSceneMain.h"
+#include "XRSceneTest.h"
 
 #define COMPILE_CPP
 #include "Shader/DeferredSample.h"
@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 // Todo) Menifest를 별도로 둬서 scene에서 읽을 수 있는 형식을 갖출 것
-XRSceneMain::XRSceneMain()
+XRSceneTest::XRSceneTest()
 {
   auto model = _resource_manager.GetModelByKey("teapot");
   auto objects = _object_manager.GenerateObjects(5);
@@ -40,11 +40,11 @@ XRSceneMain::XRSceneMain()
 }
 
 
-XRSceneMain::~XRSceneMain()
+XRSceneTest::~XRSceneTest()
 {
 }
 
-void XRSceneMain::Update(float dt)
+void XRSceneTest::Update(float dt)
 {
   //_default_camera.Move({});
   //_default_camera.Rotate(0, {});

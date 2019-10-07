@@ -172,6 +172,7 @@
     <ClInclude Include="XRObject.h" />
     <ClInclude Include="XRObjectManager.h" />
     <ClInclude Include="XRPlatform.h" />
+    <ClInclude Include="XRPlatformWindows.hpp" />
     <ClInclude Include="XRPrimitiveTypes.h" />
     <ClInclude Include="XRResourceManager.h" />
     <ClInclude Include="XRRigidBody.h" />
@@ -199,7 +200,7 @@
     <ClCompile Include="XRModel.cpp" />
     <ClCompile Include="XRModelData.cpp" />
     <ClCompile Include="XRObjectManager.cpp" />
-    <ClCompile Include="XRPlatformWindows.cpp" />
+    <ClCompile Include="XRPlatform.cpp" />
     <ClCompile Include="XRRenderEngineLinker.cpp" />
     <ClCompile Include="XRResourceManager.cpp" />
     <ClCompile Include="XRScene.cpp" />

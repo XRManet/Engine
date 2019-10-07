@@ -172,6 +172,11 @@
     <ClCompile Include="XRRenderEngineGL.cpp" />
     <ClCompile Include="XRTextureGL.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XRFrameworkBase\XRFrameworkBase.vcxproj">
+      <Project>{f8bf6cf0-a168-4ee7-a71c-9462a21b2386}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

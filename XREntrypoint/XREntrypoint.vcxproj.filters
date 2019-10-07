@@ -1,82 +1,79 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
+    <Filter Include="Source files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
+    <Filter Include="Header files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
+    <Filter Include="Resource files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="소스 파일\Scenes">
+    <Filter Include="Source files\Scenes">
       <UniqueIdentifier>{47cd9c76-f850-4787-bd8f-a48a2a4485b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="외부 참조">
+    <Filter Include="External references">
       <UniqueIdentifier>{0073f9f1-d98e-47fd-b311-742c3f1355d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Platform">
+    <Filter Include="Source files\Platform">
       <UniqueIdentifier>{92d7ff7b-4757-4d10-bf82-a3a789d5726e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Object">
+    <Filter Include="Source files\Object">
       <UniqueIdentifier>{ca11e88c-073a-4a00-8f14-081a81f1c3ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="리소스 파일\Shaders">
+    <Filter Include="Resource files\Shaders">
       <UniqueIdentifier>{66ed632e-7586-437a-a647-e7f49b30a0ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="리소스 파일\Shaders\OpenGL">
+    <Filter Include="Resource files\Shaders\OpenGL">
       <UniqueIdentifier>{7bfe0a2d-1447-4aa7-afbb-fa94c62266b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="XRLoopManager.h">
-      <Filter>소스 파일\Platform</Filter>
+      <Filter>Source files\Platform</Filter>
     </ClInclude>
     <ClInclude Include="XRSceneManager.h">
-      <Filter>소스 파일\Scenes</Filter>
+      <Filter>Source files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGLStart.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="XRSceneManager.cpp">
-      <Filter>소스 파일\Scenes</Filter>
+      <Filter>Source files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="XRLoopManager.cpp">
-      <Filter>소스 파일\Platform</Filter>
+      <Filter>Source files\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="OpenGLStart.rc">
-      <Filter>리소스 파일</Filter>
+    <ResourceCompile Include="XREntrypoint.rc">
+      <Filter>Resource files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SceneKeys.json">
-      <Filter>리소스 파일</Filter>
-    </None>
     <None Include="..\Resources\Shaders\OpenGL\SimpleVertex.glsl">
-      <Filter>리소스 파일\Shaders\OpenGL</Filter>
+      <Filter>Resource files\Shaders\OpenGL</Filter>
     </None>
     <None Include="..\Resources\Shaders\OpenGL\SimpleFragment.glsl">
-      <Filter>리소스 파일\Shaders\OpenGL</Filter>
+      <Filter>Resource files\Shaders\OpenGL</Filter>
     </None>
   </ItemGroup>
 </Project>

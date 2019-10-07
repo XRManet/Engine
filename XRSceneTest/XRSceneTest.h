@@ -4,19 +4,19 @@
 
 #include <XRFrameworkBase/XRScene.h>
 
-class XRExport XRSceneMain :
+class XRExport XRSceneTest :
   public XRScene
 {
 public:
-  XRSceneMain();
-  virtual ~XRSceneMain();
+  XRSceneTest();
+  virtual ~XRSceneTest();
 
 
 public:
   virtual void Update(float dt) override;
 };
 
-extern "C" XRExport XRScene* CreateSceneMain()
+extern "C" XRExport XRScene* CreateSceneTest()
 {
-  return new XRSceneMain;
+  return new XRSceneTest;
 }

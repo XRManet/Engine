@@ -137,6 +137,9 @@
     <ClInclude Include="XRBmp.h">
       <Filter>소스 파일\Resource\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="XRPlatformWindows.hpp">
+      <Filter>소스 파일\Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -172,9 +175,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
-    <ClCompile Include="XRPlatformWindows.cpp">
-      <Filter>소스 파일\Platform</Filter>
-    </ClCompile>
     <ClCompile Include="XRRenderEngineLinker.cpp">
       <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClCompile>
@@ -186,6 +186,9 @@
     </ClCompile>
     <ClCompile Include="XRBmp.cpp">
       <Filter>소스 파일\Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="XRPlatform.cpp">
+      <Filter>소스 파일\Platform</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
