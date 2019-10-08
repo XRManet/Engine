@@ -14,28 +14,28 @@
 
 namespace XRPlatform
 {
-    enum Names
-    {
-        NotImplemented,
-        Windows,
-        OSX,
-        Count
-    };
-    
-    struct XRDSO
-    {
-        XRDSO()             {}
-        virtual ~XRDSO()    {}
-        
-        bool isValid()      { return false; }
-    };
-    template<unsigned PlatformName> struct XRDSOImpl;
-    
-    XRDSO* LoadDSO(char const* dso_name);
-    void UnloadDSO(XRDSO* dso);
-    
-    void* GetProcAddress(XRDSO* dso, char const* proc);
-    void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames);
+	enum Names
+	{
+		NotImplemented,
+		Windows,
+		OSX,
+		Count
+	};
+
+	struct XRBaseExport XRDSO
+	{
+		XRDSO() {}
+		virtual ~XRDSO() {}
+
+		bool isValid() { return false; }
+	};
+	template<unsigned PlatformName> struct XRDSOImpl;
+
+	XRBaseExport XRDSO* LoadDSO(char const* dso_name);
+	XRBaseExport void UnloadDSO(XRDSO* dso);
+
+	XRBaseExport void* GetProcAddress(XRDSO* dso, char const* proc);
+	XRBaseExport void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames);
 };
 
 
