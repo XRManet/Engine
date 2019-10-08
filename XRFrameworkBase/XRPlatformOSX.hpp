@@ -45,6 +45,7 @@ namespace XRPlatform
         void ListDllFunctions(std::vector<std::string>& listOfFunctionNames)
         {
             listOfFunctionNames.push_back("xrCreateModel");
+            listOfFunctionNames.push_back("xrCreateTexture");
         }
     };
 }

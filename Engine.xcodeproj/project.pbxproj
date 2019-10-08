@@ -61,9 +61,9 @@
 		E8E5919F226AF68200164749 /* XRScene.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59181226AF68200164749 /* XRScene.h */; };
 		E8E591A0226AF68200164749 /* XRRigidBody.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E59182226AF68200164749 /* XRRigidBody.h */; };
 		E8E67C2A234A59B40015A403 /* Resources in Copy Files */ = {isa = PBXBuildFile; fileRef = E8E67C29234A59B40015A403 /* Resources */; };
-		E8E67C2B234A5B420015A403 /* XRSceneMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E812F864226345A600C87624 /* XRSceneMain.cpp */; };
+		E8E67C2B234A5B420015A403 /* XRSceneTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E812F864226345A600C87624 /* XRSceneTest.cpp */; };
 		E8E67C2C234A5B420015A403 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E812F86A226345A600C87624 /* stdafx.cpp */; };
-		E8E67C2D234A5B620015A403 /* XRSceneMain.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F861226345A600C87624 /* XRSceneMain.h */; };
+		E8E67C2D234A5B620015A403 /* XRSceneTest.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F861226345A600C87624 /* XRSceneTest.h */; };
 		E8E67C2E234A5B620015A403 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E812F862226345A600C87624 /* stdafx.h */; };
 		E8E67C30234A5B950015A403 /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E8E67C37234A7AAE0015A403 /* XRTextureData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C31234A7AAD0015A403 /* XRTextureData.cpp */; };
@@ -118,12 +118,12 @@
 
 /* Begin PBXFileReference section */
 		E80F3661226B8AF6007414A1 /* XRType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRType.h; sourceTree = "<group>"; };
-		E812F861226345A600C87624 /* XRSceneMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSceneMain.h; sourceTree = "<group>"; };
+		E812F861226345A600C87624 /* XRSceneTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSceneTest.h; sourceTree = "<group>"; };
 		E812F862226345A600C87624 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
 		E812F863226345A600C87624 /* dllmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dllmain.cpp; sourceTree = "<group>"; };
-		E812F864226345A600C87624 /* XRSceneMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRSceneMain.cpp; sourceTree = "<group>"; };
-		E812F865226345A600C87624 /* XRSceneMain.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRSceneMain.vcxproj.filters; sourceTree = "<group>"; };
-		E812F866226345A600C87624 /* XRSceneMain.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRSceneMain.vcxproj; sourceTree = "<group>"; };
+		E812F864226345A600C87624 /* XRSceneTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRSceneTest.cpp; sourceTree = "<group>"; };
+		E812F865226345A600C87624 /* XRSceneTest.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRSceneTest.vcxproj.filters; sourceTree = "<group>"; };
+		E812F866226345A600C87624 /* XRSceneTest.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = XRSceneTest.vcxproj; sourceTree = "<group>"; };
 		E812F867226345A600C87624 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
 		E812F869226345A600C87624 /* DeferredSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeferredSample.h; sourceTree = "<group>"; };
 		E812F86A226345A600C87624 /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
@@ -253,7 +253,7 @@
 				E8E67C29234A59B40015A403 /* Resources */,
 				E8C1BA8622B63BBB006EDA1E /* XRRenderEngineGL */,
 				E8E59162226AF68200164749 /* XRFrameworkBase */,
-				E812F860226345A600C87624 /* XRSceneMain */,
+				E812F860226345A600C87624 /* XRSceneTest */,
 				E8C1BA5B22B6319F006EDA1E /* XREntrypoint */,
 				E812F8472263417E00C87624 /* Products */,
 				E8C1BA7222B634BB006EDA1E /* Frameworks */,
@@ -271,20 +271,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E812F860226345A600C87624 /* XRSceneMain */ = {
+		E812F860226345A600C87624 /* XRSceneTest */ = {
 			isa = PBXGroup;
 			children = (
-				E812F861226345A600C87624 /* XRSceneMain.h */,
+				E812F861226345A600C87624 /* XRSceneTest.h */,
 				E812F862226345A600C87624 /* stdafx.h */,
 				E812F863226345A600C87624 /* dllmain.cpp */,
-				E812F864226345A600C87624 /* XRSceneMain.cpp */,
-				E812F865226345A600C87624 /* XRSceneMain.vcxproj.filters */,
-				E812F866226345A600C87624 /* XRSceneMain.vcxproj */,
+				E812F864226345A600C87624 /* XRSceneTest.cpp */,
+				E812F865226345A600C87624 /* XRSceneTest.vcxproj.filters */,
+				E812F866226345A600C87624 /* XRSceneTest.vcxproj */,
 				E812F867226345A600C87624 /* targetver.h */,
 				E812F868226345A600C87624 /* Shader */,
 				E812F86A226345A600C87624 /* stdafx.cpp */,
 			);
-			path = XRSceneMain;
+			path = XRSceneTest;
 			sourceTree = "<group>";
 		};
 		E812F868226345A600C87624 /* Shader */ = {
@@ -404,7 +404,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8E67C2D234A5B620015A403 /* XRSceneMain.h in Headers */,
+				E8E67C2D234A5B620015A403 /* XRSceneTest.h in Headers */,
 				E8E67C2E234A5B620015A403 /* stdafx.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -576,7 +576,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8E67C2B234A5B420015A403 /* XRSceneMain.cpp in Sources */,
+				E8E67C2B234A5B420015A403 /* XRSceneTest.cpp in Sources */,
 				E8E67C2C234A5B420015A403 /* stdafx.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
