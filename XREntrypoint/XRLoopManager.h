@@ -22,7 +22,10 @@ public:
   XRRenderingInfra(XRSize const& size)
   {
       static const GLuint versions[][2] = {
-          {4, 6}, {4, 5}, {4, 3}, {4, 0}, {3, 3}, {3, 0}, {2, 1}, {2, 0}, {1, 1}, {1, 0}
+          {4, 6}, {4, 5}, {4, 3}, {4, 1}, {4, 0},
+          {3, 3}, {3, 0},
+          {2, 1}, {2, 0},
+          {1, 1}, {1, 0}
       };
       GLuint version_try = 0;
       
@@ -34,8 +37,15 @@ public:
           static const GLuint max_try = static_cast<GLuint>(sizeof(versions) / sizeof(versions[0]));
           if(version_try < max_try)
           {
+              glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
               glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, versions[version_try][0]);
               glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, versions[version_try][1]);
+              glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+              glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+              glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_LOSE_CONTEXT_ON_RESET);
+              //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+              glfwWindowHint(GLFW_CONTEXT_RELEASE_BEHAVIOR, GLFW_RELEASE_BEHAVIOR_FLUSH);
+              glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
           }
           else
           {
@@ -47,7 +57,12 @@ public:
           
           if (_window != nullptr)
           {
-              printf("Open GL version is %d.%d\n", versions[version_try][0], versions[version_try][1]);
+              printf("OpenGL version: ");
+              if (version_try <= max_try)
+                  printf("%d.%d\n", versions[version_try][0], versions[version_try][1]);
+              else
+                  printf("system-default\n");
+              
               glfwMakeContextCurrent(_window);
               break;
           }
