@@ -55,13 +55,13 @@ public:
 
 
 public:
-  glm::mat4 GetTransform() {
+  glm::mat4 GetTransform() const {
     glm::mat4 transform = glm::mat4_cast(_orientation);
     transform[3] = _position;
     return transform;
   }
 
-  glm::mat4 GetInvTransform() {
+  glm::mat4 GetInvTransform() const {
     glm::mat4 inv_transform = glm::transpose(glm::mat4_cast(_orientation));
     inv_transform[3] = - (inv_transform * _position);
     return inv_transform;
@@ -88,7 +88,7 @@ public:
   void SetProjectionMode(const CPM& projection_mode) { _projection_mode = projection_mode; }
 
 public:
-  glm::mat4 GetProjectionTransform() {
+  glm::mat4 GetProjectionTransform() const {
     return glm::frustum(-_half_size._width, _half_size._width,
       -_half_size._height, _half_size._height,
       _near_positive, _far_positive);

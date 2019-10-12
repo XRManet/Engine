@@ -14,6 +14,9 @@ protected:
   XRResourceManager _resource_manager;
   std::vector<XRCamera> _cameras;
 
+public:
+	std::vector<XRCamera> const& getCameras() const { return _cameras; }
+
 
 public:
   XRScene();

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "XRLoopManager.h"
 
+#include <XRFrameworkBase/XRObject.h>
 #include <XRFrameworkBase/XRScene.h>
 #include "XRSceneManager.h"
 
@@ -146,6 +147,7 @@ void GLAPIENTRY MessageCallback(
     fprintf(stderr, "GL CALLBACK: %s type = %s, severity = %s, message = %s\n",
             (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
             GetGlMeaningDebugType(type), GetGlMeaningSeverity(severity), message);
+	assert(type != GL_DEBUG_TYPE_ERROR);
 }
 
 XRRenderingStratagyTest::XRRenderingStratagyTest()
@@ -162,6 +164,7 @@ XRRenderingStratagyTest::~XRRenderingStratagyTest()
 static GLint MAX_UNIFORM_BUFFER_BINDINGS = 0;
 static GLint MAX_UNIFORM_LOCATIONS = 0;
 static GLint UNIFORM_BUFFER_OFFSET_ALIGNMENT = 0;
+static GLint MAX_UNIFORM_BLOCK_SIZE = 0;
 
 static GLint MAX_VARYING_COMPONENTS = 0;
 
@@ -179,7 +182,34 @@ void XRRenderingStratagyTest::Initialize()
     
     if(glfwGetProcAddress("glDebugMessageCallback"))
         glDebugMessageCallback(MessageCallback, 0);
+
+	printf("\n=============================================\n");
+	printf("Query OpenGL System Informations\n\n");
+
+	glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &MAX_UNIFORM_BUFFER_BINDINGS);
+	printf("Max uniform block bindings: %d\n", MAX_UNIFORM_BUFFER_BINDINGS);
+	glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &MAX_UNIFORM_LOCATIONS);
+	printf("Max uniform locations: %d\n", MAX_UNIFORM_LOCATIONS);
+	glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+	printf("Uniform buffer offset alignment: %d\n", UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+	glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &MAX_UNIFORM_BLOCK_SIZE);
+	printf("Max size of an uniform block: %d\n", MAX_UNIFORM_BLOCK_SIZE);
+
+	printf("\n");
+	glGetIntegerv(GL_MAX_VARYING_COMPONENTS, &MAX_VARYING_COMPONENTS);
+	printf("Max varying components: %d\n", MAX_VARYING_COMPONENTS);
+
+	printf("\n");
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MAX_TEXTURE_IMAGE_UNITS);
+	printf("Max texture image units: %d\n", MAX_TEXTURE_IMAGE_UNITS);
+	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+	printf("Max combined texture image units: %d\n", MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+	glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, &MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
+	printf("Max compute texture image units: %d\n", MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
     
+	printf("\n=============================================\n");
+	printf("Create programs\n\n");
+
     // TODO) separate
     GL_CALL(_glProgram = glCreateProgram());
     
@@ -200,37 +230,160 @@ void XRRenderingStratagyTest::Initialize()
     
     GL_CALL(glDeleteShader(_glVertexShader));
     GL_CALL(glDeleteShader(_glFragmentShader));
-    
-    glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &MAX_UNIFORM_BUFFER_BINDINGS);
-    printf("Max uniform block bindings: %d\n", MAX_UNIFORM_BUFFER_BINDINGS);
-    glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &MAX_UNIFORM_LOCATIONS);
-    printf("Max uniform locations: %d\n", MAX_UNIFORM_LOCATIONS);
-    glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-    printf("Uniform buffer offset alignment: %d\n", UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-    
-    printf("\n");
-    glGetIntegerv(GL_MAX_VARYING_COMPONENTS, &MAX_VARYING_COMPONENTS);
-    printf("Max varying components: %d\n", MAX_VARYING_COMPONENTS);
-    
-    printf("\n");
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MAX_TEXTURE_IMAGE_UNITS);
-    printf("Max texture image units: %d\n", MAX_TEXTURE_IMAGE_UNITS);
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &MAX_COMBINED_TEXTURE_IMAGE_UNITS);
-    printf("Max combined texture image units: %d\n", MAX_COMBINED_TEXTURE_IMAGE_UNITS);
-    glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, &MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
-    printf("Max compute texture image units: %d\n", MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
-    
-    printf("=============================================\n\n");
-    
-    glGenBuffers(UNIFORM_BUFFER_NAME::Count, _uniformBuffers);
+
+	static bool doReflectProgram = (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
+
+	glGenBuffers(UNIFORM_BUFFER_NAME::Count, _uniformBuffers);
+	
+	if (doReflectProgram)
+	{
+		printf("=============================================\n");
+		printf("Reflect programs\n\n");
+
+		GL_CALL(glUseProgram(_glProgram));
+
+		//GLuint uniformTransformView = -1;
+		//GLuint uniformTransformVP = -1;
+		GLuint uniformIndexTransform = -1;
+
+		//GL_CALL(uniformTransformView = glGetUniformLocation(_glProgram, "transformView"));
+		//GL_CALL(uniformTransformVP = glGetUniformLocation(_glProgram, "transformVP"));
+
+		GLint countGlobalMaxUniformBlockVariables = 0;
+		GLint numGlobalMaxUniformBlockVariables = 0;
+		GLint numUniformBlocks = 0;
+		std::vector<GLint> uniformBlockCount;
+		GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &numUniformBlocks));
+		printf("Number of uniform block resources: %d\n", numUniformBlocks);
+		GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_MAX_NUM_ACTIVE_VARIABLES, &numGlobalMaxUniformBlockVariables));
+		printf("Max number of uniform block variables: %d\n", numGlobalMaxUniformBlockVariables);
+		GLint numActiveUniform = 0;
+		GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniform));
+		printf("Number of uniform resources:  %d\n", numActiveUniform);
+
+		GLenum props[3] = {
+			GL_NUM_ACTIVE_VARIABLES, GL_ACTIVE_VARIABLES, 0
+		};
+		GLsizei length;
+		GLint resultParams[64] = { -1, -1 };
+		constexpr GLsizei maxResultSize = sizeof(resultParams) / sizeof(resultParams[0]);
+		struct ActiveUniformBlockRange
+		{
+			GLint numActiveVariables;
+			GLuint uniformIndices[1];
+		};
+		for (GLint i = 0; i < numUniformBlocks; ++i)
+		{
+			const GLsizei bufSize = 256;
+
+			GLchar blockName[bufSize];
+			GL_CALL(glGetProgramResourceName(_glProgram, GL_UNIFORM_BLOCK, i, bufSize, nullptr, blockName));
+			printf("Uniform Block Name: %s, (%d/%d)\n", blockName, i, numUniformBlocks);
+
+			auto& blockRange = reinterpret_cast<ActiveUniformBlockRange&>(resultParams);
+			glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, maxResultSize, &length, resultParams);
+
+			GLchar uniformName[bufSize];
+			static constexpr struct {
+				GLenum pname;
+				const char* stringName;
+			} activeUniformQueries[] = {
+				{ GL_UNIFORM_TYPE,						  "Type"},
+				{ GL_UNIFORM_SIZE,						  "Num"},
+				{ GL_UNIFORM_BLOCK_INDEX,				  "BlockIndex"},
+				{ GL_UNIFORM_OFFSET,					  "Offset"},
+				{ GL_UNIFORM_ARRAY_STRIDE,				  "ArrayStride"},
+				{ GL_UNIFORM_MATRIX_STRIDE,				  "MatrixStride"},
+				{ GL_UNIFORM_IS_ROW_MAJOR,				  "IsRowMajor"},
+				{ GL_UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX, "AtomicCounterBufferIndex"},
+			};
+			constexpr uint32_t queryCount = sizeof(activeUniformQueries) / sizeof(activeUniformQueries[0]);
+			GLint uniformQueryResult[queryCount];
+			printf("Uniform NumActiveVariables: %d\n", blockRange.numActiveVariables);
+			for (GLint i = 0; i < blockRange.numActiveVariables; ++i)
+			{
+				GL_CALL(glGetProgramResourceName(_glProgram, GL_UNIFORM, blockRange.uniformIndices[i], bufSize, nullptr, uniformName));
+				printf("\tUniform index [%d] Name: %s, ", blockRange.uniformIndices[i], uniformName);
+
+				//glGetProgramResourceiv(_glProgram, GL_UNIFORM, blockRange.uniformIndices[i], queryCount, activeUniformQueries, queryCount, nullptr, uniformQueryResult);
+				for (GLint j = 0; j < queryCount; ++j)
+				{
+					glGetActiveUniformsiv(_glProgram, 1, &blockRange.uniformIndices[i], activeUniformQueries[j].pname, &uniformQueryResult[j]);
+					printf("%s: %d, ", activeUniformQueries[j].stringName, uniformQueryResult[j]);
+				}
+				printf("\n");
+			}
+
+			//GLint variablesQueryResult[64] = {0, };
+			//for (GLint j = 0; j < queryCount; ++j)
+			//{
+			//	glGetActiveUniformsiv(_glProgram, blockRange.numActiveVariables, blockRange.uniformIndices, activeUniformQueries[j], variablesQueryResult);
+			//}
+		}
+
+		for (GLint i = 0; i < numActiveUniform; ++i)
+		{
+			GLchar uniformName[5][256];
+			//glGetActiveUniformsiv(_glProgram, numActiveUniform, );
+			//glGetActiveUniformName(_glProgram, )
+		}
+
+		//glGetProgramResourceIndex(_glProgram, );
+		//glGetProgramResourceiv(_glProgram, GL_UNIFORM, );
+		GL_CALL(uniformIndexTransform = glGetUniformBlockIndex(_glProgram, "MatrixBlock"));
+		assert(uniformIndexTransform == glGetProgramResourceIndex(_glProgram, GL_UNIFORM_BLOCK, "MatrixBlock"));
+
+		printf("\n=============================================\n");
+		printf("Create buffers with reflection\n\n");
+
+		GLint uniformTransformNum = 0;
+		glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformTransformNum);
+		std::vector<GLint> uniformTransformIndices(uniformTransformNum);
+		glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniformTransformIndices.data());
+		GLint uniformTransformSizes = 0;
+		glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformTransformSizes);
+		const GLsizei blockNameSize = 256;
+		GLchar blockName[blockNameSize];
+		glGetActiveUniformBlockName(_glProgram, uniformIndexTransform, blockNameSize, nullptr, blockName);
+
+		GL_CALL(glUniformBlockBinding(_glProgram, uniformIndexTransform, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Transform]));
+
+		GLint currentBindingPoint = -1;
+		GL_CALL(glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_BINDING, &currentBindingPoint));
+
+		GL_CALL(glBindBufferBase(GL_UNIFORM_BUFFER, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Transform], _uniformBuffers[UNIFORM_BUFFER_NAME::Transform]));
+
+		GLuint offset = 0;
+		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Transform], _uniformBuffers[UNIFORM_BUFFER_NAME::Transform], offset, uniformTransformSizes));
+		offset = NEXT_ALIGN_2(offset + uniformTransformSizes, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+
+		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Light], _uniformBuffers[UNIFORM_BUFFER_NAME::Light], offset, sizeof(Material)));
+		offset = NEXT_ALIGN_2(offset + sizeof(Material), UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+
+		//glUniformMatrix4fv(uniformTransformVP, 1, false, );
+		//glUniformBufferEXT(_glProgram, uniformLight, );
+
+		//GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
+
+		printf("\n");
+	}
+	else
+	{
+		printf("Create buffers without reflection\n\n");
+	}
 }
 
 void XRRenderingStratagyTest::Update(XRScene* scene)
 {
-    //glm::mat4 viewing = scene->_cameras[0].GetInvTransform();
-    //glm::mat4 projection = scene->_cameras[0].GetProjectionTransform();
-    
-    //glm::mat4 transform_vp = projection * viewing;
+	{
+		glm::mat4 viewing = scene->getCameras()[0].GetInvTransform();
+		glm::mat4 projection = scene->getCameras()[0].GetProjectionTransform();
+
+		glm::mat4 transform_vp = projection * viewing;
+
+		const GLuint binding_index_MatrixBlock = 1;
+		//glBindBufferBase(GL_UNIFORM_BUFFER, binding_index_MatrixBlock, );
+	}
 }
 
 void XRRenderingStratagyTest::Render()
@@ -238,104 +391,8 @@ void XRRenderingStratagyTest::Render()
     glClearColor(1, 1, 1, 1);
     
     glClear(GL_COLOR_BUFFER_BIT);
-    
-    GL_CALL(glUseProgram(_glProgram));
-    
-    static bool doReflectProgram = (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
-    
-    if(doReflectProgram)
-    {
-        //GLuint uniformTransformView = -1;
-        //GLuint uniformTransformVP = -1;
-        GLuint uniformIndexTransform = -1;
-        
-        //GL_CALL(uniformTransformView = glGetUniformLocation(_glProgram, "transformView"));
-        //GL_CALL(uniformTransformVP = glGetUniformLocation(_glProgram, "transformVP"));
-        
-        GLint countGlobalMaxUniformBlockVariables = 0;
-        GLint numGlobalMaxUniformBlockVariables = 0;
-        GLint numUniformBlocks = 0;
-        std::vector<GLint> uniformBlockCount;
-        GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &numUniformBlocks));
-        printf("Number of uniform block resources: %d\n", numUniformBlocks);
-        GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_MAX_NUM_ACTIVE_VARIABLES, &numGlobalMaxUniformBlockVariables));
-        printf("Max number of uniform block variables: %d\n", numGlobalMaxUniformBlockVariables);
-        GLint numActiveUniform = 0;
-        GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniform));
-        printf("Number of uniform resources:  %d\n", numActiveUniform);
-        
-        GLenum props[3] = {
-            GL_NUM_ACTIVE_VARIABLES, GL_ACTIVE_VARIABLES
-        };
-        GLsizei length;
-        GLint resultParams[64] = { -1, -1 };
-        for (GLint i = 0; i < numUniformBlocks; ++i)
-        {
-            const GLsizei bufSize = 256;
-            
-            GLchar blockName[bufSize];
-            GL_CALL(glGetProgramResourceName(_glProgram, GL_UNIFORM_BLOCK, i, bufSize, nullptr, blockName));
-            printf("Uniform Block Name: %s, (%d/%d)\n", blockName, i, numUniformBlocks);
-            
-            glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 1, props, 1, &length, resultParams);
-            
-            glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, 64, &length, resultParams);
-            glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, bufSize, &length, resultParams);
-            
-            GLchar uniformName[bufSize];
-            GLint numActiveVariables = resultParams[0];
-            countGlobalMaxUniformBlockVariables += numActiveVariables;
-            printf("Uniform NumActiveVariables: %d\n", numActiveVariables);
-            for (GLint activeVariableIndex = resultParams[1]; activeVariableIndex < countGlobalMaxUniformBlockVariables; ++activeVariableIndex)
-            {
-                GL_CALL(glGetActiveUniformName(_glProgram, activeVariableIndex, bufSize, nullptr, uniformName));
-                printf("\tUniform [%d] Name: %s\n", activeVariableIndex, uniformName);
-            }
-        }
-        
-        for (GLint i = 0; i < numActiveUniform; ++i)
-        {
-            GLchar uniformName[5][256];
-            //glGetActiveUniformsiv(_glProgram, numActiveUniform, );
-            //glGetActiveUniformName(_glProgram, )
-        }
-        
-        //glGetProgramResourceIndex(_glProgram, );
-        //glGetProgramResourceiv(_glProgram, GL_UNIFORM, );
-        GL_CALL(uniformIndexTransform = glGetUniformBlockIndex(_glProgram, "MatrixBlock"));
-        assert(uniformIndexTransform == glGetProgramResourceIndex(_glProgram, GL_UNIFORM_BLOCK, "MatrixBlock"));
-        
-        GLint uniformTransformNum = 0;
-        glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformTransformNum);
-        std::vector<GLint> uniformTransformIndices(uniformTransformNum);
-        glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniformTransformIndices.data());
-        GLint uniformTransformSizes = 0;
-        glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformTransformSizes);
-        const GLsizei blockNameSize = 256;
-        GLchar blockName[blockNameSize];
-        glGetActiveUniformBlockName(_glProgram, uniformIndexTransform, blockNameSize, nullptr, blockName);
-        
-        GL_CALL(glUniformBlockBinding(_glProgram, uniformIndexTransform, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Transform]));
-        
-        GLint currentBindingPoint = -1;
-        GL_CALL(glGetActiveUniformBlockiv(_glProgram, uniformIndexTransform, GL_UNIFORM_BLOCK_BINDING, &currentBindingPoint));
-        
-        GL_CALL(glBindBufferBase(GL_UNIFORM_BUFFER, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Transform], _uniformBuffers[UNIFORM_BUFFER_NAME::Transform]));
-        
-        GLuint offset = 0;
-        GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Transform], _uniformBuffers[UNIFORM_BUFFER_NAME::Transform], offset, uniformTransformSizes));
-        offset = NEXT_ALIGN_2(offset + uniformTransformSizes, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-        
-        GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING[UNIFORM_BUFFER_NAME::Light], _uniformBuffers[UNIFORM_BUFFER_NAME::Light], offset, sizeof(Material)));
-        offset = NEXT_ALIGN_2(offset + sizeof(Material), UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-        
-        //glUniformMatrix4fv(uniformTransformVP, 1, false, );
-        //glUniformBufferEXT(_glProgram, uniformLight, );
-        
-        //GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
-        
-        printf("\n");
-    }
+
+	GL_CALL(glUseProgram(_glProgram));
 }
 
 XRFrameWalker::XRFrameWalker()
@@ -349,5 +406,6 @@ void XRFrameWalker::UpdateFrame()
     auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
     
     scene->Update(0);
+	_rendering_stratagy->Update(scene);
     _rendering_stratagy->Render();
 }

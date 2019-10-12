@@ -37,11 +37,12 @@ public:
           static const GLuint max_try = static_cast<GLuint>(sizeof(versions) / sizeof(versions[0]));
           if(version_try < max_try)
           {
+			  // Todo: Query for each platform
               glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
               glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, versions[version_try][0]);
               glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, versions[version_try][1]);
               glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-              glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+              //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
               glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_LOSE_CONTEXT_ON_RESET);
               //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
               glfwWindowHint(GLFW_CONTEXT_RELEASE_BEHAVIOR, GLFW_RELEASE_BEHAVIOR_FLUSH);

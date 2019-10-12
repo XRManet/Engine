@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "XRModelGL.h"
+#include "XRTextureGL.h"
 
 #include <assert.h>
 
@@ -31,4 +32,10 @@ XRModel* xrCreateModel(XRModelData const* loadable)
 {
   RenderEngineGLInitializer::GetInitializer();
   return new XRModelGL(loadable);
+}
+
+XRTexture* xrCreateTexture(XRTextureData const* loadable)
+{
+	RenderEngineGLInitializer::GetInitializer();
+	return new XRTextureGL(loadable);
 }
