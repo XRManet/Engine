@@ -42,7 +42,7 @@
 #endif
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 #define GL_CALL(glCall) { glCall; GLenum error = glGetError(); if(error != GL_NO_ERROR) { printf("GL Error %x\n", error); assert(error == GL_NO_ERROR); } }
 #else
 #define GL_CALL(x) x

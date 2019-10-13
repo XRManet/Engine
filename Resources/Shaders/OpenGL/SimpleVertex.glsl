@@ -1,4 +1,4 @@
-#version 430 core
+#version 400 core
 
 #extension GL_ARB_separate_shader_objects : enable
 
@@ -10,6 +10,12 @@ layout (std140, column_major) uniform MatrixBlock
 	mat4 view;
 	mat4 viewProj;
 };
+
+struct Material {
+    vec4 diffuse;
+};
+
+uniform Material Materials;
 
 struct Light {
 	vec4 position;
@@ -25,11 +31,6 @@ layout (shared) uniform LightBlock
 	Light light;
 };
 
-struct Material {
-	vec4 diffuse;
-};
-
-uniform Material matereials;
 uniform vec4 test;
 
 out vec3 frag_normal;

@@ -24,8 +24,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+char const* GetGlErrorString(GLenum errorCode);
+
 // TODO) 나중엔 GL 관련부로 치워야함
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 
 #if TEST_BLOCK_JIMAN_1
 template<typename glCall>
@@ -53,8 +55,10 @@ void GL_CALL_VOID(glVoidCall glFunc)
 }()
 #endif
 
-#define GL_CALL(glCall) { glCall; GLenum error = glGetError(); assert(error == GL_NO_ERROR); }
+#define GL_CALL(glCall) { glCall; GLenum error; while(error = glGetError(), error != GL_NO_ERROR) { printf("\n<OpenGL Error: %s>\n", GetGlErrorString(error)); assert(error == GL_NO_ERROR); } }
+#define GL_CALL_WARN(glCall) { glCall; GLenum error; while(error = glGetError(), error != GL_NO_ERROR) { printf("\n<OpenGL Warning: %s>\n", GetGlErrorString(error)); } }
 
 #else
 #define GL_CALL(x) x
+#define GL_CALL_WARN(x) x
 #endif
