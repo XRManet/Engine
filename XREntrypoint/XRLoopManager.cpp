@@ -5,6 +5,39 @@
 #include <XRFrameworkBase/XRScene.h>
 #include "XRSceneManager.h"
 
+void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	auto _this = static_cast<XRRenderingInfra<GLFW>*>(glfwGetWindowUserPointer(window));
+
+	switch (key)
+	{
+	case GLFW_KEY_W:
+		if (action == GLFW_PRESS)
+		{
+			printf("W Key pressed\n");
+		}
+		break;
+	case GLFW_KEY_S:
+		if (action == GLFW_PRESS)
+		{
+			printf("S Key pressed\n");
+		}
+		break;
+	case GLFW_KEY_A:
+		if (action == GLFW_PRESS)
+		{
+			printf("A Key pressed\n");
+		}
+		break;
+	case GLFW_KEY_D:
+		if (action == GLFW_PRESS)
+		{
+			printf("D Key pressed\n");
+		}
+		break;
+	}
+}
+
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
 
 namespace
@@ -172,9 +205,31 @@ static GLint MAX_TEXTURE_IMAGE_UNITS = 0;
 static GLint MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0;
 static GLint MAX_COMPUTE_TEXTURE_IMAGE_UNITS = 0;
 
-GLuint UNIFORM_BINDING[] = {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+struct UniformBlock
+{
+	uint32_t _uniformBlockIndex;
+	int32_t _uniformBlockSize;
+	std::unordered_map<std::string, uint32_t> _uniformIndices;
 };
+
+struct ProgramResources
+{
+	GLint _maxNumVariablesInActiveUniformBlock = 16;
+	GLint _numActiveUniformBlocks = 0;
+	std::unordered_map<std::string, UniformBlock> _activeUniformBlocks;
+
+	struct UniformBlockBindingInfo
+	{
+		uint32_t			_binding;
+		uint32_t			_offset;
+	};
+	std::vector<std::string> _indexedActiveUniformBlocks;
+	std::vector<UniformBlockBindingInfo> _indexedUniformBlockBindingInfo;
+
+public:
+	size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
+};
+ProgramResources programResources;
 
 void XRRenderingStratagyTest::Initialize()
 {
@@ -243,25 +298,6 @@ void XRRenderingStratagyTest::Initialize()
     static int isUniformBufferObjectQueriable = glfwExtensionSupported("GL_ARB_uniform_buffer_object");
     static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GLFW_TRUE)
                                 || (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
-    
-    struct UniformBlock
-    {
-        uint32_t _uniformBlockIndex;
-		int32_t _uniformBlockSize;
-        std::unordered_map<std::string, uint32_t> _uniformIndices;
-    };
-    
-    struct ProgramResources
-    {
-        GLint _maxNumVariablesInActiveUniformBlock = 16;
-        GLint _numActiveUniformBlocks = 0;
-        std::unordered_map<std::string, UniformBlock> _activeUniformBlocks;
-        std::vector<std::string> _indexedActiveUniformBlocks;
-        
-    public:
-        size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
-    };
-    ProgramResources programResources;
 
     GL_CALL(glUseProgram(_glProgram));
     
@@ -412,18 +448,13 @@ void XRRenderingStratagyTest::Initialize()
 		GL_CALL(glUniformBlockBinding(_glProgram, ubLightBlock._uniformBlockIndex, UNIFORM_BINDING_NAME::Light));
 
 		GLuint offset = 0;
+		programResources._indexedUniformBlockBindingInfo.push_back({ UNIFORM_BINDING_NAME::Matrix, offset });
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._uniformBlockSize));
 		offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
+		programResources._indexedUniformBlockBindingInfo.push_back({ UNIFORM_BINDING_NAME::Light, offset });
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Light, _uniformBuffers[0], offset, ubLightBlock._uniformBlockSize));
 		offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-
-		///////////////////_uniformBuffers[0];
-
-		//glUniformMatrix4fv(uniformTransformVP, 1, false, );
-		//glUniformBufferEXT(_glProgram, uniformLight, );
-
-		//GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 	}
 	else
 	{
@@ -439,8 +470,18 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 
 		glm::mat4 transform_vp = projection * viewing;
 
-		const GLuint binding_index_MatrixBlock = 1;
-		//glBindBufferBase(GL_UNIFORM_BUFFER, binding_index_MatrixBlock, );
+		for (auto i = programResources._activeUniformBlocks.begin(); i != programResources._activeUniformBlocks.end(); ++i)
+		{
+			i->second._uniformBlockSize;
+		}
+
+
+		///////////////////_uniformBuffers[0];
+
+		//glUniformMatrix4fv(uniformTransformVP, 1, false, );
+		//glUniformBufferEXT(_glProgram, uniformLight, );
+
+		//GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 	}
 }
 

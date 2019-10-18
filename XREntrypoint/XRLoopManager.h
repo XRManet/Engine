@@ -69,6 +69,7 @@ public:
 				else
 					printf("system-default\n");
 
+				glfwSetWindowUserPointer(_window, this);
 				glfwMakeContextCurrent(_window);
 				break;
 			}
@@ -77,6 +78,8 @@ public:
 				++version_try;
 			}
 		}
+
+		glfwSetKeyCallback(_window, InputKeyboard);
 	}
 
 	~XRRenderingInfra()
@@ -90,6 +93,8 @@ public:
 private:
 	GLFWwindow * _window;
 
+private: // GLFW Events
+	static void InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 public:
 	bool WindowShouldClose() { return glfwWindowShouldClose(_window); }
