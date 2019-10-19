@@ -220,8 +220,11 @@ struct ProgramResources
 
 	struct UniformBlockBindingInfo
 	{
-		uint32_t			_binding;
-		uint32_t			_offset;
+		uint32_t			_binding = 0;
+		uint32_t			_offset = 0;
+		const UniformBlock*	_uniformBlock = nullptr;
+
+		bool isBound() { return _uniformBlock != nullptr; }
 	};
 	std::vector<std::string> _indexedActiveUniformBlocks;
 	std::vector<UniformBlockBindingInfo> _indexedUniformBlockBindingInfo;
@@ -447,12 +450,14 @@ void XRRenderingStratagyTest::Initialize()
 		auto& ubLightBlock = programResources._activeUniformBlocks["LightBlock"];
 		GL_CALL(glUniformBlockBinding(_glProgram, ubLightBlock._uniformBlockIndex, UNIFORM_BINDING_NAME::Light));
 
+		programResources._indexedUniformBlockBindingInfo.resize(UNIFORM_BINDING_NAME::Count);
+
 		GLuint offset = 0;
-		programResources._indexedUniformBlockBindingInfo.push_back({ UNIFORM_BINDING_NAME::Matrix, offset });
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix] = { UNIFORM_BINDING_NAME::Matrix, offset, &ubMatrixBlock };
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._uniformBlockSize));
 		offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-		programResources._indexedUniformBlockBindingInfo.push_back({ UNIFORM_BINDING_NAME::Light, offset });
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Light] = { UNIFORM_BINDING_NAME::Light, offset, &ubLightBlock };
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Light, _uniformBuffers[0], offset, ubLightBlock._uniformBlockSize));
 		offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 	}
@@ -465,21 +470,34 @@ void XRRenderingStratagyTest::Initialize()
 void XRRenderingStratagyTest::Update(XRScene* scene)
 {
 	{
-		glm::mat4 viewing = scene->getCameras()[0].GetInvTransform();
-		glm::mat4 projection = scene->getCameras()[0].GetProjectionTransform();
-
-		glm::mat4 transform_vp = projection * viewing;
-
-		for (auto i = programResources._activeUniformBlocks.begin(); i != programResources._activeUniformBlocks.end(); ++i)
+		struct MatrixBlock
 		{
-			i->second._uniformBlockSize;
+			glm::mat4 view;
+			glm::mat4 proj;
+			glm::mat4 viewProj;
+		} matrixBlock;
+
+		matrixBlock.view = scene->getCameras()[0].GetInvTransform();
+		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();
+		matrixBlock.viewProj = matrixBlock.proj * matrixBlock.view;
+
+		struct LightBlock
+		{
+			glm::vec4 position;
+			glm::vec3 intensity;
+			float attenuation;
+		} lightBlock;
+
+		std::vector<void*> data;
+		data.resize(programResources._indexedUniformBlockBindingInfo.size());
+		data[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
+		data[UNIFORM_BINDING_NAME::Light] = &lightBlock;
+		uint32_t i = 0;
+		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
+		{
+			if (ii->isBound() == false) continue;
+			glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, data[i]);
 		}
-
-
-		///////////////////_uniformBuffers[0];
-
-		//glUniformMatrix4fv(uniformTransformVP, 1, false, );
-		//glUniformBufferEXT(_glProgram, uniformLight, );
 
 		//GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 	}

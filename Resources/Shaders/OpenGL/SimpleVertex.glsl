@@ -8,6 +8,7 @@ layout (location = 1) in vec3 normal;
 layout (std140, column_major) uniform MatrixBlock
 {
 	mat4 view;
+	mat4 proj;
 	mat4 viewProj;
 };
 
