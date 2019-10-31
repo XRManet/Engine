@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "XRModelGL.h"
 #include "XRTextureGL.h"
+#include "XRPipelineGL.h"
 
 #include <assert.h>
 
@@ -38,4 +39,10 @@ XRTexture* xrCreateTexture(XRTextureData const* loadable)
 {
 	RenderEngineGLInitializer::GetInitializer();
 	return new XRTextureGL(loadable);
+}
+
+XRPipeline* xrCreatePipeline(XRPipelineDescriptor const* descriptor)
+{
+	RenderEngineGLInitializer::GetInitializer();
+	return new XRPipelineGL(descriptor);
 }

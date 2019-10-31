@@ -25,6 +25,8 @@ XRSceneTest::XRSceneTest()
     object->SetPosition(position);
     position.x += 1;
   }
+  
+  _object_groups["teapot"] = { model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
 
   _cameras.resize(1);
 
@@ -46,8 +48,7 @@ XRSceneTest::~XRSceneTest()
 
 void XRSceneTest::Update(float dt)
 {
-  //_default_camera.Move({});
-  //_default_camera.Rotate(0, {});
+	
 }
 
 

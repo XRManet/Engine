@@ -7,6 +7,20 @@
 
 class XRCamera;
 
+class XRBaseExport XRObjectGroup
+{
+public:
+	XRModel const* _model = nullptr;
+	std::vector<XRObject const*> _objects;
+
+	XRObjectGroup() = default;
+
+	XRObjectGroup& operator = (const XRObjectGroup& rhs) = default;
+
+public:
+	virtual void draw() const {}
+};
+
 class XRBaseExport XRScene
 {
 protected:
@@ -14,8 +28,11 @@ protected:
   XRResourceManager _resource_manager;
   std::vector<XRCamera> _cameras;
 
+  std::unordered_map<std::string, XRObjectGroup> _object_groups;
+
 public:
 	std::vector<XRCamera> const& getCameras() const { return _cameras; }
+	XRObjectGroup const* getObjectGroup(std::string groupName) const { return &_object_groups.find(groupName)->second; }
 
 
 public:

@@ -42,6 +42,7 @@ void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scan
 
 namespace
 {
+	// Move to XRPipelineGL
 #define DEFAULT_RESOURCE_PATH "Resources/Shaders/OpenGL/"
     constexpr size_t RESOURCE_PATH_END = sizeof(DEFAULT_RESOURCE_PATH) - 1;
     
@@ -434,7 +435,7 @@ void XRRenderingStratagyTest::Initialize()
 		}
 
 		printf("\n=============================================\n");
-		printf("Create buffers with reflection\n\n");
+		printf("Create uniform buffers with reflection\n\n");
 
 		_uniformBuffers.resize(programResources.GetActiveUniformBlocks());
 		glGenBuffers(programResources.GetActiveUniformBlocks(), _uniformBuffers.data());
@@ -452,14 +453,20 @@ void XRRenderingStratagyTest::Initialize()
 
 		programResources._indexedUniformBlockBindingInfo.resize(UNIFORM_BINDING_NAME::Count);
 
-		GLuint offset = 0;
-		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix] = { UNIFORM_BINDING_NAME::Matrix, offset, &ubMatrixBlock };
+		GLsizeiptr offset = 0;
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix] = { UNIFORM_BINDING_NAME::Matrix, static_cast<GLuint>(offset), &ubMatrixBlock };
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._uniformBlockSize));
 		offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Light] = { UNIFORM_BINDING_NAME::Light, offset, &ubLightBlock };
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Light] = { UNIFORM_BINDING_NAME::Light, static_cast<GLuint>(offset), &ubLightBlock };
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Light, _uniformBuffers[0], offset, ubLightBlock._uniformBlockSize));
 		offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+
+		GLsizeiptr uniformBufferSize = offset;
+		glBufferData(GL_UNIFORM_BUFFER, uniformBufferSize, nullptr, GL_DYNAMIC_DRAW);
+
+		printf("\n=============================================\n");
+		printf("Create primitives\n\n");
 	}
 	else
 	{
@@ -492,24 +499,29 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 		data.resize(programResources._indexedUniformBlockBindingInfo.size());
 		data[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
 		data[UNIFORM_BINDING_NAME::Light] = &lightBlock;
+
 		uint32_t i = 0;
 		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
 		{
 			if (ii->isBound() == false) continue;
-			glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, data[i]);
+			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, data[i]));
 		}
-
-		//GL_CALL(glDrawElementsInstanced(GL_TRIANGLES, )_;
 	}
 }
 
-void XRRenderingStratagyTest::Render()
+#include <XRRenderEngineGL/XRModelGL.h>
+
+void XRRenderingStratagyTest::Render(XRScene* scene)
 {
     glClearColor(1, 1, 1, 1);
     
     glClear(GL_COLOR_BUFFER_BIT);
 
 	GL_CALL(glUseProgram(_glProgram));
+
+	XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapot");
+	teapotGroup->draw();
+	//glDrawElements(GL_TRIANGLES, , GL_UNSIGNED_INT, nullptr);
 }
 
 XRFrameWalker::XRFrameWalker()
@@ -524,5 +536,5 @@ void XRFrameWalker::UpdateFrame()
     
     scene->Update(0);
 	_rendering_stratagy->Update(scene);
-    _rendering_stratagy->Render();
+    _rendering_stratagy->Render(scene);
 }

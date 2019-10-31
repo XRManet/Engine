@@ -5,11 +5,14 @@
 class XRInputLayoutGL : public XRInputLayout
 {
 private:
-  unsigned vao;
+  unsigned _vao;
 
 public:
-  XRInputLayoutGL(XRModel* model);
+  XRInputLayoutGL(XRModelData const* model);
   virtual ~XRInputLayoutGL();
+
+public:
+	void bind() const override;
 };
 
 class XRModelGL : public XRModel
@@ -26,4 +29,8 @@ private:
 public:
   XRModelGL(XRModelData const* data);
   virtual ~XRModelGL();
+
+
+public:
+	void bind() const override;
 };

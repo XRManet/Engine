@@ -15,9 +15,6 @@
     <Filter Include="소스 파일\Resource">
       <UniqueIdentifier>{333265a2-5f24-47a6-9e84-5200d3ab963b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Resource\Model">
-      <UniqueIdentifier>{2f5b8f1a-fecf-44b2-af0a-aadf37706622}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Object">
       <UniqueIdentifier>{8e12d167-1e2e-41ec-ab86-b5433cdbfd4f}</UniqueIdentifier>
     </Filter>
@@ -57,8 +54,17 @@
     <Filter Include="소스 파일\Engine\Render\Linker">
       <UniqueIdentifier>{f3b24feb-c8c9-42c0-bdfc-03daee2298b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Resource\Texture">
+    <Filter Include="소스 파일\Resource\ModelData">
+      <UniqueIdentifier>{2f5b8f1a-fecf-44b2-af0a-aadf37706622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Resource\TextureData">
       <UniqueIdentifier>{d90bb26b-020c-4aa1-9c99-09e3ca6b31a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Physics">
+      <UniqueIdentifier>{61eaea27-3f98-48dc-98b3-21e4e21d4750}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Physics\Linker">
+      <UniqueIdentifier>{88c3ed47-f865-4266-8a1d-a1e7dc9e26a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -77,9 +83,6 @@
     <ClInclude Include="XRObjectManager.h">
       <Filter>소스 파일\Object</Filter>
     </ClInclude>
-    <ClInclude Include="XRBody.h">
-      <Filter>소스 파일\Resource\Body</Filter>
-    </ClInclude>
     <ClInclude Include="XRBodyData.h">
       <Filter>소스 파일\Resource\Body</Filter>
     </ClInclude>
@@ -87,10 +90,10 @@
       <Filter>소스 파일\Resource\Body</Filter>
     </ClInclude>
     <ClInclude Include="XRModelData.h">
-      <Filter>소스 파일\Resource\Model</Filter>
+      <Filter>소스 파일\Resource\ModelData</Filter>
     </ClInclude>
     <ClInclude Include="XRWavefrontObject.h">
-      <Filter>소스 파일\Resource\Model</Filter>
+      <Filter>소스 파일\Resource\ModelData</Filter>
     </ClInclude>
     <ClInclude Include="XRLoadable.h">
       <Filter>소스 파일\Resource</Filter>
@@ -125,20 +128,26 @@
     <ClInclude Include="XRPlatform.h">
       <Filter>소스 파일\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="XRTexture.h">
-      <Filter>소스 파일\Resource\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="XRTextureData.h">
-      <Filter>소스 파일\Resource\Texture</Filter>
+      <Filter>소스 파일\Resource\TextureData</Filter>
     </ClInclude>
     <ClInclude Include="XRDXTC.h">
-      <Filter>소스 파일\Resource\Texture</Filter>
+      <Filter>소스 파일\Resource\TextureData</Filter>
     </ClInclude>
     <ClInclude Include="XRBmp.h">
-      <Filter>소스 파일\Resource\Texture</Filter>
+      <Filter>소스 파일\Resource\TextureData</Filter>
     </ClInclude>
     <ClInclude Include="XRPlatformWindows.hpp">
       <Filter>소스 파일\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="XRTexture.h">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBody.h">
+      <Filter>소스 파일\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="XRPipeline.h">
+      <Filter>소스 파일\Engine\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -152,19 +161,16 @@
       <Filter>소스 파일\Resource</Filter>
     </ClCompile>
     <ClCompile Include="XRModelData.cpp">
-      <Filter>소스 파일\Resource\Model</Filter>
+      <Filter>소스 파일\Resource\ModelData</Filter>
     </ClCompile>
     <ClCompile Include="XRWavefrontObject.cpp">
-      <Filter>소스 파일\Resource\Model</Filter>
+      <Filter>소스 파일\Resource\ModelData</Filter>
     </ClCompile>
     <ClCompile Include="XRObjectManager.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
     <ClCompile Include="XRResourceManager.cpp">
       <Filter>소스 파일\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="XRBody.cpp">
-      <Filter>소스 파일\Resource\Body</Filter>
     </ClCompile>
     <ClCompile Include="XRModel.cpp">
       <Filter>소스 파일\Engine\Render</Filter>
@@ -179,16 +185,19 @@
       <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClCompile>
     <ClCompile Include="XRTextureData.cpp">
-      <Filter>소스 파일\Resource\Texture</Filter>
+      <Filter>소스 파일\Resource\TextureData</Filter>
     </ClCompile>
     <ClCompile Include="XRDXTC.cpp">
-      <Filter>소스 파일\Resource\Texture</Filter>
+      <Filter>소스 파일\Resource\TextureData</Filter>
     </ClCompile>
     <ClCompile Include="XRBmp.cpp">
-      <Filter>소스 파일\Resource\Texture</Filter>
+      <Filter>소스 파일\Resource\TextureData</Filter>
     </ClCompile>
     <ClCompile Include="XRPlatform.cpp">
       <Filter>소스 파일\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="XRBody.cpp">
+      <Filter>소스 파일\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

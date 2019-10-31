@@ -7,10 +7,12 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
-XRInputLayoutGL::XRInputLayoutGL(XRModel* model)
+XRInputLayoutGL::XRInputLayoutGL(XRModelData const* model)
 {
-  GL_CALL(glGenVertexArrays(1, &vao));
-  GL_CALL(glBindVertexArray(vao));
+	// Parse given model and construct input layout from it.
+	// if then, we can get a layout of model and just use it later.
+  GL_CALL(glGenVertexArrays(1, &_vao));
+  GL_CALL(glBindVertexArray(_vao));
 
   GLuint size = 0;
   GLuint num = 0;
@@ -29,6 +31,11 @@ XRInputLayoutGL::XRInputLayoutGL(XRModel* model)
 XRInputLayoutGL::~XRInputLayoutGL()
 {
 
+}
+
+void XRInputLayoutGL::bind() const
+{
+	glBindVertexArray(_vao);
 }
 
 XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
@@ -72,8 +79,16 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
   }
   
   GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+  _inputLayout = new XRInputLayoutGL(data);
 }
 
 XRModelGL::~XRModelGL()
 {
+}
+
+void XRModelGL::bind() const
+{
+	glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index);
 }

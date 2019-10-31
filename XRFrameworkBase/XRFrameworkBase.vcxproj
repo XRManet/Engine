@@ -171,6 +171,7 @@
     <ClInclude Include="XRModelData.h" />
     <ClInclude Include="XRObject.h" />
     <ClInclude Include="XRObjectManager.h" />
+    <ClInclude Include="XRPipeline.h" />
     <ClInclude Include="XRPlatform.h" />
     <ClInclude Include="XRPlatformWindows.hpp" />
     <ClInclude Include="XRPrimitiveTypes.h" />

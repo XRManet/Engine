@@ -119,7 +119,7 @@ public:
 
 public:
 	virtual void Update(XRScene* scene) {}
-	virtual void Render() {}
+	virtual void Render(XRScene* scene) {}
 };
 
 class XRRenderingStratagyTest : public XRRenderingStratagy
@@ -164,7 +164,7 @@ public:
 	virtual void Initialize();
 
 	virtual void Update(XRScene* scene);
-	virtual void Render();
+	virtual void Render(XRScene* scene);
 };
 
 #include <memory>

@@ -30,6 +30,9 @@
     <ClInclude Include="XRTextureGL.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="XRPipelineGL.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +48,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="XRTextureGL.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="XRPipelineGL.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

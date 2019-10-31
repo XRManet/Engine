@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdafx.h>
+#include "stdafx.h"
 
 class XRMaterial {};
 
@@ -14,6 +14,9 @@ class XRBaseExport XRInputLayout
 public:
   XRInputLayout() {}
   virtual ~XRInputLayout() {}
+
+public:
+	virtual void bind() const {}
 };
 
 class XRBaseExport XRModel
@@ -30,6 +33,16 @@ protected:
 public:
   XRModel(XRModelData const* data);
   virtual ~XRModel();
+
+public:
+	virtual void bind() const {}
+	void bindWithInputLayout() const
+	{
+		if(_inputLayout != nullptr)
+			_inputLayout->bind();
+
+		bind();
+	}
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS
