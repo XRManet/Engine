@@ -26,7 +26,7 @@ XRSceneTest::XRSceneTest()
     position.x += 1;
   }
   
-  _object_groups["teapot"] = { model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
+  _object_groups["teapots_1"] = { model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
 
   _cameras.resize(1);
 
