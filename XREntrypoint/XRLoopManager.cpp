@@ -519,7 +519,7 @@ void XRRenderingStratagyTest::Render(XRScene* scene)
 
 	GL_CALL(glUseProgram(_glProgram));
 
-	XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapot");
+	XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapots_1");
 	teapotGroup->draw();
 	//glDrawElements(GL_TRIANGLES, , GL_UNSIGNED_INT, nullptr);
 }

@@ -33,7 +33,12 @@ protected:
 
 public:
 	std::vector<XRCamera> const& getCameras() const { return _cameras; }
-	XRObjectGroup const* getObjectGroup(std::string groupName) const { return &_object_groups.find(groupName)->second; }
+	XRObjectGroup const* getObjectGroup(std::string groupName) const
+	{
+		auto it = _object_groups.find(groupName);
+		assert(it != _object_groups.end());
+		return &it->second;
+	}
 
 
 public:
