@@ -50,10 +50,11 @@ namespace XRPlatform
             //assert (exports->AddressOfNames != 0) // assertion is not preferred.
             if (exports->AddressOfNames != 0)
             {
-                BYTE** names = (BYTE**)(reinterpret_cast<const char*>(_handle) + exports->AddressOfNames);
+				void const* addressOffsetOfNames = (reinterpret_cast<char const*>(_handle) + exports->AddressOfNames);
+                int const* offsetOfNames = static_cast<int const*>(addressOffsetOfNames);
                 for (int i = 0; i < exports->NumberOfNames; i++)
                 {
-                    const char* name = (const char*)_handle + (int)names[i];
+                    const char* name = reinterpret_cast<char const*>(_handle) + offsetOfNames[i];
                     listOfFunctionNames.push_back(name);
                 }
             }
