@@ -10,10 +10,10 @@
 
 #include "XRPlatform.h"
 
-#if defined(_WIN32) || defined(_WIN64)
+#if XR_PLATFORM == XR_PLATFORM_WINDOWS
 #include "XRPlatformWindows.hpp"
 static const XRPlatform::Names XRCurrentPlatformName = XRPlatform::Windows;
-#else
+#elif XR_PLATFORM == XR_PLATFORM_OSX
 #include "XRPlatformOSX.hpp"
 static const XRPlatform::Names XRCurrentPlatformName = XRPlatform::OSX;
 #endif

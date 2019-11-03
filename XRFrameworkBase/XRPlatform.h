@@ -38,5 +38,14 @@ namespace XRPlatform
 	XRBaseExport void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames);
 };
 
+#define XR_PLATFORM_UNDEFINED   0
+#define XR_PLATFORM_WINDOWS     1
+#define XR_PLATFORM_OSX         2
+
+#if defined(_WIN32) || defined(_WIN64)
+#define XR_PLATFORM XR_PLATFORM_WINDOWS
+#else
+#define XR_PLATFORM XR_PLATFORM_OSX
+#endif
 
 #endif /* XRPlatform_h */

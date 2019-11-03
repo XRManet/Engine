@@ -1,6 +1,7 @@
 #pragma once
 
 #include <XRFrameworkBase/XRGeometry.h>
+#include <XRFrameworkBase/XRPlatform.h>
 
 enum XRLoopManagerInfra : unsigned {
 	GLFW,
@@ -42,7 +43,11 @@ public:
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, versions[version_try][0]);
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, versions[version_try][1]);
 				// Note: Use compatible profile because there is a bug in GLEW for Windows
+#if XR_PLATFORM == XR_PLATFORM_WINDOWS
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+#elif XR_PLATFORM == XR_PLATFORM_OSX
+                glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
 				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 				glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_LOSE_CONTEXT_ON_RESET);
 				// Note: To control with EGL may not be available.
