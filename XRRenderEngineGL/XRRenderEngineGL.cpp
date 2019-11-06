@@ -5,6 +5,7 @@
 #include "XRModelGL.h"
 #include "XRTextureGL.h"
 #include "XRPipelineGL.h"
+#include "XRCommandBufferGL.h"
 
 #include <assert.h>
 
@@ -45,4 +46,10 @@ XRPipeline* xrCreatePipeline(XRPipelineDescriptor const* descriptor)
 {
 	RenderEngineGLInitializer::GetInitializer();
 	return new XRPipelineGL(descriptor);
+}
+
+XRCommandBuffer* xrCreateCommandBuffer()
+{
+	RenderEngineGLInitializer::GetInitializer();
+	return new XRCommandBufferGL;
 }

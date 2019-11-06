@@ -521,7 +521,6 @@ void XRRenderingStratagyTest::Render(XRScene* scene)
 
 	XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapots_1");
 	teapotGroup->draw();
-	//glDrawElements(GL_TRIANGLES, , GL_UNSIGNED_INT, nullptr);
 }
 
 XRFrameWalker::XRFrameWalker()

@@ -10,8 +10,11 @@ XRTexture* (*xrCreateTexture)(XRTextureData const* loadable) = nullptr;
 #include "XRPipeline.h"
 XRPipeline* (*xrCreatePipeline)(XRPipelineDescriptor const* descriptor) = nullptr;
 
+#include "XRCommandBuffer.h"
+XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
+
 #ifndef XRRENDER_ENGINE
-#define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineingGL"
+#define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineGL"
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
 #endif
 
@@ -32,6 +35,7 @@ static struct XRRenderEngineLinker
     GetProcAddress(xrCreateModel, "xrCreateModel");
 	GetProcAddress(xrCreateTexture, "xrCreateTexture");
 	GetProcAddress(xrCreatePipeline, "xrCreatePipeline");
+	GetProcAddress(xrCreateCommandBuffer, "xrCreateCommandBuffer");
   }
 
   ~XRRenderEngineLinker()

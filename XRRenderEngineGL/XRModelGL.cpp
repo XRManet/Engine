@@ -14,8 +14,8 @@ XRInputLayoutGL::XRInputLayoutGL(XRModelData const* model)
   GL_CALL(glGenVertexArrays(1, &_vao));
   GL_CALL(glBindVertexArray(_vao));
 
+  GLuint num = model->GetHeader()->vertex_count;
   GLuint size = 0;
-  GLuint num = 0;
   size_t offset = size * num;
   GL_CALL(glEnableVertexAttribArray(0));
   GL_CALL(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
@@ -69,7 +69,7 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
       GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->texture_offset));
     }
   }
-
+  
   if (header->IsIndexed())
   {
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index));
@@ -92,3 +92,6 @@ void XRModelGL::bind() const
 	glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index);
 }
+
+uint32_t XRModelGL::getNumVertices() const { return _data->GetHeader()->vertex_count; }
+uint32_t XRModelGL::getNumIndices() const { return _data->GetHeader()->index_count; }

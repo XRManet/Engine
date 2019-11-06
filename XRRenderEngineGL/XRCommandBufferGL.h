@@ -1,0 +1,24 @@
+#pragma once
+
+#include <XRFrameworkBase/XRCommandBuffer.h>
+
+class XRCommandBufferGL : public XRCommandBuffer
+{
+public:
+	XRCommandBufferGL();
+	virtual ~XRCommandBufferGL();
+
+public:
+	//void begin() override;
+	//void end() override;
+
+	void draw(XRPrimitiveTopology topology, uint32_t start, uint32_t count) override;
+	void drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t start, uint32_t count) override;
+	//void drawInstanced() override;
+	//void drawIndexedInstanced() override;
+	//void drawIndirect() override;
+
+	//void dispatch() override;
+
+	//void addBarrier() override;
+};

@@ -33,4 +33,7 @@ public:
 
 public:
 	void bind() const override;
+
+	uint32_t getNumVertices() const override;
+	uint32_t getNumIndices() const override;
 };

@@ -6,20 +6,22 @@
 #include "XRResourceManager.h"
 
 class XRCamera;
+class XRCommandBuffer;
 
 class XRBaseExport XRObjectGroup
 {
 public:
 	XRModel const* _model = nullptr;
 	std::vector<XRObject const*> _objects;
+	XRCommandBuffer* _commandBuffer;
 
 	XRObjectGroup() = default;
-	XRObjectGroup(XRModel const* model, std::vector<XRObject const*>&& objects) : _model(model), _objects(std::move(objects)) {}
+	XRObjectGroup(XRCommandBuffer* commandBuffer, XRModel const* model, std::vector<XRObject const*>&& objects) : _commandBuffer(commandBuffer), _model(model), _objects(std::move(objects)) {}
 
 	XRObjectGroup& operator = (const XRObjectGroup& rhs) = default;
 
 public:
-	virtual void draw() const {}
+	void draw() const;
 };
 
 class XRBaseExport XRScene

@@ -20,7 +20,7 @@
 #define XRBaseHidden
 
 #ifndef XRRENDERENGINEGL_EXPORTS
-#define XRRenderExport extern "C" __declspec(dllimport)
+#define XRRenderExport extern __declspec(dllimport)
 #endif
 
 #else

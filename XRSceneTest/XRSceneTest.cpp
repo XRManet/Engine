@@ -8,6 +8,7 @@
 #include <XRFrameworkBase/XRObject.h>
 #include <XRFrameworkBase/XRLogging.h>
 #include <XRFrameworkBase/XRUtility.h>
+#include <XRFrameworkBase/XRCommandBuffer.h>
 
 #include <GL/glew.h>
 
@@ -25,8 +26,10 @@ XRSceneTest::XRSceneTest()
     object->SetPosition(position);
     position.x += 1;
   }
+
+  static std::unique_ptr<XRCommandBuffer> commandBuffer(xrCreateCommandBuffer());
   
-  _object_groups["teapots_1"] = { model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
+  _object_groups["teapots_1"] = { commandBuffer.get(), model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
 
   _cameras.resize(1);
 

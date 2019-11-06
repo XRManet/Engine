@@ -149,6 +149,12 @@
     <ClInclude Include="XRPipeline.h">
       <Filter>소스 파일\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="XRCommandBuffer.h">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="XRPlatformOSX.hpp">
+      <Filter>소스 파일\Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">

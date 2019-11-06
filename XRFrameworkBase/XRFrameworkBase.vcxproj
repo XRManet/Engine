@@ -162,6 +162,7 @@
     <ClInclude Include="XRBmp.h" />
     <ClInclude Include="XRBody.h" />
     <ClInclude Include="XRBodyData.h" />
+    <ClInclude Include="XRCommandBuffer.h" />
     <ClInclude Include="XRDXTC.h" />
     <ClInclude Include="XRFrameworkBase.h" />
     <ClInclude Include="XRGeometry.h" />
@@ -173,6 +174,9 @@
     <ClInclude Include="XRObjectManager.h" />
     <ClInclude Include="XRPipeline.h" />
     <ClInclude Include="XRPlatform.h" />
+    <ClInclude Include="XRPlatformOSX.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="XRPlatformWindows.hpp" />
     <ClInclude Include="XRPrimitiveTypes.h" />
     <ClInclude Include="XRResourceManager.h" />

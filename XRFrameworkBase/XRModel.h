@@ -43,6 +43,9 @@ public:
 
 		bind();
 	}
+
+	virtual uint32_t getNumVertices() const { return 0; }
+	virtual uint32_t getNumIndices() const { return 0; }
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS
