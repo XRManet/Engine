@@ -36,7 +36,7 @@ out vec3 frag_normal;
 
 void main()
 {
-	gl_Position = viewProj * position;
+	gl_Position = proj * position;
 
 	frag_normal = mat3(view) * normal;
 	//frag_normal = mat3(view) * normal + test.xyz;

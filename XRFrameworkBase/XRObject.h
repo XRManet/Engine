@@ -27,7 +27,7 @@ private:
   void*     _context = nullptr;
 
   glm::vec4 _position {};
-  glm::quat _orientation {};
+  glm::quat _orientation { glm::identity<glm::quat>() };
 
 
 private:
