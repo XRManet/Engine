@@ -438,7 +438,7 @@ void XRRenderingStratagyTest::Initialize()
 		printf("Create uniform buffers with reflection\n\n");
 
 		_uniformBuffers.resize(programResources.GetActiveUniformBlocks());
-		glGenBuffers(programResources.GetActiveUniformBlocks(), _uniformBuffers.data());
+		glGenBuffers(static_cast<GLint>(programResources.GetActiveUniformBlocks()), _uniformBuffers.data());
 
 		auto& ubMatrixBlock = programResources._activeUniformBlocks["MatrixBlock"];
 		GL_CALL(glUniformBlockBinding(_glProgram, ubMatrixBlock._uniformBlockIndex, UNIFORM_BINDING_NAME::Matrix));
@@ -454,17 +454,41 @@ void XRRenderingStratagyTest::Initialize()
 		programResources._indexedUniformBlockBindingInfo.resize(UNIFORM_BINDING_NAME::Count);
 
 		GLsizeiptr offset = 0;
-		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix] = { UNIFORM_BINDING_NAME::Matrix, static_cast<GLuint>(offset), &ubMatrixBlock };
-		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._uniformBlockSize));
-		offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        
+        GLsizeiptr uniformBufferSize = offset;
+        GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, _uniformBuffers[0]));
+        GL_CALL(glBufferData(GL_UNIFORM_BUFFER, uniformBufferSize, nullptr, GL_DYNAMIC_DRAW));
 
-		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Light] = { UNIFORM_BINDING_NAME::Light, static_cast<GLuint>(offset), &ubLightBlock };
+#if defined(_DEBUG) || defined(DEBUG)
+        // Note: Core profile needs allocation first, then binding each range to corresponding index as we wish.
+        {
+            GLint allocatedSize = 0;
+            glGetBufferParameteriv(GL_UNIFORM_BUFFER, GL_BUFFER_SIZE, &allocatedSize);
+            assert(allocatedSize == uniformBufferSize);
+        }
+#endif
+        
+        offset = 0;
+        programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix] = {
+            UNIFORM_BINDING_NAME::Matrix, static_cast<GLuint>(offset), &ubMatrixBlock };
+        GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._uniformBlockSize));
+        offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Light] = {
+            UNIFORM_BINDING_NAME::Light, static_cast<GLuint>(offset), &ubLightBlock };
 		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Light, _uniformBuffers[0], offset, ubLightBlock._uniformBlockSize));
-		offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-		GLsizeiptr uniformBufferSize = offset;
-		glBufferData(GL_UNIFORM_BUFFER, uniformBufferSize, nullptr, GL_DYNAMIC_DRAW);
-
+        struct BufferRange
+        {
+            GLint64 start = 0;
+            GLint64 size = 0;
+        } bufferRange;
+        GL_CALL(glGetInteger64i_v(GL_UNIFORM_BUFFER_START, UNIFORM_BINDING_NAME::Matrix, &bufferRange.start));
+        GL_CALL(glGetInteger64i_v(GL_UNIFORM_BUFFER_SIZE, UNIFORM_BINDING_NAME::Matrix, &bufferRange.size));
+        
 		printf("\n=============================================\n");
 		printf("Create primitives\n\n");
 	}

@@ -27,7 +27,7 @@
 #define XRBaseExport __attribute__((visibility("default")))
 #define XRBaseHidden __attribute__((visibility("hidden")))
 
-#define XRRenderExport __attribute__((visibility("default")))
+#define XRRenderExport extern "C" __attribute__((visibility("default")))
 
 #endif
 

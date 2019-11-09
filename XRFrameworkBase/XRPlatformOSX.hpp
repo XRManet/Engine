@@ -27,7 +27,7 @@ namespace XRPlatform
             _handle = dlopen(open_name, RTLD_LOCAL);
             if(_handle == nullptr)
             {
-                const char* fallback_name = "libXRRenderingEngineGL.dylib";
+                const char* fallback_name = "libXRRenderEngineGL.dylib";
                 _handle = dlopen(fallback_name, RTLD_LOCAL);
             }
         }
