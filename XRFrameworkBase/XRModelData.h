@@ -20,8 +20,6 @@ public:
   struct ModelHeader
   {
     size_t vertex_offset = 0;
-    size_t normal_offset = 0;
-    size_t texture_offset = 0;
     size_t index_offset = 0;
 
     int vertex_count = 0;
@@ -30,7 +28,15 @@ public:
     int primitive_type = 0;
     int vertex_number_in_face = 0;
 
+	int num_vertex_attributes = 0;
+
     bool IsIndexed() const { return (index_count > 0); }
+  };
+
+  struct VertexAttribute
+  {
+	  size_t offset = 0;
+	  uint32_t num_elements = 0;
   };
 
 public:

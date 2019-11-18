@@ -59,7 +59,7 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 
 		assert(header->vertex_count > 0);
 		GLuint offset = 0;
-		GLuint size = sizeof(XRModelData::VertexPosition) * header->vertex_count;
+		GLuint size = sizeof(uint32_t) * header->vertex_count;
 		GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->vertex_offset));
 
 		if (header->normal_offset > 0)
