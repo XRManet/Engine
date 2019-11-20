@@ -8,7 +8,7 @@ private:
   unsigned _vao;
 
 public:
-  XRInputLayoutGL(XRModelData const* model);
+  XRInputLayoutGL(uint32_t preferredStride, std::vector<XRVertexBufferDesc>&& inputLayoutDesc);
   virtual ~XRInputLayoutGL();
 
 public:

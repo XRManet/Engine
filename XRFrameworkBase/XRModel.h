@@ -272,36 +272,76 @@ enum class XRFormat : uint32_t
 	R10G10B10A2_UINT = A2B10G10R10_UINT_PACK32,
 	R11G11B10_FLOAT = B10G11R11_UFLOAT_PACK32,
 };
+
+struct XRVertexAttributeDesc
+{
+protected:
+	uint32_t shaderLocation = -1;
+	uint16_t bindingIndex = -1;
+	uint16_t subIndex = -1;
+	uint32_t offset = -1;
+public:
+	XRFormat format = XRFormat::UNKNOWN;
+};
+
+struct XRVertexBufferDesc
+{
+protected:
+	uint32_t bindingIndex = -1;
+	uint32_t stride = 0;
+public:
+	// if instanceDivisor == -1, then it is not buffer for instance
+	uint32_t instanceDivisor = -1;
+
+	std::vector<XRVertexAttributeDesc> attributes;
+};
+
+enum PreferredStrideSizeOption
+{
+	DenyGroup = 0,
+	TotalSizeInAttributes = -1,
+
+	Default = DenyGroup,
+};
+
 class XRBaseExport XRInputLayout
 {
+private:
+	std::vector<XRVertexBufferDesc> _inputLayoutDesc;
+	uint32_t _preferredStride;
+
 public:
-  XRInputLayout() {}
-  virtual ~XRInputLayout() {}
+	XRInputLayout(uint32_t preferredStrideSize, std::vector<XRVertexBufferDesc>&& inputLayoutDesc)
+		: _preferredStride(preferredStrideSize), _inputLayoutDesc(std::move(inputLayoutDesc)) {}
+	virtual ~XRInputLayout() {}
 
 public:
 	virtual void bind() const {}
+
+protected:
+	std::vector<XRVertexBufferDesc> const& getInputLayoutDesc() const { return _inputLayoutDesc; }
 };
 
 class XRBaseExport XRModel
 {
 protected:
-  union {
-    XRModelData const* _data;
-    // Todo) Other types of data for its own rendering engine would be given.
-    // To support them, the XRModel has to bind data dynamically.
-    // The XRModel introduces common interfaces of model data to a XRObject.
-  };
-  XRInputLayout* _inputLayout;
+	union {
+		XRModelData const* _data;
+		// Todo) Other types of data for its own rendering engine would be given.
+		// To support them, the XRModel has to bind data dynamically.
+		// The XRModel introduces common interfaces of model data to a XRObject.
+	};
+	XRInputLayout* _inputLayout;
 
 public:
-  XRModel(XRModelData const* data);
-  virtual ~XRModel();
+	XRModel(XRModelData const* data);
+	virtual ~XRModel();
 
 public:
 	virtual void bind() const {}
 	void bindWithInputLayout() const
 	{
-		if(_inputLayout != nullptr)
+		if (_inputLayout != nullptr)
 			_inputLayout->bind();
 
 		bind();
