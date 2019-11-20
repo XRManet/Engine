@@ -7,12 +7,27 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
-XRInputLayoutGL::XRInputLayoutGL(XRModelData const* model)
+XRInputLayoutGL::XRInputLayoutGL(uint32_t preferredStride, std::vector<XRVertexBufferDesc>&& __inputLayoutDesc)
+	: XRInputLayout(preferredStride, std::move(__inputLayoutDesc))
 {
 	// Parse given model and construct input layout from it.
 	// if then, we can get a layout of model and just use it later.
 	GL_CALL(glGenVertexArrays(1, &_vao));
 	GL_CALL(glBindVertexArray(_vao));
+
+	struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
+	struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
+
+	auto& inputLayoutDesc = getInputLayoutDesc();
+	for (int i = 0; i < inputLayoutDesc.size(); ++i)
+	{
+		auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc[i]);
+		int numAttributes = bufferDesc.attributes.size();
+		for (int j = 0; j < numAttributes; ++j)
+		{
+			auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+		}
+	}
 
 	auto header = model->GetHeader();
 	GLuint num = header->vertex_count;
