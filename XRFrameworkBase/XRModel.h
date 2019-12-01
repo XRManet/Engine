@@ -273,6 +273,13 @@ enum class XRFormat : uint32_t
 	R11G11B10_FLOAT = B10G11R11_UFLOAT_PACK32,
 };
 
+struct XRFormatInfo
+{
+	uint32_t channelsPerTexel;
+	uint32_t bytesizePerBlock;
+	uint32_t texelsPerBlock;
+};
+
 struct XRVertexAttributeDesc
 {
 protected:

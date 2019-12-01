@@ -26,6 +26,7 @@ XRInputLayoutGL::XRInputLayoutGL(uint32_t preferredStride, std::vector<XRVertexB
 		for (int j = 0; j < numAttributes; ++j)
 		{
 			auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+			attributeDesc.offset;
 		}
 	}
 
