@@ -113,7 +113,6 @@ enum class XRFormat : uint32_t
 	R32_UINT,
 	R32_SINT,
 	R32_SFLOAT,
-	R32G32_TYPELESS,
 	R32G32_UINT,
 	R32G32_SINT,
 	R32G32_SFLOAT,
@@ -303,7 +302,7 @@ public:
 	std::vector<XRVertexAttributeDesc> attributes;
 };
 
-enum PreferredStrideSizeOption
+enum class PreferredStrideSizeOption : uint32_t
 {
 	DenyGroup = 0,
 	TotalSizeInAttributes = -1,
