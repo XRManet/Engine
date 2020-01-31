@@ -32,12 +32,14 @@ bool XRWavefrontObject::LoadDataFromFile()
 		std::string _materialName;
 	};
 
-	struct XRVertexAttributeType { enum {
-		Position,
-		Texcoord,
-		Normal,
-		Count
-	}; };
+	struct XRVertexAttributeType {
+		enum {
+			Position,
+			Texcoord,
+			Normal,
+			Count
+		};
+	};
 
 	struct XRWavefrontObjectObject // Wavefront-obj에 포함된 하나의 오브젝트
 	{
@@ -64,6 +66,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 	struct XRWavefrontObjectFaceKey
 	{
+	public:
 		union {
 			struct {
 				uint16_t	_positionIndex;
@@ -73,13 +76,16 @@ bool XRWavefrontObject::LoadDataFromFile()
 			uint64_t		_compare = 0;
 		};
 
-		bool operator == (const XRWavefrontObjectFaceKey& _rhs) const
+	public: // unordered_map key로 쓰기 위한 operator 재정의
+		inline bool operator == (const XRWavefrontObjectFaceKey& _rhs) const
 		{
 			return _compare == _rhs._compare;
 		}
+		// std::hash<uint64_t>를 이용하기 위함
+		inline operator uint64_t() const { return _compare; }
 	};
 
-	std::unordered_map<XRWavefrontObjectFaceKey, uint32_t> _indices;
+	std::unordered_map<XRWavefrontObjectFaceKey, uint32_t, std::hash<uint64_t>> _indices;
 	std::vector<XRWavefrontObjectObject> objects;
 	objects.push_back(XRWavefrontObjectObject());
 	// Quad mesh는 tri mesh로 둘로 쪼개서 기록
@@ -163,16 +169,15 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 			uint32_t size = vertices.size();
 			uint32_t vertexIds[8] = { 0, };
+			for (uint32_t i = 0; i < 4; ++i) unit.i[i] = 0;
 			for (uint32_t i = 0; i < size; ++i)
 			{
-				available_count = sscanf(vertices[i],
-					"%d %d %d %d",
-					unit.i + 0, unit.i + 1, unit.i + 2, unit.i + 3);
+				available_count = sscanf(vertices[i], "%d %d %d %d", unit.i + 0, unit.i + 1, unit.i + 2, unit.i + 3);
 
-				assert(unit.i[XRVertexAttributeType::Position] < currentObject->_positions.size());
-				assert(unit.i[XRVertexAttributeType::Texcoord] < currentObject->_texcoords.size());
-				assert(unit.i[XRVertexAttributeType::Normal] < currentObject->_normals.size());
-				assert(available_count < 3);
+				assert(available_count > 0 && available_count < 3);
+				assert(available_count < 1 || unit.i[XRVertexAttributeType::Position] < currentObject->_positions.size());
+				assert(available_count < 2 || unit.i[XRVertexAttributeType::Texcoord] < currentObject->_texcoords.size());
+				assert(available_count < 3 || unit.i[XRVertexAttributeType::Normal] < currentObject->_normals.size());
 
 				XRWavefrontObjectFaceKey faceKey;
 				faceKey._positionIndex = unit.i[XRVertexAttributeType::Position];

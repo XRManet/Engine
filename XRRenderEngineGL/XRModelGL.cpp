@@ -30,14 +30,14 @@ XRInputLayoutGL::XRInputLayoutGL(uint32_t preferredStride, std::vector<XRVertexB
 		}
 	}
 
-	auto header = model->GetHeader();
-	GLuint num = header->vertex_count;
+	//auto header = model->GetHeader();
+	GLuint num = 0;//header->vertex_count;
 	GLuint size = 0;
 	size_t offset = size * num;
 	GL_CALL(glEnableVertexAttribArray(0));
 	GL_CALL(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
 
-	if (header->normal_offset != -1)
+	//if (header->normal_offset != -1)
 	{
 		size = sizeof(XRModelData::VertexPosition);
 		offset += size * num;
@@ -45,7 +45,7 @@ XRInputLayoutGL::XRInputLayoutGL(uint32_t preferredStride, std::vector<XRVertexB
 		GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
 	}
 
-	if (header->texture_offset != -1)
+	//if (header->texture_offset != -1)
 	{
 	}
 	GL_CALL(glBindVertexArray(0));
@@ -78,18 +78,18 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 		GLuint size = sizeof(uint32_t) * header->vertex_count;
 		GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->vertex_offset));
 
-		if (header->normal_offset > 0)
+		//if (header->normal_offset > 0)
 		{
 			offset = size;
 			size += sizeof(XRModelData::VertexNormal) * header->vertex_count;
-			GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->normal_offset));
+			//GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->normal_offset));
 		}
 
-		if (header->texture_offset > 0)
+		//if (header->texture_offset > 0)
 		{
 			offset = size;
 			size += sizeof(XRModelData::TextureCoordinate) * header->vertex_count;
-			GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->texture_offset));
+			//GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, address + header->texture_offset));
 		}
 	}
 
@@ -103,7 +103,7 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 
 	GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-	_inputLayout = new XRInputLayoutGL(data);
+	//_inputLayout = new XRInputLayoutGL(data);
 }
 
 XRModelGL::~XRModelGL()
