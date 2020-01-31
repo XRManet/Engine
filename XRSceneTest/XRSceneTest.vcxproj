@@ -23,7 +23,7 @@
     <ProjectGuid>{97949D4A-FD50-45B9-B0EB-6F231564EA3E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>XRSceneTest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
