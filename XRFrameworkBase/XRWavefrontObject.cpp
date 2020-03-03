@@ -22,7 +22,9 @@ bool XRWavefrontObject::LoadDataFromFile()
 	uint32_t element_count_normal = 0;
 	uint32_t element_count_tex = 0;
 
-	struct XRWavefrontObjectSubobject // Per-material
+	// Per-material sub object.
+	// Note(jiman): 
+	struct XRWavefrontObjectSubobject
 	{
 		std::vector<ReadUnit> _positions;
 		std::vector<ReadUnit> _texcoords;
@@ -41,7 +43,9 @@ bool XRWavefrontObject::LoadDataFromFile()
 		};
 	};
 
-	struct XRWavefrontObjectObject // Wavefront-obj에 포함된 하나의 오브젝트
+	// An object formatted by WavefrontOBJ.
+	// Note(jiman): wavefront format data를 load하고 추가적인 가공을 거치지 않음.
+	struct XRWavefrontObjectObject
 	{
 		// All data in an object
 		std::vector<ReadUnit> _positions;
@@ -85,7 +89,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 		inline operator uint64_t() const { return _compare; }
 	};
 
-	std::unordered_map<XRWavefrontObjectFaceKey, uint32_t, std::hash<uint64_t>> _indices;
+	std::unordered_map<XRWavefrontObjectFaceKey, uint32_t, std::hash<uint64_t>> indices;
 	std::vector<XRWavefrontObjectObject> objects;
 	objects.push_back(XRWavefrontObjectObject());
 	// Quad mesh는 tri mesh로 둘로 쪼개서 기록
@@ -98,6 +102,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 	while (fgets(line, MAX_LINE_CHARACTERS, fp) != nullptr)
 	{
 		static const float default_value[4] = { 0.f, 0.f, 0.f, 1.f };
+		static const uint32_t default_index[4] = { 0, };
 
 		int read_pos = 2;
 		int available_count = 0;
@@ -124,6 +129,8 @@ bool XRWavefrontObject::LoadDataFromFile()
 			available_count = sscanf(line + read_pos,
 				"%f %f %f %f",
 				unit.f + 0, unit.f + 1, unit.f + 2, unit.f + 3);
+			for (int32_t i = available_count; i < 4; ++i)
+				unit.f[i] = default_value[i];
 
 			std::vector<ReadUnit>* target = nullptr;
 			switch (line[1])
@@ -167,14 +174,18 @@ bool XRWavefrontObject::LoadDataFromFile()
 				vertices.push_back(token);
 			} while ((token = strtok_s(nullptr, " \r\n", &context)) != nullptr);
 
+			static const uint32_t MAX_NUM_VERTICES_IN_FACE = 8;
+			uint32_t vertexIds[MAX_NUM_VERTICES_IN_FACE] = { 0, };
 			uint32_t size = vertices.size();
-			uint32_t vertexIds[8] = { 0, };
-			for (uint32_t i = 0; i < 4; ++i) unit.i[i] = 0;
 			for (uint32_t i = 0; i < size; ++i)
 			{
 				available_count = sscanf(vertices[i], "%d %d %d %d", unit.i + 0, unit.i + 1, unit.i + 2, unit.i + 3);
+				for (int32_t i = available_count; i < 4; ++i)
+					unit.i[i] = default_index[i];
 
+				// Note(jiman): Wavefront의 한 vertex에 대해 /로 구분 가능한 vertex attribute는 최대 3개.
 				assert(available_count > 0 && available_count < 3);
+				// Note(jiman): 각 vertex attribute의 유효 index 여부 확인
 				assert(available_count < 1 || unit.i[XRVertexAttributeType::Position] < currentObject->_positions.size());
 				assert(available_count < 2 || unit.i[XRVertexAttributeType::Texcoord] < currentObject->_texcoords.size());
 				assert(available_count < 3 || unit.i[XRVertexAttributeType::Normal] < currentObject->_normals.size());
@@ -184,10 +195,13 @@ bool XRWavefrontObject::LoadDataFromFile()
 				faceKey._texcoordIndex = unit.i[XRVertexAttributeType::Texcoord];
 				faceKey._normalIndex = unit.i[XRVertexAttributeType::Normal];
 
-				auto result = _indices.find(faceKey);
-				if (result == _indices.end())
+				//_indices.
+				auto result = indices.find(faceKey);
+				
+				if (result == indices.end())
 				{
-					vertexIds[i] = _indices.size();
+					vertexIds[i] = indices.size();
+					indices.insert({ faceKey, vertexIds[i] });
 
 					currentSubobject->_positions.push_back(currentObject->_positions[unit.i[XRVertexAttributeType::Position]]);
 					currentSubobject->_texcoords.push_back(currentObject->_texcoords[unit.i[XRVertexAttributeType::Texcoord]]);
@@ -196,7 +210,8 @@ bool XRWavefrontObject::LoadDataFromFile()
 				else vertexIds[i] = result->second;
 			}
 
-			uint32_t triangles = (size - 1) / 2;
+			uint32_t triangles = (size - 2);
+			assert(triangles > 0);
 			for (uint32_t i = 0; i < triangles; ++i)
 			{
 				currentSubobject->_indices.push_back(vertexIds[0]);
@@ -208,8 +223,9 @@ bool XRWavefrontObject::LoadDataFromFile()
 		else if (line[0] == 'g') assert(0);
 	}
 
-	assert(texture_coordinate_count == 0 || texture_coordinate_count == header->vertex_count);
-	assert(vertex_normal_count == 0 || vertex_normal_count == header->vertex_count);
+	// Todo(jiman): vertex attribute의 갯수 비교는 sub object 별로 처리해야 함
+	//assert(texture_coordinate_count == 0 || texture_coordinate_count == header->vertex_count);
+	//assert(vertex_normal_count == 0 || vertex_normal_count == header->vertex_count);
 
 	fclose(fp);
 
