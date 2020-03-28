@@ -19,9 +19,15 @@ class XRModelGL : public XRModel
 {
 private:
   union {
-    unsigned vbo[2];
+    unsigned vbo[0];
     struct {
+#if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
+		unsigned position;
+		unsigned normal;
+		unsigned textureCoord;
+#else
       unsigned vertex;
+#endif
       unsigned index;
     };
   } GL;

@@ -314,6 +314,8 @@ class XRBaseExport XRInputLayout
 {
 private:
 	std::vector<XRVertexBufferDesc> _inputLayoutDesc;
+
+	uint32_t _num_vertex_attributes;
 	uint32_t _preferredStride;
 
 public:

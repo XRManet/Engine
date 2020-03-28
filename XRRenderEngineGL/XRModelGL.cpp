@@ -65,11 +65,10 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 {
 	const auto* header = _data->GetHeader();
 	const GLubyte* address = _data->GetData();
-	GL_CALL(glGenBuffers(2, GL.vbo));
-
+	GL_CALL(glGenBuffers(sizeof(GL) / sizeof(unsigned), GL.vbo));
+	
 	{
 		GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, GL.vertex));
-
 		GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * header->vertex_count * 2,
 			nullptr, GL_STATIC_DRAW));
 

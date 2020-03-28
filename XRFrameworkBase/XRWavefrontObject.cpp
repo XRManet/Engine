@@ -14,7 +14,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 		return false;
 
 	ReadUnit unit;
-	ModelHeader *header = GetHeader();
+	MeshHeader *header = GetHeader();
 
 	size_t texture_coordinate_count = 0;
 	size_t vertex_normal_count = 0;
@@ -26,10 +26,11 @@ bool XRWavefrontObject::LoadDataFromFile()
 	// Note(jiman): 
 	struct XRWavefrontObjectSubobject
 	{
+#if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
 		std::vector<ReadUnit> _positions;
 		std::vector<ReadUnit> _texcoords;
 		std::vector<ReadUnit> _normals;
-
+#endif
 		std::vector<uint32_t> _indices;
 		std::string _materialName;
 	};
@@ -203,9 +204,17 @@ bool XRWavefrontObject::LoadDataFromFile()
 					vertexIds[i] = indices.size();
 					indices.insert({ faceKey, vertexIds[i] });
 
+#if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
+					/* Note(jiman): 모델 데이터는 데이터를 최대한 빠른 시간 내에 올리는 목적으로 만들어져야 하므로,
+					 *				차후엔 데이터 재구성을 통해 별도의 헤더를 마련하고 이를 통해 InputLayout을 결정받아
+					 *				데이터를 읽도록 할 것.
+					 *				현재 단계에선 단순 처리로 진행한다.
+					 *
+					 */
 					currentSubobject->_positions.push_back(currentObject->_positions[unit.i[XRVertexAttributeType::Position]]);
 					currentSubobject->_texcoords.push_back(currentObject->_texcoords[unit.i[XRVertexAttributeType::Texcoord]]);
 					currentSubobject->_normals.push_back(currentObject->_normals[unit.i[XRVertexAttributeType::Normal]]);
+#endif
 				}
 				else vertexIds[i] = result->second;
 			}
