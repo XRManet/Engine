@@ -3,14 +3,12 @@
 #include "XRResourceManager.h"
 
 #include "XRModel.h"
-
-// Temporary include
-#include "XRWavefrontObject.h"
+#include "XRModelData.h"
 
 XRResourceManager::XRResourceManager()
 {
   // TODO) Parse manifest for resources and enroll those.
-  XRModelData * loadable = new XRWavefrontObject("Resources/teapot.obj");
+  XRModelData * loadable = new XRModelData("Resources/teapot.obj");
   loadable->LoadDataFromFile();
 
   XRModel * model = xrCreateModel(loadable);

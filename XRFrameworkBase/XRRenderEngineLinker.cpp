@@ -2,6 +2,7 @@
 #include "XRPlatform.h"
 
 #include "XRModel.h"
+XRInputLayout* (*xrCreateInputLayout)(XRInputLayoutDesc &&inputLayoutDesc, uint32_t preferredStrideSize) = nullptr;
 XRModel* (*xrCreateModel)(XRModelData const* loadable) = nullptr;
 
 #include "XRTexture.h"

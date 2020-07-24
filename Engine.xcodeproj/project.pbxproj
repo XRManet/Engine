@@ -17,6 +17,9 @@
 		E81D4E7323769C9F003E4C0D /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E81D4E7423769C9F003E4C0D /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E81D4E7523769CA0003E4C0D /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E88219C024CA26DE00868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E88219C224CA26E200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E8C1BA3C22B621B9006EDA1E /* XRPrimitiveTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */; };
 		E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */; };
 		E8C1BA3F22B621B9006EDA1E /* XRRenderEngineLinker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */; };
@@ -81,6 +84,8 @@
 		E8E67C3F234A7DB10015A403 /* XRTextureGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E67C3D234A7DB10015A403 /* XRTextureGL.h */; };
 		E8E67C40234A7DB10015A403 /* XRTextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */; };
 		E8E67C43234A80860015A403 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7822B6368A006EDA1E /* OpenGL.framework */; };
+		E8EED0552475B3D7003852A7 /* XRHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8EED0532475B3D7003852A7 /* XRHash.cpp */; };
+		E8EED0562475B3D7003852A7 /* XRHash.h in Headers */ = {isa = PBXBuildFile; fileRef = E8EED0542475B3D7003852A7 /* XRHash.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +113,39 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E88219BF24CA26D200868276 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E88219C124CA26DE00868276 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E88219C024CA26DE00868276 /* libXRFrameworkBase.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E88219C324CA26E200868276 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E88219C224CA26E200868276 /* libXRFrameworkBase.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E8C1BA5822B6319F006EDA1E /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -217,6 +255,8 @@
 		E8E67C3D234A7DB10015A403 /* XRTextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTextureGL.h; sourceTree = "<group>"; };
 		E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTextureGL.cpp; sourceTree = "<group>"; };
 		E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = "ThirdParty/OSX/glfw-3.2.1/bin/Release/libglfw.3.2.dylib"; sourceTree = "<group>"; };
+		E8EED0532475B3D7003852A7 /* XRHash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XRHash.cpp; sourceTree = "<group>"; };
+		E8EED0542475B3D7003852A7 /* XRHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRHash.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -411,6 +451,8 @@
 				E8E59181226AF68200164749 /* XRScene.h */,
 				E8E59182226AF68200164749 /* XRRigidBody.h */,
 				E80F3661226B8AF6007414A1 /* XRType.h */,
+				E8EED0532475B3D7003852A7 /* XRHash.cpp */,
+				E8EED0542475B3D7003852A7 /* XRHash.h */,
 			);
 			path = XRFrameworkBase;
 			sourceTree = "<group>";
@@ -449,6 +491,7 @@
 				E8E67C39234A7AAE0015A403 /* XRBmp.h in Headers */,
 				E8E59186226AF68200164749 /* XRBodyData.h in Headers */,
 				E8E59190226AF68200164749 /* XRSavable.h in Headers */,
+				E8EED0562475B3D7003852A7 /* XRHash.h in Headers */,
 				E8C1BA4722B62365006EDA1E /* XRPlatformWindows.hpp in Headers */,
 				E8C1BA4822B62365006EDA1E /* XRPlatformOSX.hpp in Headers */,
 				E8E59187226AF68200164749 /* XRObject.h in Headers */,
@@ -486,6 +529,7 @@
 				E8C1BA4E22B630FE006EDA1E /* Headers */,
 				E8C1BA4F22B630FE006EDA1E /* Sources */,
 				E8C1BA5022B630FE006EDA1E /* Frameworks */,
+				E88219C324CA26E200868276 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -504,6 +548,7 @@
 				E8C1BA5622B6319F006EDA1E /* Sources */,
 				E8C1BA5722B6319F006EDA1E /* Frameworks */,
 				E8C1BA5822B6319F006EDA1E /* Copy Files */,
+				E88219BF24CA26D200868276 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -522,6 +567,7 @@
 				E8C1BA7E22B63B8A006EDA1E /* Headers */,
 				E8C1BA7F22B63B8A006EDA1E /* Sources */,
 				E8C1BA8022B63B8A006EDA1E /* Frameworks */,
+				E88219C124CA26DE00868276 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -579,6 +625,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = E812F83D2263417E00C87624;
 			productRefGroup = E812F8472263417E00C87624 /* Products */;
@@ -640,6 +687,7 @@
 				E8E59193226AF68200164749 /* XRResourceManager.cpp in Sources */,
 				E8E59198226AF68200164749 /* XRLoadable.cpp in Sources */,
 				E8E5918A226AF68200164749 /* XRFrameworkBase.cpp in Sources */,
+				E8EED0552475B3D7003852A7 /* XRHash.cpp in Sources */,
 				E8E67C37234A7AAE0015A403 /* XRTextureData.cpp in Sources */,
 				E8E67C3B234A7AAE0015A403 /* XRBmp.cpp in Sources */,
 				E8E5919C226AF68200164749 /* XRModel.cpp in Sources */,

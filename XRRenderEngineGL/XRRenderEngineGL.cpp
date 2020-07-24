@@ -30,6 +30,12 @@ struct RenderEngineGLInitializer
   }
 };
 
+XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
+{
+	RenderEngineGLInitializer::GetInitializer();
+	return new XRInputLayoutGL(std::move(inputLayoutDesc), preferredStrideSize);
+}
+
 XRModel* xrCreateModel(XRModelData const* loadable)
 {
   RenderEngineGLInitializer::GetInitializer();

@@ -8,11 +8,14 @@ private:
   unsigned _vao;
 
 public:
-  XRInputLayoutGL(uint32_t preferredStride, std::vector<XRVertexBufferDesc>&& inputLayoutDesc);
+    XRInputLayoutGL(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
+    XRInputLayoutGL(const XRObjectHeader* header);
+    
   virtual ~XRInputLayoutGL();
 
 public:
 	void bind() const override;
+    void* generateVertexBuffers() const;
 };
 
 class XRModelGL : public XRModel

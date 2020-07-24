@@ -4,21 +4,21 @@
 
 #include "XRModelData.h"
 
-class XRWavefrontObject : public XRModelData
+class XRWavefrontObject : public XRModelDataLoader
 {
 public:
-  union ReadUnit {
-    float f[4];
-    int i[4];
-  };
+	union ReadUnit {
+		int i[4] { 0, };
+		float f[4];
+	};
 
 
 public:
-  XRWavefrontObject(std::string && path) : XRModelData(std::move(path)) {}
-  XRWavefrontObject(std::string const & path) : XRModelData(path) {}
-  virtual ~XRWavefrontObject() {}
+	XRWavefrontObject(std::string && path) : XRModelDataLoader(std::move(path)) {}
+	XRWavefrontObject(std::string const & path) : XRModelDataLoader(path) {}
+	virtual ~XRWavefrontObject() {}
 
-
+	
 public:
-  bool LoadDataFromFile() override;
+	bool LoadDataFromFile() override;
 };
