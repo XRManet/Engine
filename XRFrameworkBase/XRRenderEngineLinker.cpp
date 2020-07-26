@@ -33,6 +33,7 @@ static struct XRRenderEngineLinker
     std::vector<std::string> dllLists;
     XRPlatform::ListDLLFunctions(_dso, dllLists);
 
+	GetProcAddress(xrCreateInputLayout, "xrCreateInputLayout");
     GetProcAddress(xrCreateModel, "xrCreateModel");
 	GetProcAddress(xrCreateTexture, "xrCreateTexture");
 	GetProcAddress(xrCreatePipeline, "xrCreatePipeline");

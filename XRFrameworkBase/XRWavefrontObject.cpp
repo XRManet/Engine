@@ -47,14 +47,14 @@ bool XRWavefrontObject::LoadDataFromFile()
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
 		union {
 			struct {
-				std::vector<ReadUnit> _positions;
-				std::vector<ReadUnit> _texcoords;
-				std::vector<ReadUnit> _normals;
+				std::vector<ReadUnit> _positions = std::vector<ReadUnit>();
+				std::vector<ReadUnit> _texcoords = std::vector<ReadUnit>();
+				std::vector<ReadUnit> _normals = std::vector<ReadUnit>();
 			};
 			std::vector<ReadUnit> _vertices[3];
 		};
 #elif XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_AOS
-		std::vector<ReadUnit> _vertices[1];
+		std::vector<ReadUnit> _vertices[1] = { std::vector<ReadUnit>() };
 #endif
 		std::vector<uint32_t> _indices;
 		std::string _materialName;
@@ -192,7 +192,6 @@ bool XRWavefrontObject::LoadDataFromFile()
 		{
 			// 1 2 3 4 5 ...
 			// 123 134 145
-			currentObject = &objects.back();
 
 			std::vector<char*> vertices;
 			char* context = nullptr;
@@ -204,6 +203,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 			static const uint32_t MAX_NUM_VERTICES_IN_FACE = 8;
 			uint32_t vertexIds[MAX_NUM_VERTICES_IN_FACE] = { 0, };
 			uint32_t size = static_cast<uint32_t>(vertices.size());
+			
 			for (uint32_t i = 0; i < size; ++i)
 			{
 				// Note(jiman): Wavefront는 각 attribute를 /로 구분
@@ -213,7 +213,9 @@ bool XRWavefrontObject::LoadDataFromFile()
 					unit.i[i] = default_index[i];
 
 				// Note(jiman): Wavefront의 한 vertex에 대해 /로 구분 가능한 vertex attribute는 최대 3개.
-				assert(available_count > 0 && available_count < 3);
+				assert(available_count > 0 && available_count <= 3);
+				if (available_count == 0 || available_count > 3)
+					continue;
 				// Note(jiman): 각 vertex attribute의 유효 index 여부 확인
 				assert(available_count < 1 || unit.i[XRVertexAttributeType::Position] < currentObject->_positions.size());
 				assert(available_count < 2 || unit.i[XRVertexAttributeType::Texcoord] < currentObject->_texcoords.size());
@@ -242,8 +244,10 @@ bool XRWavefrontObject::LoadDataFromFile()
 					 */
 
 					currentSubobject->_positions.push_back(currentObject->_positions[unit.i[XRVertexAttributeType::Position]]);
-					currentSubobject->_texcoords.push_back(currentObject->_texcoords[unit.i[XRVertexAttributeType::Texcoord]]);
-					currentSubobject->_normals.push_back(currentObject->_normals[unit.i[XRVertexAttributeType::Normal]]);
+					if (available_count > 1)
+						currentSubobject->_texcoords.push_back(currentObject->_texcoords[unit.i[XRVertexAttributeType::Texcoord]]);
+					if (available_count > 2)
+						currentSubobject->_normals.push_back(currentObject->_normals[unit.i[XRVertexAttributeType::Normal]]);
 #endif
 				}
 				else vertexIds[i] = result->second;
@@ -281,15 +285,15 @@ bool XRWavefrontObject::LoadDataFromFile()
 		{	// per vertex buffer
 			vertexBufferDesc.instanceDivisor = 0;
 			
-			vertexAttributeDesc.format = XRFormat::R8G8B8_UNORM;
+			vertexAttributeDesc.format = XRFormat::R32G32B32_SFLOAT;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));
 			
-			vertexAttributeDesc.format = XRFormat::R8G8_UNORM;
+			vertexAttributeDesc.format = XRFormat::R32G32_SFLOAT;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));
 			
-			vertexAttributeDesc.format = XRFormat::R8G8B8_UNORM;
+			vertexAttributeDesc.format = XRFormat::R32G32B32_SFLOAT;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));
 		}
@@ -298,11 +302,11 @@ bool XRWavefrontObject::LoadDataFromFile()
 			vertexBufferDesc.instanceDivisor = 0;
 
 			// for each vertex attribute in vb
-			vertexAttributeDesc.format = XRFormat::R8G8B8_UNORM;
+			vertexAttributeDesc.format = XRFormat::R32G32B32_SFLOAT;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexAttributeDesc.format = XRFormat::R8G8_UNORM;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
-			vertexAttributeDesc.format = XRFormat::R8G8B8_UNORM;
+			vertexAttributeDesc.format = XRFormat::R32G32B32_SFLOAT;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));

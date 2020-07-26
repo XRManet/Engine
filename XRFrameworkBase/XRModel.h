@@ -402,6 +402,7 @@ public:
 public:
 	inline uint32_t getStride(uint32_t bufferIndex) const { return _vertexBuffers[bufferIndex].stride; }
 	inline uint32_t getNumVertexBuffers() const { return static_cast<uint32_t>(_vertexBuffers.size()); }
+	inline const XRVertexBufferDesc& getVertexBufferDesc(uint32 bufferIndex) const { return _vertexBuffers[bufferIndex]; }
 	
 private:
 	uint32_t calcHash();

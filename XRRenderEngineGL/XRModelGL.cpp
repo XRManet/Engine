@@ -7,8 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
-XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
-	: XRInputLayout(std::move(inputLayoutDesc), preferredStrideSize)
+XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_t preferredStrideSize)
+	: XRInputLayout(std::move(in_inputLayoutDesc), preferredStrideSize)
 {
 	// Parse given model and construct input layout from it.
 	// if then, we can get a layout of model and just use it later.
@@ -18,16 +18,23 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& inputLayoutDesc, uint32_t p
 	struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
 	struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
 
-#if 0
+	int attributeIndex = 0;
 	auto& inputLayoutDesc = getInputLayoutDesc();
-	for (int i = 0; i < inputLayoutDesc.size(); ++i)
+	for (int i = 0; i < inputLayoutDesc.getNumVertexBuffers(); ++i)
 	{
-		auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc[i]);
-		int numAttributes = bufferDesc.attributes.size();
+		auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(i));
+		int numAttributes = static_cast<int>(bufferDesc.attributes.size());
 		for (int j = 0; j < numAttributes; ++j)
 		{
 			auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+			
+			GLuint numVertexAttribute;
+			
+			GL_CALL(glEnableVertexAttribArray(attributeIndex));
+			GL_CALL(glVertexAttribPointer(attributeIndex, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
 			attributeDesc.offset;
+			
+			++attributeIndex;
 		}
 	}
 
@@ -50,7 +57,6 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& inputLayoutDesc, uint32_t p
 	{
 	}
 	GL_CALL(glBindVertexArray(0));
-#endif
 }
 
 XRInputLayoutGL::XRInputLayoutGL(const XRObjectHeader* objectHeader)
@@ -84,12 +90,25 @@ XRInputLayoutGL::XRInputLayoutGL(const XRObjectHeader* objectHeader)
 
 XRInputLayoutGL::~XRInputLayoutGL()
 {
-
+	//
+	// If a vertex array object that is currently bound is deleted, the binding for that object reverts to zero and the default vertex array becomes current.
+	GL_CALL(glDeleteVertexArrays(1, &_vao));
 }
 
 void XRInputLayoutGL::bind() const
 {
 	glBindVertexArray(_vao);
+	
+	constexpr GLuint vertexBufferCount = 3;
+	constexpr GLuint startBindingIndex = 0;
+	GLuint vertexBufferNames[vertexBufferCount] = { 0, 0, 0 };
+	GLintptr vertexBufferStartOffsets[vertexBufferCount] = {0, 0, 0};
+	GLsizei vertexBufferStrides[vertexBufferCount] = {0, 0, 0};
+	//uint vaobj, uint first, sizei count,const uint* buffers,const intptr* offsets,const sizei*strides
+	glVertexArrayVertexBuffers(_vao, startBindingIndex, vertexBufferCount, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides);
+	
+	GLuint elementBufferName = -1;
+	glVertexArrayElementBuffer(_vao, elementBufferName);
 }
 
 void* XRInputLayoutGL::generateVertexBuffers() const

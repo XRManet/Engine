@@ -74,6 +74,12 @@ uint32_t XRFormat::getCommonSize()
 		case XRFormat::R16G16B16_SINT:
 		case XRFormat::R16G16B16_SFLOAT:
 			return 6;
+			
+		case XRFormat::R32G32_SFLOAT:
+			return 8;
+			
+		case XRFormat::R32G32B32_SFLOAT:
+			return 12;
 	}
 	assert(false);
 	return -1;
