@@ -8,6 +8,96 @@
 
 #include "XRHash.h"
 
+// Per-material sub object.
+// Note(jiman): 
+struct XRWavefrontObjectSubmeshes
+{
+	XRWavefrontObjectSubmeshes()
+	{
+
+	}
+	XRWavefrontObjectSubmeshes(XRWavefrontObjectSubmeshes&& rhs)
+		: _indices(std::move(rhs._indices))
+		, _materialName(std::move(rhs._materialName))
+	{
+		constexpr uint32_t num = sizeof(_vertices) / sizeof(_vertices[0]);
+		for (uint32_t i = 0; i < num; ++i)
+			_vertices[i] = std::move(rhs._vertices[i]);
+	}
+	~XRWavefrontObjectSubmeshes()
+	{
+	}
+#if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
+	union {
+		struct {
+			std::vector<ReadUnit> _positions;
+			std::vector<ReadUnit> _texcoords;
+			std::vector<ReadUnit> _normals;
+		};
+		std::vector<ReadUnit> _vertices[3] = { std::vector<ReadUnit>(), std::vector<ReadUnit>(), std::vector<ReadUnit>() };
+	};
+#elif XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_AOS
+	std::vector<ReadUnit> _vertices[1] = { std::vector<ReadUnit>() };
+#endif
+	std::vector<uint32_t> _indices;
+	std::string _materialName;
+};
+
+struct XRVertexAttributeType {
+	enum {
+		Position,
+		Texcoord,
+		Normal,
+		Count
+	};
+};
+
+// An object formatted by WavefrontOBJ.
+// Note(jiman): wavefront format data를 load하고 추가적인 가공을 거치지 않음.
+struct XRWavefrontObjectMeshes
+{
+	// All data in an object
+	std::vector<ReadUnit> _positions;
+	std::vector<ReadUnit> _texcoords;
+	std::vector<ReadUnit> _normals;
+
+	std::vector<XRWavefrontObjectSubmeshes> _submeshes;
+
+	uint32_t _numComponentsPosition = 0;
+	uint32_t _numComponentsTexcoord = 0;
+	uint32_t _numComponentsNormal = 0;
+
+	XRWavefrontObjectMeshes()
+	{
+		_positions.resize(1);
+		_texcoords.resize(1);
+		_normals.resize(1);
+
+		_submeshes.resize(1);
+	}
+};
+
+struct XRWavefrontObjectFaceKey
+{
+public:
+	union {
+		struct {
+			uint16_t	_positionIndex;
+			uint16_t	_texcoordIndex;
+			uint16_t	_normalIndex;
+		};
+		uint64_t		_compare = 0;
+	};
+
+public: // unordered_map key로 쓰기 위한 operator 재정의
+	inline bool operator == (const XRWavefrontObjectFaceKey& _rhs) const
+	{
+		return _compare == _rhs._compare;
+	}
+	// std::hash<uint64_t>를 이용하기 위함
+	inline operator uint64_t() const { return _compare; }
+};
+
 // Run-time parsing은 시간이 오래걸리니 차후 모듈로 분리, 리소스 패킹 단계를 따로 거치도록 한다.
 bool XRWavefrontObject::LoadDataFromFile()
 {
@@ -25,96 +115,6 @@ bool XRWavefrontObject::LoadDataFromFile()
 	uint32_t element_count_position = 0;
 	uint32_t element_count_normal = 0;
 	uint32_t element_count_tex = 0;
-
-	// Per-material sub object.
-	// Note(jiman): 
-	struct XRWavefrontObjectSubmeshes
-	{
-		XRWavefrontObjectSubmeshes()
-		{
-			
-		}
-		XRWavefrontObjectSubmeshes(XRWavefrontObjectSubmeshes&& rhs)
-		: _indices(std::move(rhs._indices))
-		, _materialName(std::move(rhs._materialName))
-		{
-			constexpr uint32_t num = sizeof(_vertices) / sizeof(_vertices[0]);
-			for(uint32_t i = 0; i < num; ++i)
-				_vertices[i] = std::move(rhs._vertices[i]);
-		}
-		~XRWavefrontObjectSubmeshes()
-		{
-		}
-#if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
-		union {
-			struct {
-				std::vector<ReadUnit> _positions = std::vector<ReadUnit>();
-				std::vector<ReadUnit> _texcoords = std::vector<ReadUnit>();
-				std::vector<ReadUnit> _normals = std::vector<ReadUnit>();
-			};
-			std::vector<ReadUnit> _vertices[3];
-		};
-#elif XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_AOS
-		std::vector<ReadUnit> _vertices[1] = { std::vector<ReadUnit>() };
-#endif
-		std::vector<uint32_t> _indices;
-		std::string _materialName;
-	};
-
-	struct XRVertexAttributeType {
-		enum {
-			Position,
-			Texcoord,
-			Normal,
-			Count
-		};
-	};
-
-	// An object formatted by WavefrontOBJ.
-	// Note(jiman): wavefront format data를 load하고 추가적인 가공을 거치지 않음.
-	struct XRWavefrontObjectMeshes
-	{
-		// All data in an object
-		std::vector<ReadUnit> _positions;
-		std::vector<ReadUnit> _texcoords;
-		std::vector<ReadUnit> _normals;
-
-		std::vector<XRWavefrontObjectSubmeshes> _submeshes;
-
-		uint32_t _dimPosition;
-		uint32_t _dimTexcoord;
-		uint32_t _dimNormal;
-
-		XRWavefrontObjectMeshes()
-		{
-			_positions.resize(1);
-			_texcoords.resize(1);
-			_normals.resize(1);
-
-			_submeshes.resize(1);
-		}
-	};
-
-	struct XRWavefrontObjectFaceKey
-	{
-	public:
-		union {
-			struct {
-				uint16_t	_positionIndex;
-				uint16_t	_texcoordIndex;
-				uint16_t	_normalIndex;
-			};
-			uint64_t		_compare = 0;
-		};
-
-	public: // unordered_map key로 쓰기 위한 operator 재정의
-		inline bool operator == (const XRWavefrontObjectFaceKey& _rhs) const
-		{
-			return _compare == _rhs._compare;
-		}
-		// std::hash<uint64_t>를 이용하기 위함
-		inline operator uint64_t() const { return _compare; }
-	};
 
 	std::unordered_map<XRWavefrontObjectFaceKey, uint32_t, std::hash<uint64_t>> indices;
 	std::vector<XRWavefrontObjectMeshes> objects;
@@ -175,7 +175,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 		{
 			char buffer[256];
 			sscanf(line + sizeof("usemtl"), "%s", buffer);
-			
+
 			if (hasManySubobjects)
 			{
 				currentObject->_submeshes.emplace_back();
@@ -204,7 +204,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 			static const uint32_t MAX_NUM_VERTICES_IN_FACE = 8;
 			uint32_t vertexIds[MAX_NUM_VERTICES_IN_FACE] = { 0, };
 			uint32_t size = static_cast<uint32_t>(vertices.size());
-			
+
 			for (uint32_t i = 0; i < size; ++i)
 			{
 				// Note(jiman): Wavefront는 각 attribute를 /로 구분
@@ -229,7 +229,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 				//_indices.
 				auto result = indices.find(faceKey);
-				
+
 				if (result == indices.end())
 				{
 					vertexIds[i] = static_cast<uint32_t>(indices.size());
@@ -241,8 +241,8 @@ bool XRWavefrontObject::LoadDataFromFile()
 					 *				데이터를 읽도록 할 것.
 					 *				현재 단계에선 단순 처리로 진행한다.
 					 */
-					/* Note(jiman): Meshes에 기록된 데이터는 VertexAttributeData 이므로 유효한 Vertex로 묶여야만 의미를 갖는다.
-					 */
+					 /* Note(jiman): Meshes에 기록된 데이터는 VertexAttributeData 이므로 유효한 Vertex로 묶여야만 의미를 갖는다.
+					  */
 
 					currentSubobject->_positions.push_back(currentObject->_positions[unit.i[XRVertexAttributeType::Position]]);
 					if (available_count > 1)
@@ -273,6 +273,11 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 	fclose(fp);
 
+	return ProduceXRModelData(objects);
+}
+
+bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>& objects)
+{
 	static std::unordered_map<uint32_t, XRInputLayout*> s_inputLayoutLibrary;
 	static std::unordered_map<uint32_t, XRMaterial> s_materialLibrary;
 	// Note(jiman): Fill to model data
@@ -332,22 +337,20 @@ bool XRWavefrontObject::LoadDataFromFile()
 		size_t totalDataSize = sizeof(XRObjectHeader);
 		
 		header->_numMeshes = static_cast<uint32_t>(objects.size());
-		totalDataSize += sizeof(XRMeshHeader) * header->_numMeshes;
+		totalDataSize += (sizeof(XRMeshHeader) + sizeof(XRMeshHeader*)) * header->_numMeshes;
 
 		for (uint32_t i = 0; i < header->_numMeshes; ++i)
 		{
 			uint32_t numSubmeshes = static_cast<uint32_t>(objects[i]._submeshes.size());
-			totalDataSize += sizeof(XRSubmeshHeader) * numSubmeshes;
+			totalDataSize += (sizeof(XRSubmeshHeader) + sizeof(XRSubmeshHeader*)) * numSubmeshes;
 			
 			for (uint32_t j = 0; j < numSubmeshes; ++j)
 			{
 				const uint32_t numMaterials = 1;
 				totalDataSize += numMaterials * sizeof(uint32_t);
-				{
-					uint32_t materialKey = GetHash(objects[i]._submeshes[j]._materialName.data(), objects[i]._submeshes[j]._materialName.length());
-				}
+
+				totalDataSize += static_cast<uint32_t>(sizeof(uint16_t) * objects[i]._submeshes[j]._indices.size());
 				
-				totalDataSize += numVertexBuffers * sizeof(uint32_t);
 				for (uint32_t k = 0; k < numVertexBuffers; ++k)
 				{
 					if (objects[i]._submeshes[j]._vertices[k].size() == 0)
@@ -357,11 +360,83 @@ bool XRWavefrontObject::LoadDataFromFile()
 					totalDataSize += bufferSize;
 					//totalDataSize += (bufferSize + 3 & (~3u)); // 4byte-align
 				}
-
-				totalDataSize += sizeof(uint16_t);
-				totalDataSize += static_cast<uint32_t>(sizeof(uint16_t) * objects[i]._submeshes[j]._indices.size());
 			}
 		}
+
+		_memory.resize(totalDataSize);
+		header = GetHeader();
+		XRMeshHeader** meshHeaders = header->_meshes;
+		PrimitiveTopology topology(PrimitiveTopology::TriangleList);
+		uint8_t* meshBaseAddress = reinterpret_cast<uint8_t*>(header->_meshes);
+		uint32_t meshOffset = sizeof(XRMeshHeader) * header->_numMeshes;
+		for (uint32_t i = 0; i < header->_numMeshes; ++i)
+		{
+			uint32_t numSubmeshes = static_cast<uint32_t>(objects[i]._submeshes.size());
+
+			meshBaseAddress = meshBaseAddress + meshOffset;
+			meshOffset = 0;
+
+			meshHeaders[i] = reinterpret_cast<XRMeshHeader*>(meshBaseAddress);
+			
+			meshHeaders[i]->_topology = topology; // Temp
+			meshHeaders[i]->_numSubmeshes = numSubmeshes;
+
+			XRSubmeshHeader** submeshHeader = meshHeaders[i]->_submeshes;
+			uint8_t* submeshBaseAddress = reinterpret_cast<uint8_t*>(submeshHeader);
+			uint32_t submeshOffset = sizeof(XRSubmeshHeader*) * numSubmeshes;
+			for (uint32_t j = 0; j < numSubmeshes; ++j)
+			{
+				const uint32_t numMaterials = 1; // Temp
+
+				submeshBaseAddress = reinterpret_cast<uint8_t*>(submeshBaseAddress + submeshOffset);
+				submeshOffset = 0;
+
+				submeshHeader[j] = reinterpret_cast<XRSubmeshHeader*>(submeshBaseAddress);
+				
+				submeshHeader[j]->_inputLayoutKey = inputLayoutDescKey;
+				submeshHeader[j]->_numMaterials = numMaterials;
+
+				submeshOffset += sizeof(XRSubmeshHeader);
+				submeshHeader[j]->_offsetMaterialKeys = submeshOffset;
+
+				uint32_t* const materialKeys = submeshHeader[j]->getMaterialKeys();
+				for(uint32_t k = 0; k < numMaterials; ++k)
+				{
+					materialKeys[k] = GetHash(objects[i]._submeshes[j]._materialName.data(), objects[i]._submeshes[j]._materialName.length());
+				}
+
+				submeshOffset += sizeof(uint32_t) * numMaterials;
+				submeshHeader[j]->_offsetIndex = submeshOffset;
+
+				uint16_t* const indexBuffer = submeshHeader[j]->getIndexBuffer();
+				uint32_t bufferSize = static_cast<uint32_t>(sizeof(uint16_t) * objects[i]._submeshes[j]._indices.size());
+				memcpy(indexBuffer, objects[i]._submeshes[j]._indices.data(), bufferSize);
+				submeshOffset += bufferSize;
+
+				for (uint32_t k = 0; k < numVertexBuffers; ++k)
+				{
+					submeshHeader[j]->_offsetVertexOffsets[k] = submeshOffset;
+
+					uint8_t* const vertexBuffer = submeshHeader[j]->getVertexBuffer(k);
+					if (objects[i]._submeshes[j]._vertices[k].size() == 0)
+						continue;
+
+					uint32_t strideSize = inputLayout->getStride(k);
+					uint32_t numVertices = objects[i]._submeshes[j]._vertices[k].size();
+					bufferSize = static_cast<uint32_t>(strideSize * numVertices);
+					for (uint32_t l = 0; l < numVertices; ++l)
+					{
+						memcpy(vertexBuffer + l * strideSize, &objects[i]._submeshes[j]._vertices[k][l], strideSize);
+					}
+					//memcpy(vertexBuffer, objects[i]._submeshes[j]._vertices[k].data(), bufferSize);
+					submeshOffset += bufferSize;
+				}
+			}
+			submeshBaseAddress = reinterpret_cast<uint8_t*>(submeshBaseAddress + submeshOffset);
+			meshOffset = submeshBaseAddress - meshBaseAddress;
+		}
+		meshBaseAddress = meshBaseAddress + meshOffset;
+		assert(totalDataSize == meshBaseAddress - reinterpret_cast<uint8_t*>(header));
 	}
 
 	return true;

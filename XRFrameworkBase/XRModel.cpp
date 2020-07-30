@@ -3,7 +3,7 @@
 #include "XRModel.h"
 #include "XRHash.h"
 
-uint32_t XRFormat::getCommonSize()
+uint32_t XRFormat::getCommonSize() const
 {
 	switch(_value)
 	{
@@ -83,6 +83,25 @@ uint32_t XRFormat::getCommonSize()
 	}
 	assert(false);
 	return -1;
+}
+
+uint32_t PrimitiveTopology::getNumVertices() const
+{
+	switch (_value)
+	{
+	case UNKNOWN:					return 0;
+	case PointList:					return 1;
+	case LineList:					return 2;
+	case LineListWithAdjacency:		return 2;
+	case LineStrip:					return 2;
+	case LineStripWithAdjacency:	return 2;
+	case TriangleList:				return 3;
+	case TriangleListWithAdjacency:	return 3;
+	case TriangleStrip:				return 3;
+	case TriangleStripWithAdjacency:return 3;
+	case QuadList:					return 4;
+	}
+	return 0;
 }
 
 XRModel::XRModel(XRModelData const* loadableData) : _data(loadableData)

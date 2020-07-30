@@ -283,16 +283,20 @@ struct XRFormat
 		R10G10B10A2_UINT = A2B10G10R10_UINT_PACK32,
 		R11G11B10_FLOAT = B10G11R11_UFLOAT_PACK32,
 	};
+
 private:
 	uint32_t _value = XRFormat::UNKNOWN;
 	
 public:
 	XRFormat() = default;
 	XRFormat(uint32_t rhs) : _value(rhs) {}
-	uint32_t operator = (uint32_t rhs) { return _value = rhs; }
+	inline uint32_t operator = (uint32_t rhs) { return _value = rhs; }
+
+protected:
+	inline uint32_t getValue() const { return _value; }
 	
 public:
-	uint32_t getCommonSize();
+	uint32_t getCommonSize() const;
 };
 
 struct XRFormatInfo
@@ -300,6 +304,34 @@ struct XRFormatInfo
 	uint32_t channelsPerTexel;
 	uint32_t bytesizePerBlock;
 	uint32_t texelsPerBlock;
+};
+
+struct PrimitiveTopology
+{
+	enum {
+		UNKNOWN,
+		PointList,
+		LineList,
+		LineListWithAdjacency,
+		LineStrip,
+		LineStripWithAdjacency,
+		TriangleList,
+		TriangleListWithAdjacency,
+		TriangleStrip,
+		TriangleStripWithAdjacency,
+		QuadList
+	};
+
+private:
+	uint32_t _value = XRFormat::UNKNOWN;
+
+public:
+	PrimitiveTopology() = default;
+	PrimitiveTopology(uint32_t rhs) : _value(rhs) {}
+	inline uint32_t operator = (uint32_t rhs) { return _value = rhs; }
+
+public:
+	uint32_t getNumVertices() const;
 };
 
 class XRInputLayoutDesc;
@@ -335,48 +367,57 @@ public:
 enum class PreferredStrideSizeOption : uint32_t
 {
 	DenyGroup = 0,
-	TotalSizeInAttributes = -1u,
+	TotalSizeInAttributes = uint32_t(-1),
 
 	Default = DenyGroup,
 };
 
 struct XRSubmeshHeader
 {
+	uint32_t _inputLayoutKey = 0;
 	uint32_t _numMaterials = 0;
+
 	uint32_t _offsetMaterialKeys = 0;
-	
-    uint32_t _numVertices = 0;
-	uint32_t _offsetVertexOffsets = 0;
-	
-    uint32_t _numIndices = 0;
 	uint32_t _offsetIndex = 0;
+	uint32_t _offsetVertexOffsets[0];
     
-    bool IsIndexed() const { return (_numIndices > 0); }
+    bool IsIndexed() const { return (_offsetIndex != 0); }
 	const uint32_t* getMaterialKeys() const
 	{
 		return reinterpret_cast<const uint32_t*>(reinterpret_cast<const uint8_t*>(this) + _offsetMaterialKeys);
 	}
-	const uint32_t* getVertexOffsets() const
+	uint32_t* getMaterialKeys()
 	{
-		return reinterpret_cast<const uint32_t*>(reinterpret_cast<const uint8_t*>(this) + _offsetVertexOffsets);
+		return const_cast<uint32_t*>(const_cast<XRSubmeshHeader const*>(this)->getMaterialKeys());
+	}
+	const uint8_t* getVertexBuffer(uint32_t slotIndex) const
+	{
+		return reinterpret_cast<const uint8_t*>(this) + _offsetVertexOffsets[slotIndex];
+	}
+	uint8_t* getVertexBuffer(uint32_t slotIndex)
+	{
+		return const_cast<uint8_t*>(const_cast<XRSubmeshHeader const*>(this)->getVertexBuffer(slotIndex));
 	}
 	const uint16_t* getIndexBuffer() const
 	{
 		return reinterpret_cast<const uint16_t*>(reinterpret_cast<const uint8_t*>(this) + _offsetIndex);
 	}
+	uint16_t* getIndexBuffer()
+	{
+		return const_cast<uint16_t*>(const_cast<XRSubmeshHeader const*>(this)->getIndexBuffer());
+	}
 };
 
 struct XRMeshHeader
 {
-    uint32_t _primitiveType = 0;
-    uint32_t _vertexNumberInFace = 0;
+	PrimitiveTopology _topology;
     
     uint32_t _numSubmeshes;
-    XRSubmeshHeader _submeshes[0];
+    XRSubmeshHeader* _submeshes[0];
 };
 
 constexpr size_t meshHeaderSize = sizeof(XRMeshHeader);
-static_assert(meshHeaderSize == 12, "TEST");
+static_assert(meshHeaderSize == 8, "TEST");
 
 #define XR_FOURCC(fcc) *((const uint32_t*)#fcc)
 struct XRObjectHeader
@@ -402,7 +443,7 @@ public:
 public:
 	inline uint32_t getStride(uint32_t bufferIndex) const { return _vertexBuffers[bufferIndex].stride; }
 	inline uint32_t getNumVertexBuffers() const { return static_cast<uint32_t>(_vertexBuffers.size()); }
-	inline const XRVertexBufferDesc& getVertexBufferDesc(uint32 bufferIndex) const { return _vertexBuffers[bufferIndex]; }
+	inline const XRVertexBufferDesc& getVertexBufferDesc(uint32_t bufferIndex) const { return _vertexBuffers[bufferIndex]; }
 	
 private:
 	uint32_t calcHash();
@@ -448,7 +489,7 @@ protected:
 		// To support them, the XRModel has to bind data dynamically.
 		// The XRModel introduces common interfaces of model data to a XRObject.
 	};
-	XRInputLayout* _inputLayout;
+	XRInputLayout* _inputLayout = nullptr;
 
 public:
 	XRModel(XRModelData const* data);
