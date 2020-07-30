@@ -2,16 +2,15 @@
 
 #include "XRDXTC.h"
 
-#include <assert.h>
-
 bool XRDXTC::LoadDataFromFile()
 {
 	const uint32_t DDS_SIGN_SIZE = 4;
 	const uint32_t DDS_HEADER_SIZE_EXCEPT_SIGN = 124;
 	unsigned char header[DDS_HEADER_SIZE_EXCEPT_SIGN];
 
-	FILE *fp = fopen(GetPath().c_str(), "rb");
-	if (fp == nullptr)
+	FILE *fp = nullptr;
+	errno_t error = fopen_s(&fp, GetPath().c_str(), "rb");
+	if (error != 0 || fp == nullptr)
 		return false;
 
 	char filecode[DDS_SIGN_SIZE];

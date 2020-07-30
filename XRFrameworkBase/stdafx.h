@@ -40,4 +40,22 @@
 #include <memory>
 #include <assert.h>
 
+#include <stdio.h>
+#include <errno.h>
+
+namespace xr
+{
+#if defined(_WIN32)
+	inline char* strtok(char* string, const char* delimiter, char** context)
+	{
+		return strtok_s(string, delimiter, context);
+	}
+#elif XR_PLATFORM == XR_PLATFORM_OSX
+	inline char* strtok(char* string, const char* delimiter, char** context)
+	{
+		return strtok_r(string, delimiter, context);
+	}
+#endif
+}
+
 int const PAGE_SIZE = 4'096;

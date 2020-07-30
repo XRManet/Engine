@@ -2,16 +2,15 @@
 
 #include "XRBmp.h"
 
-#include <assert.h>
-
 bool XRBmp::LoadDataFromFile()
 {
 	const uint32_t BMP_SIGN_SIZE = 2;
 	const uint32_t BMP_HEADER_SIZE = 54;
 	unsigned char header[BMP_HEADER_SIZE];
 
-	FILE *fp = fopen(GetPath().c_str(), "rb");
-	if (fp == nullptr)
+	FILE *fp = nullptr;
+	errno_t error = fopen_s(&fp, GetPath().c_str(), "rb");
+	if (error != 0 || fp == nullptr)
 		return false;
 
 	size_t read_count = fread(header, 1, BMP_HEADER_SIZE, fp);

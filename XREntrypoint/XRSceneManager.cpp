@@ -8,8 +8,9 @@ char const* XRSceneManager::MANIFEST_NAME = "Resources/SceneKeys.json";
 
 XRSceneManager::XRSceneManager()
 {
-	FILE * fp_manifest = fopen(XRSceneManager::MANIFEST_NAME, "rb");
-	if (fp_manifest == nullptr)
+	FILE *fp_manifest = nullptr;
+	errno_t error = fopen_s(&fp_manifest, XRSceneManager::MANIFEST_NAME, "rb");
+	if (error != 0 || fp_manifest == nullptr)
 		throw;
 
 	int const len_manifest = (static_cast<void>(fseek(fp_manifest, 0, SEEK_END)), static_cast<int>(ftell(fp_manifest)));

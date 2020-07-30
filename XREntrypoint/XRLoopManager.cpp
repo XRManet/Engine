@@ -55,10 +55,11 @@ namespace
         for (GLsizei i = 0; i < fileCount; ++i)
         {
             strcpy(RESOURCE_PATH + RESOURCE_PATH_END, filename[i]);
-            FILE* fp = fopen(RESOURCE_PATH, "r");
+			FILE *fp = nullptr;
+			errno_t error = fopen_s(&fp, RESOURCE_PATH, "r");
             
             assert(fp != nullptr);
-            if (fp == nullptr) continue;
+            if (error != 0 || fp == nullptr) continue;
             
             bool result = (fseek(fp, 0, SEEK_END) == 0);
             if (result == true)

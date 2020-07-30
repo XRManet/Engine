@@ -13,8 +13,9 @@ bool XRWavefrontObject::LoadDataFromFile()
 {
 	int const MAX_LINE_CHARACTERS = 256;
 	char line[MAX_LINE_CHARACTERS] = { 0, };
-	FILE* fp = fopen(GetPath().c_str(), "r");
-	if (fp == nullptr)
+	FILE* fp = nullptr;
+	errno_t error = fopen_s(&fp, GetPath().c_str(), "r");
+	if (error != 0 || fp == nullptr)
 		return false;
 
 	ReadUnit unit;
@@ -195,10 +196,10 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 			std::vector<char*> vertices;
 			char* context = nullptr;
-			char* token = strtok_r(line + read_pos, " \r\n", &context);
+			char* token = xr::strtok(line + read_pos, " \r\n", &context);
 			do {
 				vertices.push_back(token);
-			} while ((token = strtok_r(nullptr, " \r\n", &context)) != nullptr);
+			} while ((token = xr::strtok(nullptr, " \r\n", &context)) != nullptr);
 
 			static const uint32_t MAX_NUM_VERTICES_IN_FACE = 8;
 			uint32_t vertexIds[MAX_NUM_VERTICES_IN_FACE] = { 0, };
