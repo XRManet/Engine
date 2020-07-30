@@ -342,7 +342,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 		for (uint32_t i = 0; i < header->_numMeshes; ++i)
 		{
 			uint32_t numSubmeshes = static_cast<uint32_t>(objects[i]._submeshes.size());
-			totalDataSize += (sizeof(XRSubmeshHeader) + sizeof(XRSubmeshHeader*)) * numSubmeshes;
+			totalDataSize += (sizeof(XRSubmeshHeader) + (sizeof(uint32_t) * numVertexBuffers) + sizeof(XRSubmeshHeader*)) * numSubmeshes;
 			
 			for (uint32_t j = 0; j < numSubmeshes; ++j)
 			{
@@ -396,7 +396,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 				submeshHeader[j]->_inputLayoutKey = inputLayoutDescKey;
 				submeshHeader[j]->_numMaterials = numMaterials;
 
-				submeshOffset += sizeof(XRSubmeshHeader);
+				submeshOffset += sizeof(XRSubmeshHeader) + (sizeof(submeshHeader[j]->_offsetVertexOffsets[0]) * numVertexBuffers);
 				submeshHeader[j]->_offsetMaterialKeys = submeshOffset;
 
 				uint32_t* const materialKeys = submeshHeader[j]->getMaterialKeys();
@@ -431,6 +431,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 					//memcpy(vertexBuffer, objects[i]._submeshes[j]._vertices[k].data(), bufferSize);
 					submeshOffset += bufferSize;
 				}
+				submeshHeader[j]->_offsetVertexOffsets[numVertexBuffers] = submeshOffset;
 			}
 			submeshBaseAddress = reinterpret_cast<uint8_t*>(submeshBaseAddress + submeshOffset);
 			meshOffset = submeshBaseAddress - meshBaseAddress;

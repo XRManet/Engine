@@ -5,39 +5,33 @@
 class XRInputLayoutGL : public XRInputLayout
 {
 private:
-  unsigned _vao;
+	unsigned _vao;
 
 public:
-    XRInputLayoutGL(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
-    XRInputLayoutGL(const XRObjectHeader* header);
-    
-  virtual ~XRInputLayoutGL();
+	XRInputLayoutGL(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
+	XRInputLayoutGL(const XRObjectHeader* header);
+
+	virtual ~XRInputLayoutGL();
 
 public:
 	void bind() const override;
-    void* generateVertexBuffers() const;
+	void* generateVertexBuffers() const;
 };
 
+constexpr uint32_t MAX_NUM_SLOTS = 4;
 class XRModelGL : public XRModel
 {
 private:
-  union {
-    unsigned vbo[0];
-    struct {
-#if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
-		unsigned position;
-		unsigned normal;
-		unsigned textureCoord;
-#else
-      unsigned vertex;
-#endif
-      unsigned index;
-    };
-  } GL;
+	struct GLBuffer {
+		GLuint _vbo[MAX_NUM_SLOTS];
+		uint32_t _numBuffers;
+	};
+
+	std::vector<GLBuffer> _meshes;
 
 public:
-  XRModelGL(XRModelData const* data);
-  virtual ~XRModelGL();
+	XRModelGL(XRModelData const* data);
+	virtual ~XRModelGL();
 
 
 public:

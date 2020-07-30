@@ -348,7 +348,7 @@ public:
 	XRFormat format = XRFormat::UNKNOWN;
 };
 
-struct XRVertexBufferDesc
+struct XRBaseExport XRVertexBufferDesc
 {
 	friend XRInputLayoutDesc;
 	
@@ -406,6 +406,15 @@ struct XRSubmeshHeader
 	{
 		return const_cast<uint16_t*>(const_cast<XRSubmeshHeader const*>(this)->getIndexBuffer());
 	}
+
+	uint32_t getVertexBufferSize(uint32_t slotIndex) const
+	{
+		return _offsetVertexOffsets[slotIndex + 1] - _offsetVertexOffsets[slotIndex];
+	}
+	uint32_t getIndexBufferSize() const
+	{
+		return _offsetVertexOffsets[0] - _offsetIndex;
+	}
 };
 
 struct XRMeshHeader
@@ -430,7 +439,7 @@ struct XRObjectHeader
 };
 constexpr size_t objectHeaderSize = sizeof(XRObjectHeader);
 
-class XRInputLayoutDesc
+class XRBaseExport XRInputLayoutDesc
 {
 private:
 	std::vector<XRVertexBufferDesc> _vertexBuffers;

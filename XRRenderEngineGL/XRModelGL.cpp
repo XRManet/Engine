@@ -141,13 +141,8 @@ static bool InsertInputLayout(uint32_t keyInputLayout, XRInputLayoutGL* inputLay
 
 XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 {
-#if 0
 	const auto* header = _data->GetHeader();
-	const GLubyte* address = _data->GetData();
-	GL_CALL(glGenBuffers(sizeof(GL) / sizeof(unsigned), GL.vbo));
-	
     assert(header->_numMeshes > 0);
-    assert(header->_numVertexAttributes > 0);
     
     XRInputLayoutGL* inputLayout = nullptr;
     if (header->_keyInputLayout != 0)
@@ -161,11 +156,41 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
         InsertInputLayout(0, inputLayout);
     }
     
-    inputLayout->generateVertexBuffers();
-    
+	_inputLayout = inputLayout;
+
+	_meshes.reserve(header->_numMeshes);
+	for (uint32_t m = 0; m < header->_numMeshes; ++m)
+	{
+		uint32_t numVertexBuffers = _inputLayout->getNumVertexBuffers();
+		uint32_t numIndexBuffer = (header->_meshes[m]->_submeshes[0]->IsIndexed() ? 1 : 0);
+		GLBuffer buffer {};
+		buffer._numBuffers = numVertexBuffers + numIndexBuffer;
+		GL_CALL(glGenBuffers(buffer._numBuffers, buffer._vbo));
+
+		_meshes.emplace_back(buffer);
+
+		for (uint32_t i = 0; i < numVertexBuffers; ++i)
+		{
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, _meshes[m]._vbo[i]));
+			GL_CALL(glBufferData(GL_ARRAY_BUFFER, header->_meshes[m]->_submeshes[0]->getVertexBufferSize(i), nullptr, GL_STATIC_DRAW));
+
+			GLuint offset = 0;
+			GLuint size = header->_meshes[m]->_submeshes[0]->getVertexBufferSize(i);
+			GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header->_meshes[m]->_submeshes[0]->getVertexBuffer(i)));
+		}
+
+		if (numIndexBuffer == 1)
+		{
+			const uint32_t indexBufferId = _meshes[m]._numBuffers - 1;
+			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _meshes[m]._vbo[indexBufferId]));
+
+			GLuint size = header->_meshes[m]->_submeshes[0]->getIndexBufferSize();
+			GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, header->_meshes[m]->_submeshes[0]->getIndexBuffer(), GL_STATIC_DRAW));
+		}
+	}
+#if 0
     {
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
-        if (header->)
         GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, GL.position));
         GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * header->vertex_count * 2,
                              nullptr, GL_STATIC_DRAW));
@@ -213,7 +238,6 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 		}
 #endif
 	}
-
 	if (header->IsIndexed())
 	{
 		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index));
@@ -222,30 +246,37 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 		GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, address + header->index_offset, GL_STATIC_DRAW));
 	}
 
-	GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 #endif
-	//_inputLayout = new XRInputLayoutGL(data);
+
+	GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 XRModelGL::~XRModelGL()
 {
+	uint32_t numMeshes = _meshes.size();
+	for (uint32_t m = 0; m < numMeshes; ++m)
+	{
+		GL_CALL(glDeleteBuffers(_meshes[m]._numBuffers, _meshes[m]._vbo));
+	}
 }
 
 void XRModelGL::bind() const
 {
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
-    glBindBuffer(GL_ARRAY_BUFFER, GL.position);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, GL.normal);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, GL.textureCoord);
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+    //glBindBuffer(GL_ARRAY_BUFFER, _meshes[0]._vbo[0]);
+    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+    //
+    //glBindBuffer(GL_ARRAY_BUFFER, GL.normal);
+    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+    //
+    //glBindBuffer(GL_ARRAY_BUFFER, GL.textureCoord);
+    //glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 #else
 	glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
 #endif
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 uint32_t XRModelGL::getNumVertices() const { return 0;

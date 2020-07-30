@@ -52,4 +52,6 @@ public:
 	
 public:
 	bool LoadDataFromFile() { return _modelDataLoader->LoadDataFromFile(); }
+
+public:		XRObjectHeader const*	GetHeader() const { return const_cast<XRModelDataLoader const*>(_modelDataLoader)->GetHeader(); }
 };
