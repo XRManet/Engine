@@ -7,56 +7,69 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
+struct XRFormatGL : public XRFormat
+{
+public:
+	struct VertexAttribute
+	{
+		GLuint _numComponents;
+		GLenum _type;
+	};
+
+public:
+	inline VertexAttribute getGLVertexAttribute() const
+	{
+		switch (getValue())
+		{
+		case R32G32B32_SFLOAT:
+			return VertexAttribute { 3, GL_FLOAT };
+		case R32G32_SFLOAT:
+			return VertexAttribute { 2, GL_FLOAT };
+		default:
+			assert(false);
+			return VertexAttribute{};
+		}
+	}
+};
+
 XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_t preferredStrideSize)
 	: XRInputLayout(std::move(in_inputLayoutDesc), preferredStrideSize)
 {
 	// Parse given model and construct input layout from it.
 	// if then, we can get a layout of model and just use it later.
 	GL_CALL(glGenVertexArrays(1, &_vao));
-	GL_CALL(glBindVertexArray(_vao));
 
 	struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
 	struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
 
-	int attributeIndex = 0;
-	auto& inputLayoutDesc = getInputLayoutDesc();
-	for (int i = 0; i < inputLayoutDesc.getNumVertexBuffers(); ++i)
+	GLuint attributeIndex = 0;
+	if (true)
 	{
-		auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(i));
-		int numAttributes = static_cast<int>(bufferDesc.attributes.size());
-		for (int j = 0; j < numAttributes; ++j)
+		GL_CALL(glBindVertexArray(_vao));
+		auto& inputLayoutDesc = getInputLayoutDesc();
+		for (uint32_t i = 0; i < inputLayoutDesc.getNumVertexBuffers(); ++i)
 		{
-			auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
-			
-			GLuint numVertexAttribute;
-			
-			GL_CALL(glEnableVertexAttribArray(attributeIndex));
-			GL_CALL(glVertexAttribPointer(attributeIndex, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
-			attributeDesc.offset;
-			
-			++attributeIndex;
+			auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(i));
+			uint32_t numAttributes = static_cast<int>(bufferDesc.attributes.size());
+			for (uint32_t j = 0; j < numAttributes; ++j)
+			{
+				auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+				XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
+				XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
+				GL_CALL(glEnableVertexAttribArray(attributeIndex));
+				GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+
+				++attributeIndex;
+			}
 		}
+		GL_CALL(glBindVertexArray(0));
 	}
-
-	//auto header = model->GetHeader();
-	GLuint num = 0;//header->vertex_count;
-	GLuint size = 0;
-	size_t offset = size * num;
-	GL_CALL(glEnableVertexAttribArray(0));
-	GL_CALL(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
-
-	//if (header->normal_offset != -1)
+	else
 	{
-		size = sizeof(XRModelData::VertexPosition);
-		offset += size * num;
-		GL_CALL(glEnableVertexAttribArray(1));
-		GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(offset)));
+		// bind 필요 없는 객체 함수
+		XRFormatGL::VertexAttribute vertexAttribute {};
+		glVertexArrayAttribFormat(_vao, attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, 0);
 	}
-
-	//if (header->texture_offset != -1)
-	{
-	}
-	GL_CALL(glBindVertexArray(0));
 }
 
 XRInputLayoutGL::XRInputLayoutGL(const XRObjectHeader* objectHeader)
