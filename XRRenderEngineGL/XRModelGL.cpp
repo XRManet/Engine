@@ -42,6 +42,7 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 	struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
 	struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
 
+	GLuint bindingIndex = 0;
 	GLuint attributeIndex = 0;
 	if (true)
 	{
@@ -51,24 +52,73 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 		{
 			auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(i));
 			uint32_t numAttributes = static_cast<int>(bufferDesc.attributes.size());
+
+			assert(bufferDesc.bindingIndex == bindingIndex);
+
+			GL_CALL(glVertexBindingDivisor(bindingIndex, bufferDesc.instanceDivisor));
 			for (uint32_t j = 0; j < numAttributes; ++j)
 			{
 				auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
 				XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
 				XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
 				GL_CALL(glEnableVertexAttribArray(attributeIndex));
-				GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+#if 1
+				GL_CALL(glVertexAttribBinding(attributeIndex, bindingIndex));
 
+				GL_CALL(glVertexAttribFormat(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset));
+#else
+				/* VertexAttribPointer == {
+					VertexAttrib*Format(index, size, type, fnormalized, g, 0);
+					VertexAttribBinding(index, index);
+					if (stride != 0) {
+						effectiveStride = stride;
+					} else {
+						compute effectiveStride based on size and type;
+					}
+					VERTEX_ATTRIB_ARRAY_STRIDE[index] = stride;
+					// This sets VERTEX_BINDING_STRIDE to effectiveStride
+					VERTEX_ATTRIB_ARRAY_POINTER[index] = pointer;
+					BindVertexBuffer(index, buffer bound to ARRAY_BUFFER,
+					(char *)pointer - (char *)NULL, effectiveStride);
+				}
+				*/
+				GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+#endif
 				++attributeIndex;
 			}
+			++bindingIndex;
 		}
 		GL_CALL(glBindVertexArray(0));
 	}
 	else
 	{
-		// bind 필요 없는 객체 함수
-		XRFormatGL::VertexAttribute vertexAttribute {};
-		glVertexArrayAttribFormat(_vao, attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, 0);
+		// bind 필요 없는 객체 함수 형식
+		auto& inputLayoutDesc = getInputLayoutDesc();
+		for (uint32_t i = 0; i < inputLayoutDesc.getNumVertexBuffers(); ++i)
+		{
+			auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(i));
+			uint32_t numAttributes = static_cast<int>(bufferDesc.attributes.size());
+
+			assert(bufferDesc.bindingIndex == bindingIndex);
+
+			glVertexArrayBindingDivisor(_vao, bindingIndex, bufferDesc.instanceDivisor);
+			for (uint32_t j = 0; j < numAttributes; ++j)
+			{
+				auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+				XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
+				XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
+				/*
+				API 이름이 이렇게 생긴 게 맘에 안들지만,
+				glEnableVertexAttribArray() 가 아님에 주의
+				*/
+				glEnableVertexArrayAttrib(_vao, attributeIndex);
+
+				glVertexArrayAttribBinding(_vao, attributeIndex, bindingIndex);
+				glVertexArrayAttribFormat(_vao, attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset);
+				++attributeIndex;
+			}
+			++bindingIndex;
+		}
 	}
 }
 
@@ -110,33 +160,12 @@ XRInputLayoutGL::~XRInputLayoutGL()
 
 void XRInputLayoutGL::bind() const
 {
-	glBindVertexArray(_vao);
-	
-	constexpr GLuint vertexBufferCount = 3;
-	constexpr GLuint startBindingIndex = 0;
-	GLuint vertexBufferNames[vertexBufferCount] = { 0, 0, 0 };
-	GLintptr vertexBufferStartOffsets[vertexBufferCount] = {0, 0, 0};
-	GLsizei vertexBufferStrides[vertexBufferCount] = {0, 0, 0};
-	//uint vaobj, uint first, sizei count,const uint* buffers,const intptr* offsets,const sizei*strides
-	glVertexArrayVertexBuffers(_vao, startBindingIndex, vertexBufferCount, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides);
-	
-	GLuint elementBufferName = -1;
-	glVertexArrayElementBuffer(_vao, elementBufferName);
+	GL_CALL(glBindVertexArray(_vao));
 }
 
 void* XRInputLayoutGL::generateVertexBuffers() const
 {
 	return nullptr;
-}
-
-static XRInputLayoutGL* GetInputLayoutByKey(uint32_t keyInputLayout)
-{
-    return nullptr;
-}
-
-static bool InsertInputLayout(uint32_t keyInputLayout, XRInputLayoutGL* inputLayoutGL)
-{
-    return false;
 }
 
 XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
@@ -145,15 +174,16 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
     assert(header->_numMeshes > 0);
     
     XRInputLayoutGL* inputLayout = nullptr;
-    if (header->_keyInputLayout != 0)
+    if (header->_defaultInputLayoutKey != 0)
 	{
-        inputLayout = GetInputLayoutByKey(header->_keyInputLayout);
+        inputLayout = static_cast<XRInputLayoutGL*>(XRInputLayout::GetInputLayoutByKey(header->_defaultInputLayoutKey));
     }
     else
     {
+		assert(false);
         inputLayout = new XRInputLayoutGL(header);
         
-        InsertInputLayout(0, inputLayout);
+		XRInputLayout::InsertInputLayout(0, inputLayout);
     }
     
 	_inputLayout = inputLayout;
@@ -165,27 +195,33 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
 		uint32_t numIndexBuffer = (header->_meshes[m]->_submeshes[0]->IsIndexed() ? 1 : 0);
 		GLBuffer buffer {};
 		buffer._numBuffers = numVertexBuffers + numIndexBuffer;
-		GL_CALL(glGenBuffers(buffer._numBuffers, buffer._vbo));
 
-		_meshes.emplace_back(buffer);
-
-		for (uint32_t i = 0; i < numVertexBuffers; ++i)
+		for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
 		{
-			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, _meshes[m]._vbo[i]));
-			GL_CALL(glBufferData(GL_ARRAY_BUFFER, header->_meshes[m]->_submeshes[0]->getVertexBufferSize(i), nullptr, GL_STATIC_DRAW));
+			GL_CALL(glGenBuffers(buffer._numBuffers, buffer._vbo));
 
-			GLuint offset = 0;
-			GLuint size = header->_meshes[m]->_submeshes[0]->getVertexBufferSize(i);
-			GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header->_meshes[m]->_submeshes[0]->getVertexBuffer(i)));
-		}
+			for (uint32_t i = 0; i < numVertexBuffers; ++i)
+			{
+				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, buffer._vbo[i]));
 
-		if (numIndexBuffer == 1)
-		{
-			const uint32_t indexBufferId = _meshes[m]._numBuffers - 1;
-			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _meshes[m]._vbo[indexBufferId]));
+				GLuint offset = 0;
+				GLuint size = header->_meshes[m]->_submeshes[s]->getVertexBufferSize(i);
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
+				GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header->_meshes[m]->_submeshes[s]->getVertexBuffer(i)));
+			}
 
-			GLuint size = header->_meshes[m]->_submeshes[0]->getIndexBufferSize();
-			GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, header->_meshes[m]->_submeshes[0]->getIndexBuffer(), GL_STATIC_DRAW));
+			if (numIndexBuffer == 1)
+			{
+				const uint32_t indexBufferId = buffer._numBuffers - 1;
+				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer._vbo[indexBufferId]));
+
+				GLuint offset = 0;
+				GLuint size = header->_meshes[m]->_submeshes[s]->getIndexBufferSize();
+				GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
+				GL_CALL(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, header->_meshes[m]->_submeshes[s]->getIndexBuffer()));
+			}
+
+			_meshes.emplace_back(buffer);
 		}
 	}
 #if 0
@@ -276,13 +312,51 @@ void XRModelGL::bind() const
 	glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
 #endif
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	static constexpr GLuint MAX_VERTEX_BUFFER_COUNT = 16;
+	GLintptr vertexBufferStartOffsets[MAX_VERTEX_BUFFER_COUNT] = { 0, };
+	GLsizei vertexBufferStrides[MAX_VERTEX_BUFFER_COUNT] = { 0, };
+
+	const auto* header = _data->GetHeader();
+
+	for (uint32_t m = 0; m < header->_numMeshes; ++m)
+	{
+		uint32_t numVertexBuffers = _inputLayout->getNumVertexBuffers();
+		uint32_t numIndexBuffer = (header->_meshes[m]->_submeshes[0]->IsIndexed() ? 1 : 0);
+
+		for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
+		{
+			for (uint32_t i = 0; i < numVertexBuffers; ++i)
+			{
+				vertexBufferStartOffsets[i] = 0;
+				vertexBufferStrides[i] = _inputLayout->getStride(i);
+			}
+
+			GLuint startBindingIndex = 0;
+			GLuint const* vertexBufferNames = _meshes[m]._vbo;
+#if 1
+			GL_CALL(glBindVertexBuffers(startBindingIndex, numVertexBuffers, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides));
+
+			if (numIndexBuffer == 1)
+			{
+				GLuint elementBufferName = _meshes[m]._vbo[numVertexBuffers];
+				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName));
+			}
+#else
+			//uint vaobj, uint first, sizei count,const uint* buffers,const intptr* offsets,const sizei*strides
+			glVertexArrayVertexBuffers(_vao, startBindingIndex, vertexBufferCount, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides);
+
+			GLuint elementBufferName = -1;
+			glVertexArrayElementBuffer(_vao, elementBufferName);
+#endif
+		}
+	}
 }
 
 uint32_t XRModelGL::getNumVertices() const { return 0;
 	//_data->GetHeader()->vertex_count;
 	
 }
-uint32_t XRModelGL::getNumIndices() const { return 0;
-	//_data->GetHeader()->index_count;
+uint32_t XRModelGL::getNumIndices() const {
+	return _data->GetHeader()->_meshes[0]->_submeshes[0]->getIndexBufferSize() / 2;
 }

@@ -69,9 +69,9 @@ struct XRWavefrontObjectMeshes
 
 	XRWavefrontObjectMeshes()
 	{
-		_positions.resize(1);
-		_texcoords.resize(1);
-		_normals.resize(1);
+		//_positions.resize(1);
+		//_texcoords.resize(1);
+		//_normals.resize(1);
 
 		_submeshes.resize(1);
 	}
@@ -210,6 +210,8 @@ bool XRWavefrontObject::LoadDataFromFile()
 				// Note(jiman): Wavefront는 각 attribute를 /로 구분
 				// Todo(jiman): 공란에 대한 처리(ex. 3//4) 필요
 				available_count = sscanf(vertices[i], "%d/%d/%d/%d", unit.i + 0, unit.i + 1, unit.i + 2, unit.i + 3);
+				for (int32_t i = 0; i < available_count; ++i)
+					--unit.i[i];
 				for (int32_t i = available_count; i < 4; ++i)
 					unit.i[i] = default_index[i];
 
@@ -278,7 +280,6 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>& objects)
 {
-	static std::unordered_map<uint32_t, XRInputLayout*> s_inputLayoutLibrary;
 	static std::unordered_map<uint32_t, XRMaterial> s_materialLibrary;
 	// Note(jiman): Fill to model data
 	{
@@ -289,17 +290,18 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 		// Construct input layout desc
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
 		{	// per vertex buffer
-			vertexBufferDesc.instanceDivisor = 0;
-			
 			vertexAttributeDesc.format = XRFormat::R32G32B32_SFLOAT;
+			vertexBufferDesc.instanceDivisor = 0;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));
 			
 			vertexAttributeDesc.format = XRFormat::R32G32_SFLOAT;
+			vertexBufferDesc.instanceDivisor = 0;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));
 			
 			vertexAttributeDesc.format = XRFormat::R32G32B32_SFLOAT;
+			vertexBufferDesc.instanceDivisor = 0;
 			vertexBufferDesc.attributes.push_back(vertexAttributeDesc);
 			vertexBufferDescs.push_back(std::move(vertexBufferDesc));
 		}
@@ -321,21 +323,20 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 		
 		XRInputLayoutDesc inputLayoutDesc(std::move(vertexBufferDescs));
 		uint32_t inputLayoutDescKey = inputLayoutDesc.getHash();
-		XRInputLayout* inputLayout = nullptr;
-		
-		auto ii = s_inputLayoutLibrary.find(inputLayoutDescKey);
-		if (ii != s_inputLayoutLibrary.end())
-			inputLayout = ii->second;
-		else
+		XRInputLayout* inputLayout = XRInputLayout::GetInputLayoutByKey(inputLayoutDescKey);
+		if (inputLayout == nullptr)
 		{
 			inputLayout = xrCreateInputLayout(std::move(inputLayoutDesc), 0);
-			s_inputLayoutLibrary.insert({inputLayoutDescKey, inputLayout});
+			bool result = XRInputLayout::InsertInputLayout(inputLayoutDescKey, inputLayout);
+			// Failed to override input layout
+			assert(result == true);
 		}
 		const uint32_t numVertexBuffers = inputLayout->getNumVertexBuffers();
 		
 		XRObjectHeader *header = GetHeader();
 		size_t totalDataSize = sizeof(XRObjectHeader);
 		
+		header->_defaultInputLayoutKey = inputLayoutDescKey;
 		header->_numMeshes = static_cast<uint32_t>(objects.size());
 		totalDataSize += (sizeof(XRMeshHeader) + sizeof(XRMeshHeader*)) * header->_numMeshes;
 
@@ -393,7 +394,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 
 				submeshHeader[j] = reinterpret_cast<XRSubmeshHeader*>(submeshBaseAddress);
 				
-				submeshHeader[j]->_inputLayoutKey = inputLayoutDescKey;
+				submeshHeader[j]->_defaultInputLayoutKey = inputLayoutDescKey;
 				submeshHeader[j]->_numMaterials = numMaterials;
 
 				submeshOffset += sizeof(XRSubmeshHeader) + (sizeof(submeshHeader[j]->_offsetVertexOffsets[0]) * numVertexBuffers);

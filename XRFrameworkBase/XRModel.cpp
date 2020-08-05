@@ -159,3 +159,21 @@ uint32_t XRInputLayoutDesc::calcHash()
 	
 	return GetHash(bytes.data(), bytes.size());
 }
+
+
+static std::unordered_map<uint32_t, XRInputLayout*> g_inputLayoutLibrary;
+
+XRInputLayout* XRInputLayout::GetInputLayoutByKey(uint32_t keyInputLayout)
+{
+	auto result = g_inputLayoutLibrary.find(keyInputLayout);
+	if (result != g_inputLayoutLibrary.end())
+		return result->second;
+	return nullptr;
+}
+
+bool XRInputLayout::InsertInputLayout(uint32_t keyInputLayout, XRInputLayout* inputLayout)
+{
+	auto result = g_inputLayoutLibrary.insert({ keyInputLayout, inputLayout });
+	// Log if not inserted.
+	return result.second;
+}

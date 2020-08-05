@@ -2,7 +2,7 @@
 
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 0) in vec4 position;
+layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 
 layout (std140, column_major) uniform MatrixBlock
@@ -36,7 +36,7 @@ out vec3 frag_normal;
 
 void main()
 {
-	gl_Position = viewProj * position;
+	gl_Position = viewProj * vec4(position, 1.0);
 
 	frag_normal = mat3(view) * normal;
 	//frag_normal = mat3(view) * normal + test.xyz;

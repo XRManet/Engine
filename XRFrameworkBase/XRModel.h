@@ -374,7 +374,7 @@ enum class PreferredStrideSizeOption : uint32_t
 
 struct XRSubmeshHeader
 {
-	uint32_t _inputLayoutKey = 0;
+	uint32_t _defaultInputLayoutKey = 0;
 	uint32_t _numMaterials = 0;
 
 	uint32_t _offsetMaterialKeys = 0;
@@ -432,7 +432,10 @@ static_assert(meshHeaderSize == 8, "TEST");
 struct XRObjectHeader
 {
     uint32_t _fccIdentifier = XR_FOURCC(XRP1);
-    uint32_t _keyInputLayout = 0;
+	// if _defaultInputLayoutKey == 0, then header has no known layout.
+	// else if _defaultInputLayoutKey == -1, then each submeshes has its own layout.
+	// otherwise, then there is one unified layout.
+    uint32_t _defaultInputLayoutKey = 0;
     
     uint32_t _numMeshes;
     XRMeshHeader* _meshes[0];
@@ -487,6 +490,10 @@ public:
 
 protected:
 	XRInputLayoutDesc const& getInputLayoutDesc() const { return _inputLayoutDesc; }
+
+public:
+	static XRInputLayout* GetInputLayoutByKey(uint32_t keyInputLayout);
+	static bool InsertInputLayout(uint32_t keyInputLayout, XRInputLayout* inputLayout);
 };
 
 class XRBaseExport XRModel
