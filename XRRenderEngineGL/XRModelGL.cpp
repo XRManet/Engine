@@ -319,12 +319,12 @@ void XRModelGL::bind() const
 
 	const auto* header = _data->GetHeader();
 
-	for (uint32_t m = 0; m < header->_numMeshes; ++m)
+	for (uint32_t m = 0; m < 1/*header->_numMeshes*/; ++m)
 	{
 		uint32_t numVertexBuffers = _inputLayout->getNumVertexBuffers();
 		uint32_t numIndexBuffer = (header->_meshes[m]->_submeshes[0]->IsIndexed() ? 1 : 0);
 
-		for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
+		for (uint32_t s = 0; s < 1/*header->_meshes[m]->_numSubmeshes*/; ++s)
 		{
 			for (uint32_t i = 0; i < numVertexBuffers; ++i)
 			{

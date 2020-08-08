@@ -85,6 +85,8 @@ public:
 		}
 
 		glfwSetKeyCallback(_window, InputKeyboard);
+		glfwSetMouseButtonCallback(_window, InputMouse);
+		glfwSetCursorPosCallback(_window, PositionMouse);
 	}
 
 	~XRRenderingInfra()
@@ -100,6 +102,8 @@ private:
 
 private: // GLFW Events
 	static void InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void InputMouse(GLFWwindow* window, int button, int action, int mods);
+	static void PositionMouse(GLFWwindow* window, double xpos, double ypos);
 
 public:
 	bool WindowShouldClose() { return glfwWindowShouldClose(_window); }

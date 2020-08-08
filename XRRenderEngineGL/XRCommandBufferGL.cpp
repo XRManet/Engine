@@ -32,8 +32,8 @@ void XRCommandBufferGL::drawIndexed(XRPrimitiveTopology topology, XRIndexType in
 {
 	GLenum topologyGL = ConvertPrimitiveTopology(topology);
 	GLenum indexTypeGL = ConvertIndexType(indexType);
-	GL_CALL(glDrawElementsBaseVertex(topologyGL, indexCount * 3, indexTypeGL, nullptr, indexStart));
-	//glDrawElementsBaseVertex(topologyGL, indexCount * 3, indexTypeGL, nullptr, indexStart);
+	GL_CALL(glDrawElementsBaseVertex(topologyGL, indexCount / 2, indexTypeGL, nullptr, indexStart));
+	glDrawElementsBaseVertex(topologyGL, indexCount * 3, indexTypeGL, nullptr, indexStart);
 }
 
 namespace

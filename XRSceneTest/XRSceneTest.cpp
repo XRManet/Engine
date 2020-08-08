@@ -34,7 +34,7 @@ XRSceneTest::XRSceneTest()
 	_cameras.resize(1);
 
 	_cameras[0].SetFrustum({ 16, 9 }, 1, 10000);
-	_cameras[0].SetPosition(glm::vec4{ 0, 2, 15, 1 });
+	_cameras[0].SetPosition(glm::vec4{ 0, 1, 2.5, 1 });
 
 	constexpr GLuint var_test1 = XR::util::GetIndexOfLiteralStringList(g_deferredVar, "var_test1");
 

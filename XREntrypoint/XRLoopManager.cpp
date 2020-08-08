@@ -35,7 +35,29 @@ void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scan
 			printf("D Key pressed\n");
 		}
 		break;
+	case GLFW_KEY_Q:
+		if (action == GLFW_PRESS)
+		{
+			printf("Q Key pressed\n");
+		}
+		break;
+	case GLFW_KEY_E:
+		if (action == GLFW_PRESS)
+		{
+			printf("E Key pressed\n");
+		}
+		break;
 	}
+}
+
+void XRRenderingInfra<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
+{
+
+}
+
+void XRRenderingInfra<GLFW>::PositionMouse(GLFWwindow* window, double xpos, double ypos)
+{
+
 }
 
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))

@@ -125,11 +125,12 @@ bool XRWavefrontObject::LoadDataFromFile()
 	XRWavefrontObjectSubmeshes* currentSubobject = &currentObject->_submeshes.back();
 	bool hasManyObjects = false;
 	bool hasManySubobjects = false;
-
+	
 	while (fgets(line, MAX_LINE_CHARACTERS, fp) != nullptr)
 	{
 		static const float default_value[4] = { 0.f, 0.f, 0.f, 1.f };
 		static const uint32_t default_index[4] = { 0, };
+		static int32_t indexOffset[4] = { 1, 1, 1, 1 };
 
 		int read_pos = 2;
 		int available_count = 0;
@@ -143,6 +144,10 @@ bool XRWavefrontObject::LoadDataFromFile()
 		}
 		else if (line[0] == 'o')
 		{
+			indexOffset[XRVertexAttributeType::Position] += currentObject->_positions.size();
+			indexOffset[XRVertexAttributeType::Texcoord] += currentObject->_texcoords.size();
+			indexOffset[XRVertexAttributeType::Normal] += currentObject->_normals.size();
+
 			if (hasManyObjects)
 			{
 				objects.push_back(XRWavefrontObjectMeshes());
@@ -211,7 +216,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 				// Todo(jiman): 공란에 대한 처리(ex. 3//4) 필요
 				available_count = sscanf(vertices[i], "%d/%d/%d/%d", unit.i + 0, unit.i + 1, unit.i + 2, unit.i + 3);
 				for (int32_t i = 0; i < available_count; ++i)
-					--unit.i[i];
+					unit.i[i] -= indexOffset[i]; // Wavefront Object는 index 시작이 1부터 진행됨
 				for (int32_t i = available_count; i < 4; ++i)
 					unit.i[i] = default_index[i];
 
@@ -261,8 +266,8 @@ bool XRWavefrontObject::LoadDataFromFile()
 			for (uint32_t i = 0; i < triangles; ++i)
 			{
 				currentSubobject->_indices.push_back(vertexIds[0]);
-				currentSubobject->_indices.push_back(vertexIds[i * 2 + 1]);
-				currentSubobject->_indices.push_back(vertexIds[i * 2 + 2]);
+				currentSubobject->_indices.push_back(vertexIds[i + 1]);
+				currentSubobject->_indices.push_back(vertexIds[i + 2]);
 			}
 		}
 		else if (line[0] == 'l') assert(0);
