@@ -116,6 +116,7 @@ XRInputLayoutDesc::XRInputLayoutDesc(std::vector<XRVertexBufferDesc>&& vertexBuf
 	: _vertexBuffers(std::move(vertexBuffers))
 {
 	uint32_t numVertexBuffers = static_cast<uint32_t>(_vertexBuffers.size());
+	uint32_t vertexAttributeIndex = 0;
 	for (uint32_t i = 0; i < numVertexBuffers; ++i)
 	{
 		uint32_t numAttributes = static_cast<uint32_t>(_vertexBuffers[i].attributes.size());
@@ -123,7 +124,7 @@ XRInputLayoutDesc::XRInputLayoutDesc(std::vector<XRVertexBufferDesc>&& vertexBuf
 		for(uint32_t j = 0; j < numAttributes; ++j)
 		{
 			_vertexBuffers[i].attributes[j].bindingIndex = i;
-			_vertexBuffers[i].attributes[j].shaderLocation = j;
+			_vertexBuffers[i].attributes[j].shaderLocation = vertexAttributeIndex++;
 			_vertexBuffers[i].attributes[j].offset = size;
 			size += _vertexBuffers[i].attributes[j].format.getCommonSize();
 		}

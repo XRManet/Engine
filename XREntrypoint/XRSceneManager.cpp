@@ -9,7 +9,7 @@ char const* XRSceneManager::MANIFEST_NAME = "Resources/SceneKeys.json";
 XRSceneManager::XRSceneManager()
 {
 	FILE *fp_manifest = nullptr;
-	errno_t error = fopen_s(&fp_manifest, XRSceneManager::MANIFEST_NAME, "rb");
+	errno_t error = xr::fopen(&fp_manifest, XRSceneManager::MANIFEST_NAME, "rb");
 	if (error != 0 || fp_manifest == nullptr)
 		throw;
 

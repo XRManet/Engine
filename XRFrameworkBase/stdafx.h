@@ -48,12 +48,26 @@ namespace xr
 #if defined(_WIN32)
 	inline char* strtok(char* string, const char* delimiter, char** context)
 	{
-		return strtok_s(string, delimiter, context);
+		return ::strtok_s(string, delimiter, context);
+	}
+	inline errno_t fopen(FILE** fp, const char* filename, const char* mode)
+	{
+		return ::fopen_s(fp, filename, mode);
 	}
 #elif XR_PLATFORM == XR_PLATFORM_OSX
 	inline char* strtok(char* string, const char* delimiter, char** context)
 	{
-		return strtok_r(string, delimiter, context);
+		return ::strtok_r(string, delimiter, context);
+	}
+	inline errno_t fopen(FILE** fp, const char* filename, const char* mode)
+	{
+		if (fp == nullptr || filename == nullptr || mode == nullptr)
+			return EINVAL;
+		
+		*fp = ::fopen(filename, mode);
+		if (nullptr != fp)
+			return 0;
+		return errno;
 	}
 #endif
 }

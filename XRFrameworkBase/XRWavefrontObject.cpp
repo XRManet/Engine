@@ -104,7 +104,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 	int const MAX_LINE_CHARACTERS = 256;
 	char line[MAX_LINE_CHARACTERS] = { 0, };
 	FILE* fp = nullptr;
-	errno_t error = fopen_s(&fp, GetPath().c_str(), "r");
+	errno_t error = xr::fopen(&fp, GetPath().c_str(), "r");
 	if (error != 0 || fp == nullptr)
 		return false;
 

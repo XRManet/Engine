@@ -9,7 +9,7 @@ bool XRDXTC::LoadDataFromFile()
 	unsigned char header[DDS_HEADER_SIZE_EXCEPT_SIGN];
 
 	FILE *fp = nullptr;
-	errno_t error = fopen_s(&fp, GetPath().c_str(), "rb");
+	errno_t error = xr::fopen(&fp, GetPath().c_str(), "rb");
 	if (error != 0 || fp == nullptr)
 		return false;
 

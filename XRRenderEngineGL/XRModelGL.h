@@ -15,6 +15,7 @@ public:
 
 public:
 	void bind() const override;
+	void bindAttributes(uint32_t bindingIndex) const;
 	void* generateVertexBuffers() const;
 };
 

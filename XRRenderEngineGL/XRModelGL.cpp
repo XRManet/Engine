@@ -32,15 +32,15 @@ public:
 	}
 };
 
+struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
+struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
+
 XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_t preferredStrideSize)
 	: XRInputLayout(std::move(in_inputLayoutDesc), preferredStrideSize)
 {
 	// Parse given model and construct input layout from it.
 	// if then, we can get a layout of model and just use it later.
 	GL_CALL(glGenVertexArrays(1, &_vao));
-
-	struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
-	struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
 
 	GLuint bindingIndex = 0;
 	GLuint attributeIndex = 0;
@@ -51,39 +51,55 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 		for (uint32_t i = 0; i < inputLayoutDesc.getNumVertexBuffers(); ++i)
 		{
 			auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(i));
-			uint32_t numAttributes = static_cast<int>(bufferDesc.attributes.size());
-
 			assert(bufferDesc.bindingIndex == bindingIndex);
 
-			GL_CALL(glVertexBindingDivisor(bindingIndex, bufferDesc.instanceDivisor));
+			if (GLEW_ARB_vertex_attrib_binding)
+				GL_CALL(glVertexBindingDivisor(bindingIndex, bufferDesc.instanceDivisor));
+			
+			uint32_t numAttributes = static_cast<int>(bufferDesc.attributes.size());
 			for (uint32_t j = 0; j < numAttributes; ++j)
 			{
 				auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+				assert(attributeDesc.shaderLocation == attributeIndex);
+				
 				XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
 				XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
 				GL_CALL(glEnableVertexAttribArray(attributeIndex));
-#if 1
-				GL_CALL(glVertexAttribBinding(attributeIndex, bindingIndex));
 
-				GL_CALL(glVertexAttribFormat(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset));
-#else
-				/* VertexAttribPointer == {
-					VertexAttrib*Format(index, size, type, fnormalized, g, 0);
-					VertexAttribBinding(index, index);
-					if (stride != 0) {
-						effectiveStride = stride;
-					} else {
-						compute effectiveStride based on size and type;
-					}
-					VERTEX_ATTRIB_ARRAY_STRIDE[index] = stride;
-					// This sets VERTEX_BINDING_STRIDE to effectiveStride
-					VERTEX_ATTRIB_ARRAY_POINTER[index] = pointer;
-					BindVertexBuffer(index, buffer bound to ARRAY_BUFFER,
-					(char *)pointer - (char *)NULL, effectiveStride);
+				if (GLEW_ARB_vertex_attrib_binding)
+				{
+					/* GL_ARB_vertex_attrib_binding:
+						기존의 BindBuffer()와 VertexAttribute*()의 종속을 분리한다.
+						기존 방식이 현재 state context에 bind된 buffer에 vertex attribute를 설정하는 방식인 반면,
+						현재 state에서 지칭된 buffer에는 영향없이 buffer binding index에 특정 attribute에 대한 설정 먼저 작성하고 VAO에 기록해둔다.
+						Buffer object는 나중에 적절한 binding index에 바인드해서 그에 설정된 attribute 설정을 따르도록 한다.
+					 */
+					GL_CALL(glVertexAttribBinding(attributeIndex, bindingIndex));
+					GL_CALL(glVertexAttribFormat(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset));
 				}
-				*/
-				GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
-#endif
+//				else if (GLEW_ARB_multi_bind)
+//				{
+//					/*
+//					 VertexAttribPointer == {
+//					 VertexAttrib*Format(index, size, type, fnormalized, g, 0);
+//					 VertexAttribBinding(index, index);
+//					 if (stride != 0) {
+//						effectiveStride = stride;
+//					 } else {
+//						compute effectiveStride based on size and type;
+//					 }
+//					 VERTEX_ATTRIB_ARRAY_STRIDE[index] = stride;
+//					 // This sets VERTEX_BINDING_STRIDE to effectiveStride
+//					 VERTEX_ATTRIB_ARRAY_POINTER[index] = pointer;
+//					 BindVertexBuffer(index, buffer bound to ARRAY_BUFFER,
+//					 (char *)pointer - (char *)NULL, effectiveStride);
+//					 }
+//					 */
+//
+//					// Multi binding이 가능한 경우, 개별적인 attribute 설정을 위해 반복적인 bind 호출을 VAO에 등록하지 않아도 됨.
+//
+//					GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+//				}
 				++attributeIndex;
 			}
 			++bindingIndex;
@@ -132,9 +148,6 @@ XRInputLayoutGL::XRInputLayoutGL(const XRObjectHeader* objectHeader)
 	// if then, we can get a layout of model and just use it later.
 	GL_CALL(glGenVertexArrays(1, &_vao));
 	GL_CALL(glBindVertexArray(_vao));
-	
-	struct XRVertexAttributeDescGL : XRVertexAttributeDesc { friend XRInputLayoutGL; };
-	struct XRVertexBufferDescGL : XRVertexBufferDesc { friend XRInputLayoutGL; };
 
 	for(uint32_t i = 0; i < objectHeader->_numMeshes; ++i)
 	{
@@ -161,6 +174,74 @@ XRInputLayoutGL::~XRInputLayoutGL()
 void XRInputLayoutGL::bind() const
 {
 	GL_CALL(glBindVertexArray(_vao));
+	
+	if (GL_TRUE == GLEW_ARB_vertex_attrib_binding)
+	{
+		/* Note(vertex_attrib_binding):
+			생성 시점에 binding index에 먼저 설정하였으므로 추가 처리 불필요
+		 */
+		return;
+	}
+	
+	if (GLEW_ARB_multi_bind)
+	{
+		/*
+		 VertexAttribPointer == {
+		 VertexAttrib*Format(index, size, type, fnormalized, g, 0);
+		 VertexAttribBinding(index, index);
+		 if (stride != 0) {
+			effectiveStride = stride;
+		 } else {
+			compute effectiveStride based on size and type;
+		 }
+		 VERTEX_ATTRIB_ARRAY_STRIDE[index] = stride;
+		 // This sets VERTEX_BINDING_STRIDE to effectiveStride
+		 VERTEX_ATTRIB_ARRAY_POINTER[index] = pointer;
+		 BindVertexBuffer(index, buffer bound to ARRAY_BUFFER,
+		 (char *)pointer - (char *)NULL, effectiveStride);
+		 }
+		 */
+		
+		// Multi binding이 가능한 경우, 개별적인 attribute 설정을 위해 반복적인 bind 호출을 VAO에 등록하지 않아도 됨.
+		
+		//GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+	}
+}
+
+void XRInputLayoutGL::bindAttributes(uint32_t bindingIndex) const
+{
+	auto& inputLayoutDesc = getInputLayoutDesc();
+	auto& bufferDesc = static_cast<XRVertexBufferDescGL const&>(inputLayoutDesc.getVertexBufferDesc(bindingIndex));
+	assert(bufferDesc.bindingIndex == bindingIndex);
+
+	if (GLEW_ARB_vertex_attrib_binding)
+		GL_CALL(glVertexBindingDivisor(bindingIndex, bufferDesc.instanceDivisor));
+	
+	uint32_t numAttributes = static_cast<int>(bufferDesc.attributes.size());
+	for (uint32_t j = 0; j < numAttributes; ++j)
+	{
+		auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
+		const uint32_t attributeIndex = attributeDesc.shaderLocation;
+		XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
+		XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
+		GL_CALL(glEnableVertexAttribArray(attributeIndex));
+
+		if (GLEW_ARB_vertex_attrib_binding)
+		{
+			/* GL_ARB_vertex_attrib_binding:
+				기존의 BindBuffer()와 VertexAttribute*()의 종속을 분리한다.
+				기존 방식이 현재 state context에 bind된 buffer에 vertex attribute를 설정하는 방식인 반면,
+				현재 state에서 지칭된 buffer에는 영향없이 buffer binding index에 특정 attribute에 대한 설정 먼저 작성하고 VAO에 기록해둔다.
+				Buffer object는 나중에 적절한 binding index에 바인드해서 그에 설정된 attribute 설정을 따르도록 한다.
+				*/
+			GL_CALL(glVertexAttribBinding(attributeIndex, bindingIndex));
+			GL_CALL(glVertexAttribFormat(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset));
+		}
+		else
+		{
+			GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+		}
+	}
 }
 
 void* XRInputLayoutGL::generateVertexBuffers() const
@@ -300,19 +381,6 @@ XRModelGL::~XRModelGL()
 void XRModelGL::bind() const
 {
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
-    //glBindBuffer(GL_ARRAY_BUFFER, _meshes[0]._vbo[0]);
-    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-    //
-    //glBindBuffer(GL_ARRAY_BUFFER, GL.normal);
-    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-    //
-    //glBindBuffer(GL_ARRAY_BUFFER, GL.textureCoord);
-    //glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-#else
-	glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
-#endif
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL.index);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	static constexpr GLuint MAX_VERTEX_BUFFER_COUNT = 16;
 	GLintptr vertexBufferStartOffsets[MAX_VERTEX_BUFFER_COUNT] = { 0, };
 	GLsizei vertexBufferStrides[MAX_VERTEX_BUFFER_COUNT] = { 0, };
@@ -326,16 +394,38 @@ void XRModelGL::bind() const
 
 		for (uint32_t s = 0; s < 1/*header->_meshes[m]->_numSubmeshes*/; ++s)
 		{
-			for (uint32_t i = 0; i < numVertexBuffers; ++i)
-			{
-				vertexBufferStartOffsets[i] = 0;
-				vertexBufferStrides[i] = _inputLayout->getStride(i);
-			}
-
-			GLuint startBindingIndex = 0;
 			GLuint const* vertexBufferNames = _meshes[m]._vbo;
 #if 1
-			GL_CALL(glBindVertexBuffers(startBindingIndex, numVertexBuffers, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides));
+			if (GLEW_ARB_vertex_attrib_binding)
+			{
+				GLuint startBindingIndex = 0;
+				for (uint32_t i = 0; i < numVertexBuffers; ++i)
+				{
+					vertexBufferStartOffsets[i] = 0;
+					vertexBufferStrides[i] = _inputLayout->getStride(i);
+				}
+				
+				if (GLEW_ARB_multi_bind)
+				{
+					GL_CALL(glBindVertexBuffers(startBindingIndex, numVertexBuffers, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides));
+				}
+				else
+				{
+					for(uint32_t i = 0; i < numVertexBuffers; ++i)
+					{
+						GL_CALL(glBindVertexBuffer(startBindingIndex + i, vertexBufferNames[i], vertexBufferStartOffsets[i], vertexBufferStrides[i]));
+					}
+				}
+			}
+			else
+			{
+				for(uint32_t i = 0; i < numVertexBuffers; ++i)
+				{
+					GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vertexBufferNames[i]));
+					auto inputLayout = static_cast<XRInputLayoutGL*>(_inputLayout);
+					inputLayout->bindAttributes(i);
+				}
+			}
 
 			if (numIndexBuffer == 1)
 			{
@@ -351,6 +441,11 @@ void XRModelGL::bind() const
 #endif
 		}
 	}
+	
+#elif XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_AOS
+	glBindBuffer(GL_ARRAY_BUFFER, GL.vertex);
+	
+#endif
 }
 
 uint32_t XRModelGL::getNumVertices() const { return 0;

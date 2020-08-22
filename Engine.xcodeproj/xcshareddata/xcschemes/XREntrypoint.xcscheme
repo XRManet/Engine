@@ -14,20 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E8C1BA5922B6319F006EDA1E"
-               BuildableName = "XREntrypoint"
-               BlueprintName = "XREntrypoint"
-               ReferencedContainer = "container:Engine.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "E8E5915D226AF66300164749"
                BuildableName = "libXRFrameworkBase.dylib"
                BlueprintName = "XRFrameworkBase"
@@ -59,6 +45,20 @@
                BlueprintIdentifier = "E8C1BA5122B630FE006EDA1E"
                BuildableName = "libXRSceneTest.dylib"
                BlueprintName = "XRSceneTest"
+               ReferencedContainer = "container:Engine.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E8C1BA5922B6319F006EDA1E"
+               BuildableName = "XREntrypoint"
+               BlueprintName = "XREntrypoint"
                ReferencedContainer = "container:Engine.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

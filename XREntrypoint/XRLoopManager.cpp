@@ -77,7 +77,7 @@ namespace
         {
             strcpy(RESOURCE_PATH + RESOURCE_PATH_END, filename[i]);
 			FILE *fp = nullptr;
-			errno_t error = fopen_s(&fp, RESOURCE_PATH, "r");
+			errno_t error = xr::fopen(&fp, RESOURCE_PATH, "r");
             
             assert(fp != nullptr);
             if (error != 0 || fp == nullptr) continue;
@@ -268,6 +268,10 @@ void XRRenderingStratagyTest::Initialize()
         if(glfwGetProcAddress("glDebugMessageCallback"))
             glDebugMessageCallback(MessageCallback, 0);
     }
+	
+	if (glfwExtensionSupported("GL_ARB_vertex_attrib_binding") == GLFW_TRUE)
+	{
+	}
 
 	printf("\n=============================================\n");
 	printf("Query OpenGL System Informations\n\n");
