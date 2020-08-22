@@ -5,59 +5,58 @@
 #include <XRFrameworkBase/XRScene.h>
 #include "XRSceneManager.h"
 
+int32_t g_keyboardPressed[256] = { 0, };
+
 void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	auto _this = static_cast<XRRenderingInfra<GLFW>*>(glfwGetWindowUserPointer(window));
 
+	if (key < 256)
+		g_keyboardPressed[key] = (action == GLFW_REPEAT || action == GLFW_PRESS) ? 1 : 0;
+
 	switch (key)
 	{
 	case GLFW_KEY_W:
-		if (action == GLFW_PRESS)
-		{
-			printf("W Key pressed\n");
-		}
-		break;
 	case GLFW_KEY_S:
-		if (action == GLFW_PRESS)
-		{
-			printf("S Key pressed\n");
-		}
-		break;
 	case GLFW_KEY_A:
-		if (action == GLFW_PRESS)
-		{
-			printf("A Key pressed\n");
-		}
-		break;
 	case GLFW_KEY_D:
-		if (action == GLFW_PRESS)
-		{
-			printf("D Key pressed\n");
-		}
-		break;
 	case GLFW_KEY_Q:
-		if (action == GLFW_PRESS)
-		{
-			printf("Q Key pressed\n");
-		}
-		break;
 	case GLFW_KEY_E:
-		if (action == GLFW_PRESS)
-		{
-			printf("E Key pressed\n");
-		}
+		if (action == GLFW_PRESS);
+		else if (action == GLFW_RELEASE);
+		else if (action == GLFW_REPEAT);
 		break;
 	}
 }
 
+double curX = 0, curY = 0;
+double anchorX = 0, anchorY = 0;
+bool anchored = false;
+
 void XRRenderingInfra<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
 {
-
+	if (button == GLFW_MOUSE_BUTTON_RIGHT)
+	{
+		if (action == GLFW_PRESS)
+		{
+			anchorX = curX;
+			anchorY = curY;
+			anchored = true;
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			anchored = false;
+		}
+	}
 }
 
 void XRRenderingInfra<GLFW>::PositionMouse(GLFWwindow* window, double xpos, double ypos)
 {
+	int32_t windowSizeX = 0, windowSizeY = 0;
+	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
 
+	curX = xpos;
+	curY = double(windowSizeY) - ypos;
 }
 
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
@@ -530,6 +529,24 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 			glm::mat4 proj;
 			glm::mat4 viewProj;
 		} matrixBlock;
+
+		float cameraStep = .1f;
+
+		glm::vec3 cameraMove{
+			(g_keyboardPressed['D'] - g_keyboardPressed['A']) * cameraStep,
+			(g_keyboardPressed['E'] - g_keyboardPressed['Q']) * cameraStep,
+			(g_keyboardPressed['S'] - g_keyboardPressed['W']) * cameraStep
+		};
+		scene->getCameras()[0].Move(cameraMove);
+
+		//if (true == anchored)
+		//{
+		//	static const auto up = glm::vec3(0, 1, 0);
+		//	glm::quat orientation = scene->getCameras()[0].GetQuaternion();
+		//	
+
+		//	glm::rotate(glm::packed_highp);
+		//}
 
 		matrixBlock.view = scene->getCameras()[0].GetInvTransform();
 		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();

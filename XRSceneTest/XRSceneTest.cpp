@@ -50,7 +50,6 @@ XRSceneTest::~XRSceneTest()
 
 void XRSceneTest::Update(float dt)
 {
-
 }
 
 

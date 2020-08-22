@@ -34,7 +34,7 @@ protected:
   std::unordered_map<std::string, XRObjectGroup> _object_groups;
 
 public:
-	std::vector<XRCamera> const& getCameras() const { return _cameras; }
+	std::vector<XRCamera>& getCameras() { return _cameras; }
 	XRObjectGroup const* getObjectGroup(std::string groupName) const
 	{
 		auto it = _object_groups.find(groupName);

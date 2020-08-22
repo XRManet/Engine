@@ -48,6 +48,8 @@ public:
 	void SetPosition(const glm::vec4& position) { _position = position; }
 	void SetQuaternion(const glm::quat& quaternion) { _orientation = quaternion; }
 
+	glm::quat GetQuaternion() const { return _orientation; }
+
 
 public:
 	void Move(const glm::vec3& distance) { _position += glm::vec4(distance, 0); }
