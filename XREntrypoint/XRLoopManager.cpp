@@ -32,6 +32,7 @@ void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scan
 double curX = 0, curY = 0;
 double anchorX = 0, anchorY = 0;
 bool anchored = false;
+float cameraStep = .1f;
 
 void XRRenderingInfra<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
 {
@@ -57,6 +58,14 @@ void XRRenderingInfra<GLFW>::PositionMouse(GLFWwindow* window, double xpos, doub
 
 	curX = xpos;
 	curY = double(windowSizeY) - ypos;
+}
+
+void XRRenderingInfra<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, double yoffset)
+{
+	printf("%lf\n", yoffset);
+	cameraStep += float(yoffset * .1f) ;
+	if (cameraStep <= .1f)
+		cameraStep = .1f;
 }
 
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
@@ -534,23 +543,34 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 			glm::mat4 viewProj;
 		} matrixBlock;
 
-		float cameraStep = .1f;
 
 		glm::vec3 cameraMove{
-			(g_keyboardPressed['D'] - g_keyboardPressed['A']) * cameraStep,
-			(g_keyboardPressed['E'] - g_keyboardPressed['Q']) * cameraStep,
-			(g_keyboardPressed['S'] - g_keyboardPressed['W']) * cameraStep
+			(g_keyboardPressed['D'] - g_keyboardPressed['A']),
+			(g_keyboardPressed['E'] - g_keyboardPressed['Q']),
+			(g_keyboardPressed['S'] - g_keyboardPressed['W'])
 		};
-		scene->getCameras()[0].Move(cameraMove);
+		glm::vec3 alignedMove = glm::mat3_cast(scene->getCameras()[0].GetQuaternion()) * cameraMove * cameraStep;
+		scene->getCameras()[0].Move(alignedMove);
 
-		//if (true == anchored)
-		//{
-		//	static const auto up = glm::vec3(0, 1, 0);
-		//	glm::quat orientation = scene->getCameras()[0].GetQuaternion();
-		//	
+		static bool anchorOrientation = false;
+		static glm::quat orientation;
+		if (true == anchored)
+		{
+			static const auto up = glm::vec3(0, 1, 0);
+			static const auto right = glm::vec3(1, 0, 0);
 
-		//	glm::rotate(glm::packed_highp);
-		//}
+			if (false == anchorOrientation)
+			{
+				orientation = scene->getCameras()[0].GetQuaternion();
+				anchorOrientation = true;
+			}
+			auto axisXangle = glm::radians(-float(curX - anchorX)) * cameraStep;
+			auto axisYangle = glm::radians(float(curY - anchorY)) * cameraStep;
+			
+			auto rotation = glm::rotate(glm::rotate(orientation, axisXangle, up), axisYangle, right);
+			scene->getCameras()[0].SetQuaternion(rotation);
+		}
+		else anchorOrientation = false;
 
 		matrixBlock.view = scene->getCameras()[0].GetInvTransform();
 		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();
