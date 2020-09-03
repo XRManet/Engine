@@ -355,7 +355,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 				const uint32_t numMaterials = 1;
 				totalDataSize += numMaterials * sizeof(uint32_t);
 
-				totalDataSize += static_cast<uint32_t>(sizeof(uint16_t) * objects[i]._submeshes[j]._indices.size());
+				totalDataSize += static_cast<uint32_t>(sizeof(uint32_t) * objects[i]._submeshes[j]._indices.size());
 				
 				for (uint32_t k = 0; k < numVertexBuffers; ++k)
 				{
@@ -414,8 +414,8 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 				submeshOffset += sizeof(uint32_t) * numMaterials;
 				submeshHeader[j]->_offsetIndex = submeshOffset;
 
-				uint16_t* const indexBuffer = submeshHeader[j]->getIndexBuffer();
-				uint32_t bufferSize = static_cast<uint32_t>(sizeof(uint16_t) * objects[i]._submeshes[j]._indices.size());
+				uint32_t* const indexBuffer = submeshHeader[j]->getIndexBuffer();
+				uint32_t bufferSize = static_cast<uint32_t>(sizeof(uint32_t) * objects[i]._submeshes[j]._indices.size());
 				memcpy(indexBuffer, objects[i]._submeshes[j]._indices.data(), bufferSize);
 				submeshOffset += bufferSize;
 

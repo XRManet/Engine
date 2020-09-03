@@ -29,6 +29,7 @@ private:
 	};
 
 	std::vector<GLBuffer> _meshes;
+	mutable bool _isBoundWithVAO = false;
 
 public:
 	XRModelGL(XRModelData const* data);

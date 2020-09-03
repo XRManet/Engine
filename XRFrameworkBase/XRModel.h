@@ -398,13 +398,13 @@ struct XRSubmeshHeader
 	{
 		return const_cast<uint8_t*>(const_cast<XRSubmeshHeader const*>(this)->getVertexBuffer(slotIndex));
 	}
-	const uint16_t* getIndexBuffer() const
+	const uint32_t* getIndexBuffer() const
 	{
-		return reinterpret_cast<const uint16_t*>(reinterpret_cast<const uint8_t*>(this) + _offsetIndex);
+		return reinterpret_cast<const uint32_t*>(reinterpret_cast<const uint8_t*>(this) + _offsetIndex);
 	}
-	uint16_t* getIndexBuffer()
+	uint32_t* getIndexBuffer()
 	{
-		return const_cast<uint16_t*>(const_cast<XRSubmeshHeader const*>(this)->getIndexBuffer());
+		return const_cast<uint32_t*>(const_cast<XRSubmeshHeader const*>(this)->getIndexBuffer());
 	}
 
 	uint32_t getVertexBufferSize(uint32_t slotIndex) const

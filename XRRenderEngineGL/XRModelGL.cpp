@@ -380,6 +380,10 @@ XRModelGL::~XRModelGL()
 
 void XRModelGL::bind() const
 {
+	if (true == _isBoundWithVAO)
+		return;
+	_isBoundWithVAO = true;
+
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
 	static constexpr GLuint MAX_VERTEX_BUFFER_COUNT = 16;
 	GLintptr vertexBufferStartOffsets[MAX_VERTEX_BUFFER_COUNT] = { 0, };
