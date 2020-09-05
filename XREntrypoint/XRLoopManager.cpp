@@ -535,14 +535,31 @@ void XRRenderingStratagyTest::Initialize()
 
 void XRRenderingStratagyTest::Update(XRScene* scene)
 {
+	std::vector<unsigned char> uniformBufferData;
 	{
 		struct MatrixBlock
 		{
 			glm::mat4 view;
 			glm::mat4 proj;
 			glm::mat4 viewProj;
-		} matrixBlock;
+		};
 
+		struct LightBlock
+		{
+			glm::vec4 position;
+			glm::vec3 intensity;
+			float attenuation;
+		};
+
+		const size_t offsetMatrixBlock = 0;
+		const size_t sizeMatrixBlock = (sizeof(MatrixBlock) * 1);
+		const size_t offsetLightBlock = offsetMatrixBlock + sizeMatrixBlock;
+		const size_t sizeLightBlock = (sizeof(LightBlock) * 1);
+		uniformBufferData.resize(sizeMatrixBlock + sizeLightBlock);
+
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix];
+		MatrixBlock& matrixBlock = reinterpret_cast<MatrixBlock&>(uniformBufferData[offsetMatrixBlock]);
+		LightBlock& lightBlock = reinterpret_cast<LightBlock&>(uniformBufferData[offsetLightBlock]);
 
 		glm::vec3 cameraMove{
 			(g_keyboardPressed['D'] - g_keyboardPressed['A']),
@@ -576,24 +593,25 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();
 		matrixBlock.viewProj = matrixBlock.proj * matrixBlock.view;
 
-		struct LightBlock
-		{
-			glm::vec4 position;
-			glm::vec3 intensity;
-			float attenuation;
-		} lightBlock;
+#define UPLOAD_METHOD_PER_DATA	0
+#define UPLOAD_METHOD_ALL_ONCE	1
+#define UPLOAD_METHOD			UPLOAD_METHOD_ALL_ONCE
 
-		std::vector<void*> data;
-		data.resize(programResources._indexedUniformBlockBindingInfo.size());
-		data[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
-		data[UNIFORM_BINDING_NAME::Light] = &lightBlock;
+#if UPLOAD_METHOD == UPLOAD_METHOD_PER_DATA
+		std::vector<void*> dataAddress;
+		dataAddress.resize(programResources._indexedUniformBlockBindingInfo.size());
+		dataAddress[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
+		dataAddress[UNIFORM_BINDING_NAME::Light] = &lightBlock;
 
 		uint32_t i = 0;
 		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
 		{
 			if (ii->isBound() == false) continue;
-			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, data[i]));
+			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, dataAddress[i]));
 		}
+#elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data() );
+#endif
 	}
 }
 
