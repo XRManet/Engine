@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "XRCommandBufferGL.h"
+#include "XRModelGL.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -33,7 +34,67 @@ void XRCommandBufferGL::drawIndexed(XRPrimitiveTopology topology, XRIndexType in
 	GLenum topologyGL = ConvertPrimitiveTopology(topology);
 	GLenum indexTypeGL = ConvertIndexType(indexType);
 
-	glDrawElementsBaseVertex(topologyGL, indexCount, indexTypeGL, nullptr, indexStart);
+	GL_CALL(glDrawElementsBaseVertex(topologyGL, indexCount, indexTypeGL, (void*)indexStart, 0));
+}
+
+void XRCommandBufferGL::drawModel(XRPrimitiveTopology topology, XRModel const* model)
+{
+	XRModelGL const* modelGL = static_cast<XRModelGL const*>(model);
+
+	GLenum topologyGL = ConvertPrimitiveTopology(topology);
+	GLenum indexTypeGL = modelGL->getIndexType(0);
+
+	MultiDrawElementsBaseVertexInfo info{};
+
+	for (uint32_t m = 0; m < 2; ++m)
+	{
+		modelGL->getMultiDrawElementsBaseVertexInfo(info, m);
+
+		if (GLEW_ARB_draw_elements_base_vertex)
+		{
+			glMultiDrawElementsBaseVertex(topologyGL, info.indexCounts, indexTypeGL, (void**)info.indexOffsets, info.drawCount, info.baseVertexOffsets);
+		}
+		else
+		{
+			for (uint32_t i = 0; i < info.drawCount; ++i)
+			{
+				GL_CALL(glDrawElementsBaseVertex(topologyGL, info.indexCounts[i], indexTypeGL, (void*)(info.indexOffsets[i]), info.baseVertexOffsets[i]));
+			}
+		}
+	}
+	//glMultiDrawElementsBaseVertex(topologyGL, info.indexCounts, indexTypeGL, (void**)info.indexOffsets, info.drawCount, info.baseVertexOffsets);
+
+	//const uint32_t sampleSubmeshIndex = 0;
+	//glDrawElementsBaseVertex(topologyGL, info.indexCounts[sampleSubmeshIndex], indexTypeGL, (void*)info.indexOffsets[sampleSubmeshIndex], 0);
+
+	//glMultiDrawElementsIndirect(topologyGL, indexTypeGL, command, drawCount, 0);
+	//glMultiDrawElementsIndirectCount(topologyGL, indexTypeGL, command, drawCount, maxDrawCount, 0);
+
+	//if (GLEW_NV_command_list)
+	//{
+	//	if (GLEW_NV_uniform_buffer_unified_memory)
+	//	{
+	//		typedef struct {
+	//			GLuint		header;
+	//			GLushort	index;
+	//			GLushort	stage;
+	//			GLuint64	address;
+	//		} GlUniformAddressCommandNV;
+
+	//		typedef struct {
+	//			GLuint	count;
+	//			GLuint	instanceCount;
+	//			GLuint	firstIndex;
+	//			GLint	baseVertex;
+	//			GLuint	baseInstance;
+	//		} DrawElementsIndirectCommand;
+
+	//		GL_DRAW_INDIRECT_BUFFER; // buffer for indirect command
+	//		glBufferAddressRangeNV(GL_UNIFORM_BUFFER_ADDRESS_NV, 0, );
+	//	}
+
+	//	glMultiDrawElementsIndirectBindlessNV(topologyGL, indexTypeGL, command, drawCount, 0, 4);
+	//}
 }
 
 namespace
@@ -42,17 +103,17 @@ GLenum ConvertPrimitiveTopology(XRPrimitiveTopology topology)
 {
 	switch (topology)
 	{
-	case XRPrimitiveTopology::Points:						return GL_POINTS;
-	case XRPrimitiveTopology::Lines:						return GL_LINES;
-	case XRPrimitiveTopology::Triangles:					return GL_TRIANGLES;
+	case XRPrimitiveTopology::PointList:					return GL_POINTS;
+	case XRPrimitiveTopology::LineList:						return GL_LINES;
+	case XRPrimitiveTopology::TriangleList:					return GL_TRIANGLES;
 	case XRPrimitiveTopology::LineStrip:					return GL_LINE_STRIP;
-	case XRPrimitiveTopology::LinesWithAdjacency:			return GL_LINES_ADJACENCY;
+	case XRPrimitiveTopology::LineListWithAdjacency:		return GL_LINES_ADJACENCY;
 	case XRPrimitiveTopology::LineStripWithAdjacency:		return GL_LINE_STRIP_ADJACENCY;
 	case XRPrimitiveTopology::TriangleStrip:				return GL_TRIANGLE_STRIP;
 	case XRPrimitiveTopology::TriangleFan:					return GL_TRIANGLE_FAN;
-	case XRPrimitiveTopology::TrianglesWithAdjacency:		return GL_TRIANGLES_ADJACENCY;
+	case XRPrimitiveTopology::TriangleListWithAdjacency:	return GL_TRIANGLES_ADJACENCY;
 	case XRPrimitiveTopology::TriangleStripWithAdjacency:	return GL_TRIANGLE_STRIP_ADJACENCY;
-	case XRPrimitiveTopology::Patches:						return GL_PATCHES;
+	case XRPrimitiveTopology::PatchList:					return GL_PATCHES;
 	}
 	return GL_NONE;
 }

@@ -610,7 +610,7 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, dataAddress[i]));
 		}
 #elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data() );
+		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data() ));
 #endif
 	}
 }

@@ -155,6 +155,7 @@
     <ClInclude Include="XRPlatformOSX.hpp">
       <Filter>소스 파일\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="XRFrameworkBaseRenderEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">

@@ -269,40 +269,72 @@ XRModelGL::XRModelGL(XRModelData const* data) : XRModel(data)
     
 	_inputLayout = inputLayout;
 
-	_meshes.reserve(header->_numMeshes);
+	_meshes.resize(header->_numMeshes);
 	for (uint32_t m = 0; m < header->_numMeshes; ++m)
 	{
 		uint32_t numVertexBuffers = _inputLayout->getNumVertexBuffers();
 		uint32_t numIndexBuffer = (header->_meshes[m]->_submeshes[0]->IsIndexed() ? 1 : 0);
-		GLBuffer buffer {};
+		GLBuffer& buffer = _meshes[m];
 		buffer._numBuffers = numVertexBuffers + numIndexBuffer;
+		buffer._infoDataBufferOffset = _infoDataBuffer.size();
 
-		for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
+		GL_CALL(glGenBuffers(buffer._numBuffers, buffer._vbo));
+
+		const uint32_t numSubmeshes = header->_meshes[m]->_numSubmeshes;
+		MultiDrawElementsBaseVertexInfo multiDrawElementBaseVertexInfo{};
 		{
-			GL_CALL(glGenBuffers(buffer._numBuffers, buffer._vbo));
+			constexpr size_t sizeofIndexOffsets = sizeof(GLintptr);
+			constexpr size_t sizeofIndexSizes = sizeof(GLsizei);
+			constexpr size_t sizeofVertexBaseOffsets = sizeof(GLsizei);
+			const GLsizeiptr sizeForDataBuffer = numSubmeshes * (sizeofIndexOffsets + sizeofIndexSizes + sizeofVertexBaseOffsets);
+			_infoDataBuffer.resize(_infoDataBuffer.size() + sizeForDataBuffer);
 
-			for (uint32_t i = 0; i < numVertexBuffers; ++i)
+			getMultiDrawElementsBaseVertexInfo(multiDrawElementBaseVertexInfo, m);
+
+			// Note(jiman): If later, there are multiple meshes in a vbo, use base offset. Not currently used.
+			for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
+				multiDrawElementBaseVertexInfo.baseVertexOffsets[s] = 0;
+		}
+
+		for (uint32_t i = 0; i < numVertexBuffers; ++i)
+		{
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, buffer._vbo[i]));
+			GLuint size = 0;
+			for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
+				size += header->_meshes[m]->_submeshes[s]->getVertexBufferSize(i);
+			GL_CALL(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
+
+			GLuint offset = 0;
+			for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
 			{
-				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, buffer._vbo[i]));
-
-				GLuint offset = 0;
-				GLuint size = header->_meshes[m]->_submeshes[s]->getVertexBufferSize(i);
-				GL_CALL(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
+				size = header->_meshes[m]->_submeshes[s]->getVertexBufferSize(i);
 				GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, offset, size, header->_meshes[m]->_submeshes[s]->getVertexBuffer(i)));
-			}
 
-			if (numIndexBuffer == 1)
+				offset += size;
+			}
+		}
+
+		if (numIndexBuffer == 1)
+		{
+			const uint32_t indexBufferId = buffer._numBuffers - 1;
+			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer._vbo[indexBufferId]));
+
+			GLuint size = 0;
+			for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
+				size += header->_meshes[m]->_submeshes[s]->getIndexBufferSize();
+			GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
+		
+			GLuint offset = 0;
+			for (uint32_t s = 0; s < header->_meshes[m]->_numSubmeshes; ++s)
 			{
-				const uint32_t indexBufferId = buffer._numBuffers - 1;
-				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer._vbo[indexBufferId]));
+				size = header->_meshes[m]->_submeshes[s]->getIndexBufferSize();
+				GL_CALL(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, header->_meshes[m]->_submeshes[s]->getIndexBuffer()));
 
-				GLuint offset = 0;
-				GLuint size = header->_meshes[m]->_submeshes[s]->getIndexBufferSize();
-				GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
-				GL_CALL(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, header->_meshes[m]->_submeshes[s]->getIndexBuffer()));
+				const uint32_t indexSize = header->_meshes[m]->_indexSize;
+				multiDrawElementBaseVertexInfo.indexCounts[s] = size / indexSize;
+				multiDrawElementBaseVertexInfo.indexOffsets[s] = offset;
+				offset += size;
 			}
-
-			_meshes.emplace_back(buffer);
 		}
 	}
 #if 0
@@ -392,23 +424,23 @@ void XRModelGL::bind() const
 	const auto* header = _data->GetHeader();
 
 	for (uint32_t m = 0; m < 1/*header->_numMeshes*/; ++m)
+	//for (uint32_t m = 0; m < header->_numMeshes; ++m)
 	{
 		uint32_t numVertexBuffers = _inputLayout->getNumVertexBuffers();
 		uint32_t numIndexBuffer = (header->_meshes[m]->_submeshes[0]->IsIndexed() ? 1 : 0);
 
-		for (uint32_t s = 0; s < 1/*header->_meshes[m]->_numSubmeshes*/; ++s)
 		{
 			GLuint const* vertexBufferNames = _meshes[m]._vbo;
 #if 1
 			if (GLEW_ARB_vertex_attrib_binding)
 			{
-				GLuint startBindingIndex = 0;
 				for (uint32_t i = 0; i < numVertexBuffers; ++i)
 				{
 					vertexBufferStartOffsets[i] = 0;
 					vertexBufferStrides[i] = _inputLayout->getStride(i);
 				}
 				
+				const GLuint startBindingIndex = 0;
 				if (GLEW_ARB_multi_bind)
 				{
 					GL_CALL(glBindVertexBuffers(startBindingIndex, numVertexBuffers, vertexBufferNames, vertexBufferStartOffsets, vertexBufferStrides));
@@ -452,10 +484,43 @@ void XRModelGL::bind() const
 #endif
 }
 
-uint32_t XRModelGL::getNumVertices() const { return 0;
+uint32_t XRModelGL::getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const { return 0;
 	//_data->GetHeader()->vertex_count;
 	
 }
-uint32_t XRModelGL::getNumIndices() const {
-	return _data->GetHeader()->_meshes[0]->_submeshes[0]->getIndexBufferSize() / 2;
+uint32_t XRModelGL::getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const {
+	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
+}
+
+GLenum XRModelGL::getIndexType(uint32_t meshIndex) const {
+	switch (_data->GetHeader()->_meshes[meshIndex]->_indexSize)
+	{
+	case 1: return GL_UNSIGNED_BYTE;
+	case 2: return GL_UNSIGNED_SHORT;
+	case 4:	return GL_UNSIGNED_INT;
+	}
+
+	return GL_NONE;
+}
+
+void XRModelGL::getMultiDrawElementsInfo(MultiDrawElementsInfo& info, uint32_t meshIndex) const
+{
+	const auto* header = _data->GetHeader();
+	const uint32_t numSubmeshes = header->_meshes[meshIndex]->_numSubmeshes;
+	const uint32_t baseDataBufferOffset = _meshes[meshIndex]._infoDataBufferOffset;
+
+	info.indexCounts = reinterpret_cast<GLsizei*>(&_infoDataBuffer[baseDataBufferOffset]);
+	info.indexOffsets = reinterpret_cast<GLintptr*>(info.indexCounts + numSubmeshes);
+	info.drawCount = numSubmeshes;
+}
+
+void XRModelGL::getMultiDrawElementsBaseVertexInfo(MultiDrawElementsBaseVertexInfo& info, uint32_t meshIndex) const
+{
+	const auto* header = _data->GetHeader();
+	const uint32_t numSubmeshes = header->_meshes[meshIndex]->_numSubmeshes;
+	//const uint32_t baseDataBufferIndex = _meshes[meshIndex]._infoDataBufferIndex;
+
+	getMultiDrawElementsInfo(info, meshIndex);
+
+	info.baseVertexOffsets = reinterpret_cast<GLsizei*>(info.indexOffsets + numSubmeshes);
 }

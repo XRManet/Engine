@@ -63,9 +63,7 @@ struct XRWavefrontObjectMeshes
 
 	std::vector<XRWavefrontObjectSubmeshes> _submeshes;
 
-	uint32_t _numComponentsPosition = 0;
-	uint32_t _numComponentsTexcoord = 0;
-	uint32_t _numComponentsNormal = 0;
+	XRIndexType _indexType;
 
 	XRWavefrontObjectMeshes()
 	{
@@ -116,6 +114,7 @@ bool XRWavefrontObject::LoadDataFromFile()
 	uint32_t element_count_normal = 0;
 	uint32_t element_count_tex = 0;
 
+	uint32_t meshIndexAccum = 0;
 	std::unordered_map<XRWavefrontObjectFaceKey, uint32_t, std::hash<uint64_t>> indices;
 	std::vector<XRWavefrontObjectMeshes> objects;
 	objects.push_back(XRWavefrontObjectMeshes());
@@ -152,9 +151,15 @@ bool XRWavefrontObject::LoadDataFromFile()
 			{
 				objects.push_back(XRWavefrontObjectMeshes());
 				currentObject = &objects.back();
+				currentSubobject = &currentObject->_submeshes.back();
 				hasManySubobjects = false;
 			}
 			else hasManyObjects = true;
+
+			currentObject->_indexType = XRIndexType::Index32;
+
+			meshIndexAccum = 0;
+			indices.clear();
 		}
 		else if (line[0] == 'v')
 		{
@@ -187,6 +192,9 @@ bool XRWavefrontObject::LoadDataFromFile()
 				currentSubobject = &currentObject->_submeshes.back();
 			}
 			else hasManySubobjects = true;
+
+			meshIndexAccum += indices.size();
+			indices.clear();
 
 			currentSubobject->_materialName = buffer;
 		}
@@ -239,7 +247,8 @@ bool XRWavefrontObject::LoadDataFromFile()
 
 				if (result == indices.end())
 				{
-					vertexIds[i] = static_cast<uint32_t>(indices.size());
+					vertexIds[i] = static_cast<uint32_t>(indices.size()) + meshIndexAccum;
+					//vertexIds[i] = static_cast<uint32_t>(indices.size());
 					indices.insert({ faceKey, vertexIds[i] });
 
 #if XR_MODEL_DATA_LAYOUT == XR_MODEL_DATA_LAYOUT_SOA
@@ -372,9 +381,9 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 		_memory.resize(totalDataSize);
 		header = GetHeader();
 		XRMeshHeader** meshHeaders = header->_meshes;
-		PrimitiveTopology topology(PrimitiveTopology::TriangleList);
+		XRPrimitiveTopology topology(XRPrimitiveTopology::TriangleList);
 		uint8_t* meshBaseAddress = reinterpret_cast<uint8_t*>(header->_meshes);
-		uint32_t meshOffset = sizeof(XRMeshHeader) * header->_numMeshes;
+		uint32_t meshOffset = sizeof(XRMeshHeader*) * header->_numMeshes;
 		for (uint32_t i = 0; i < header->_numMeshes; ++i)
 		{
 			uint32_t numSubmeshes = static_cast<uint32_t>(objects[i]._submeshes.size());
@@ -385,6 +394,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 			meshHeaders[i] = reinterpret_cast<XRMeshHeader*>(meshBaseAddress);
 			
 			meshHeaders[i]->_topology = topology; // Temp
+			meshHeaders[i]->_indexSize = objects[i]._indexType.getIndexSize();
 			meshHeaders[i]->_numSubmeshes = numSubmeshes;
 
 			XRSubmeshHeader** submeshHeader = meshHeaders[i]->_submeshes;

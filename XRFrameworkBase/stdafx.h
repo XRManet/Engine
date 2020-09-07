@@ -43,6 +43,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "XRFrameworkBaseRenderEngine.h"
+
 namespace xr
 {
 #if defined(_WIN32)

@@ -306,34 +306,6 @@ struct XRFormatInfo
 	uint32_t texelsPerBlock;
 };
 
-struct PrimitiveTopology
-{
-	enum {
-		UNKNOWN,
-		PointList,
-		LineList,
-		LineListWithAdjacency,
-		LineStrip,
-		LineStripWithAdjacency,
-		TriangleList,
-		TriangleListWithAdjacency,
-		TriangleStrip,
-		TriangleStripWithAdjacency,
-		QuadList
-	};
-
-private:
-	uint32_t _value = XRFormat::UNKNOWN;
-
-public:
-	PrimitiveTopology() = default;
-	PrimitiveTopology(uint32_t rhs) : _value(rhs) {}
-	inline uint32_t operator = (uint32_t rhs) { return _value = rhs; }
-
-public:
-	uint32_t getNumVertices() const;
-};
-
 class XRInputLayoutDesc;
 struct XRVertexAttributeDesc
 {
@@ -419,14 +391,15 @@ struct XRSubmeshHeader
 
 struct XRMeshHeader
 {
-	PrimitiveTopology _topology;
+	XRPrimitiveTopology _topology;
+	uint32_t _indexSize;
     
     uint32_t _numSubmeshes;
     XRSubmeshHeader* _submeshes[0];
 };
 
 constexpr size_t meshHeaderSize = sizeof(XRMeshHeader);
-static_assert(meshHeaderSize == 8, "TEST");
+static_assert(meshHeaderSize == 16, "TEST");
 
 #define XR_FOURCC(fcc) *((const uint32_t*)#fcc)
 struct XRObjectHeader
@@ -521,8 +494,8 @@ public:
 		bind();
 	}
 
-	virtual uint32_t getNumVertices() const { return 0; }
-	virtual uint32_t getNumIndices() const { return 0; }
+	virtual uint32_t getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const { return 0; }
+	virtual uint32_t getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const { return 0; }
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS

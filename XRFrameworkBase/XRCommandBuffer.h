@@ -2,28 +2,7 @@
 
 #include "stdafx.h"
 
-enum class XRPrimitiveTopology : uint32_t
-{
-	Points,
-	Lines,
-	LineStrip,
-	Triangles,
-	TriangleStrip,
-	TriangleFan,
-	LinesWithAdjacency,
-	LineStripWithAdjacency,
-	TrianglesWithAdjacency,
-	TriangleStripWithAdjacency,
-	Patches,
-};
-
-enum class XRIndexType : uint32_t
-{
-	Index8,
-	Index16,
-	Index32,
-};
-
+class XRModel;
 class XRBaseExport XRCommandBuffer
 {
 public:
@@ -36,6 +15,7 @@ public:
 
 	virtual void draw(XRPrimitiveTopology topology, uint32_t vertexStart, uint32_t vertexCount) {}
 	virtual void drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t indexStart, uint32_t indexCount) {}
+	virtual void drawModel(XRPrimitiveTopology topology, XRModel const* model) {}
 	virtual void drawInstanced() {}
 	virtual void drawIndexedInstanced() {}
 	virtual void drawIndirect() {}
