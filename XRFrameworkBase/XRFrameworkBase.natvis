@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Visual Studio의 Native Visualizer(.natvis) 설명은 아래 페이지에서 확인할 수 있습니다.
+https://docs.microsoft.com/ko-kr/visualstudio/debugger/create-custom-views-of-native-objects?view=vs-2019
+-->
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="XRObjectHeader">
+    <DisplayString>{{ numMeshes={_numMeshes}, inputLayoutKey={_defaultInputLayoutKey} }}</DisplayString>
+    <Expand>
+      <CustomListItems>
+        <Variable Name="pInputLayout" InitialValue="g_inputLayoutLibrary._List._Mypair._Myval2._Myhead"/>
+        <Variable Name="numVertexBuffers" InitialValue="0"/>
+        <Variable Name="iVertexBuffers" InitialValue="0"/>
+        <Size>1</Size>
+        <Loop>
+          <Break Condition="pInputLayout->_Myval.first == _defaultInputLayoutKey"/>
+          <Exec>pInputLayout = pInputLayout->_Next</Exec>
+        </Loop>
+        <If Condition="pInputLayout != g_inputLayoutLibrary._List._Mypair._Myval2._Myhead">
+          <Item Name="[InputLayout]">pInputLayout->_Myval.second, na</Item>
+        </If>
+      </CustomListItems>
+      <ArrayItems>
+        <Size>_numMeshes</Size>
+        <ValuePointer>_meshes</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="XRMeshHeader">
+    <DisplayString>{{ numSubmeshes={_numSubmeshes} }}</DisplayString>
+    <Expand>
+      <Item Name="[_topology]" ExcludeView="simple">_topology</Item>
+      <ArrayItems>
+        <Size>_numSubmeshes</Size>
+        <ValuePointer>_submeshes</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="XRSubmeshHeader">
+    <DisplayString>{{ numMaterials={_numMaterials}, isIndexed={_offsetIndex != 0}, numVertexBuffers={(_offsetMaterialKeys - sizeof(XRSubmeshHeader))/sizeof(unsigned int)} }}</DisplayString>
+    <Expand>
+      <!--<Item Name="[_defaultInputLayoutKey]" ExcludeView="simple">_defaultInputLayoutKey</Item>-->
+      <!--<ExpandedItem>g_inputLayoutLibrary._List</ExpandedItem>-->
+      <CustomListItems>
+        <Variable Name="iMaterials" InitialValue="0"/>
+        <Size>_numMaterials</Size>
+        <Loop>
+          <Break Condition="iMaterials == _numMaterials"/>
+          <Item Name="[ MaterialKey[{iMaterials}] ]">((unsigned*)((char*)(this) + _offsetMaterialKeys))[iMaterials]</Item>
+          <Exec>iMaterials++</Exec>
+        </Loop>
+      </CustomListItems>
+      <!--<ArrayItems>
+        <Size>_numMaterials</Size>
+        <ValuePointer>(unsigned*)((char*)(this) + _offsetMaterialKeys)</ValuePointer>
+      </ArrayItems>-->
+      <Item Name="[ sizeof(IndexBuffer) ]" Condition="_offsetIndex != 0">(_offsetVertexOffsets[0]) - (_offsetIndex)</Item>
+      <CustomListItems>
+        <Variable Name="pInputLayout" InitialValue="g_inputLayoutLibrary._List._Mypair._Myval2._Myhead"/>
+        <Variable Name="numVertexBuffers" InitialValue="0"/>
+        <Variable Name="iVertexBuffers" InitialValue="0"/>
+        <Size>(_offsetMaterialKeys - sizeof(XRSubmeshHeader))/sizeof(unsigned int)</Size>
+        <!--<Loop>
+          <Break Condition="pInputLayout->_Myval.first == _defaultInputLayoutKey"/>
+          <Exec>pInputLayout = pInputLayout->_Next</Exec>
+        </Loop>-->
+        <!--<Exec>inputLayoutVertexVector = pInputLayout->_Myval.second->_inputLayoutDesc._vertexBuffers</Exec>-->
+        <!--<Item>inputLayoutVertexVector._Mylast - inputLayoutVertexVector._Myfirst</Item>-->
+        <!--<Exec>numVertexBuffers = pInputLayout->_Myval.second->_inputLayoutDesc._vertexBuffers._Mypair._Myval2._Mylast - pInputLayout->_Myval.second->_inputLayoutDesc._vertexBuffers._Mypair._Myval2._Myfirst</Exec>-->
+        <Exec>numVertexBuffers = (_offsetMaterialKeys - sizeof(XRSubmeshHeader))/sizeof(unsigned int)</Exec>
+        <Loop>
+          <Break Condition="iVertexBuffers == numVertexBuffers"/>
+          <Item Name="[ sizeof(VertexBuffer[{iVertexBuffers}]) ]">(_offsetVertexOffsets[iVertexBuffers + 1]) - (_offsetVertexOffsets[iVertexBuffers])</Item>
+          <Exec>iVertexBuffers++</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>
