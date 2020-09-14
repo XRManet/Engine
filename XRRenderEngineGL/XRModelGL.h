@@ -21,14 +21,14 @@ public:
 
 struct MultiDrawElementsInfo
 {
-	GLsizei* indexCounts;	// in num 
-	GLintptr* indexOffsets;	// in bytes
-	GLsizei drawCount;
+	GLsizei* _indexCounts;	// in num 
+	GLintptr* _indexByteOffsets;	// in bytes
+	GLsizei _drawCount;
 };
 
 struct MultiDrawElementsBaseVertexInfo : public MultiDrawElementsInfo
 {
-	GLsizei* baseVertexOffsets;
+	GLsizei* _vertexBase; // in num
 };
 
 constexpr uint32_t MAX_NUM_SLOTS = 4;
@@ -41,8 +41,14 @@ private:
 		uint32_t _infoDataBufferOffset;
 	};
 
-	mutable std::vector<uint8_t> _infoDataBuffer;
-	std::vector<GLBuffer> _meshes;
+	struct MeshInfo
+	{
+		uint32_t _drawParameterBufferOffset;
+	};
+
+	GLBuffer						_meshes;
+	std::vector<MeshInfo>			_meshInfos;
+	mutable std::vector<uint8_t>	_drawParameterBuffer;
 
 	mutable bool _isBoundWithVAO = false;
 

@@ -52,23 +52,23 @@ void XRCommandBufferGL::drawModel(XRPrimitiveTopology topology, XRModel const* m
 
 		if (GLEW_ARB_draw_elements_base_vertex)
 		{
-			glMultiDrawElementsBaseVertex(topologyGL, info.indexCounts, indexTypeGL, (void**)info.indexOffsets, info.drawCount, info.baseVertexOffsets);
+			glMultiDrawElementsBaseVertex(topologyGL, info._indexCounts, indexTypeGL, (void**)info._indexByteOffsets, info._drawCount, info._vertexBase);
 		}
 		else
 		{
-			for (uint32_t i = 0; i < info.drawCount; ++i)
+			for (uint32_t i = 0; i < info._drawCount; ++i)
 			{
-				GL_CALL(glDrawElementsBaseVertex(topologyGL, info.indexCounts[i], indexTypeGL, (void*)(info.indexOffsets[i]), info.baseVertexOffsets[i]));
+				GL_CALL(glDrawElementsBaseVertex(topologyGL, info._indexCounts[i], indexTypeGL, (void*)(info._indexByteOffsets[i]), info._vertexBase[i]));
 			}
 		}
 	}
-	//glMultiDrawElementsBaseVertex(topologyGL, info.indexCounts, indexTypeGL, (void**)info.indexOffsets, info.drawCount, info.baseVertexOffsets);
+	//glMultiDrawElementsBaseVertex(topologyGL, info._indexCounts, indexTypeGL, (void**)info._indexByteOffsets, info._drawCount, info._vertexBase);
 
 	//const uint32_t sampleSubmeshIndex = 0;
-	//glDrawElementsBaseVertex(topologyGL, info.indexCounts[sampleSubmeshIndex], indexTypeGL, (void*)info.indexOffsets[sampleSubmeshIndex], 0);
+	//glDrawElementsBaseVertex(topologyGL, info._indexCounts[sampleSubmeshIndex], indexTypeGL, (void*)info._indexByteOffsets[sampleSubmeshIndex], 0);
 
-	//glMultiDrawElementsIndirect(topologyGL, indexTypeGL, command, drawCount, 0);
-	//glMultiDrawElementsIndirectCount(topologyGL, indexTypeGL, command, drawCount, maxDrawCount, 0);
+	//glMultiDrawElementsIndirect(topologyGL, indexTypeGL, command, _drawCount, 0);
+	//glMultiDrawElementsIndirectCount(topologyGL, indexTypeGL, command, _drawCount, maxDrawCount, 0);
 
 	//if (GLEW_NV_command_list)
 	//{
@@ -93,7 +93,7 @@ void XRCommandBufferGL::drawModel(XRPrimitiveTopology topology, XRModel const* m
 	//		glBufferAddressRangeNV(GL_UNIFORM_BUFFER_ADDRESS_NV, 0, );
 	//	}
 
-	//	glMultiDrawElementsIndirectBindlessNV(topologyGL, indexTypeGL, command, drawCount, 0, 4);
+	//	glMultiDrawElementsIndirectBindlessNV(topologyGL, indexTypeGL, command, _drawCount, 0, 4);
 	//}
 }
 
