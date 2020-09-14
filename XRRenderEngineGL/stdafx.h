@@ -21,6 +21,8 @@
 
 //////////////////////////// Variadic per each Engine Module
 
+#include <XRFrameworkBase/XRUtility.h>
+
 /* XRRenderExport
  * XRRENDERENGINEGL_EXPORTS is defined in settings for a project file per each platform-dependent IDE.
  */

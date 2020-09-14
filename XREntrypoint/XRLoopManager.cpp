@@ -68,8 +68,6 @@ void XRRenderingInfra<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, dou
 		cameraStep = .1f;
 }
 
-#define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
-
 namespace
 {
 	// Move to XRPipelineGL

@@ -39,3 +39,5 @@ constexpr int GetIndexOfLiteralStringList(string_tuple tuple, const char* find_s
 }
 
 }} // namespace XR::utils
+
+#define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))

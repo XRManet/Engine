@@ -24,6 +24,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <XRFrameworkBase/XRUtility.h>
+
 char const* GetGlErrorString(GLenum errorCode);
 
 // TODO) 나중엔 GL 관련부로 치워야함
