@@ -32,11 +32,13 @@ layout (shared) uniform LightBlock
 
 //uniform vec4 test;
 
+out vec3 frag_position;
 out vec3 frag_normal;
 
 void main()
 {
 	gl_Position = viewProj * vec4(position, 1.0);
+	frag_position = gl_Position.xyz;
 
 	frag_normal = mat3(view) * normal;
 	//frag_normal = mat3(view) * normal + test.xyz;
