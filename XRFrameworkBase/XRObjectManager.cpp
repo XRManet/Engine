@@ -4,6 +4,22 @@
 
 #include "XRObject.h"
 
+#include "XRModel.h"
+#include "XRCommandBuffer.h"
+
+void XRObjectGroup::draw() const
+{
+	_model->bindWithInputLayout();
+
+	//_commandBuffer->drawIndexed(XRPrimitiveTopology::TriangleList, XRIndexType::Index32, 0, _model->getNumIndices(0, 0));
+
+	for (auto i : _objects)
+	{
+		_commandBuffer->drawModel(XRPrimitiveTopology::TriangleList, _model);
+		break;
+	}
+}
+
 std::vector<XRObject*> XRObjectManager::GenerateObjects(int count)
 {
   std::vector<XRObject*> objects;

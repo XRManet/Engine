@@ -5,6 +5,20 @@
 #include "XRGeometry.h"
 #include "XRType.h"
 
+// Declared from here
+class XRInteractive;
+class XRObject;
+class XRCamera;
+class XRBackground;
+
+class XRNonInteractive;
+class XREffect;
+
+// Referenced by here
+class XRModel;
+class XRBody;
+
+
 class XRBaseExport XRInteractive
 {
 public:
@@ -14,9 +28,6 @@ class XRBaseExport XRBackground : XRInteractive
 {
 public:
 };
-
-class XRModel;
-class XRBody;
 
 static const int64_t    NO_ID = static_cast<int64_t>(-1);
 
