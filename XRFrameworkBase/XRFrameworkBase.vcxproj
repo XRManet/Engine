@@ -185,6 +185,7 @@
     <ClInclude Include="XRPlatformWindows.hpp" />
     <ClInclude Include="XRPrimitiveTypes.h" />
     <ClInclude Include="XRRenderer.h" />
+    <ClInclude Include="XRRenderGroup.h" />
     <ClInclude Include="XRResourceManager.h" />
     <ClInclude Include="XRRigidBody.h" />
     <ClInclude Include="XRSavable.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="XRPlatform.cpp" />
     <ClCompile Include="XRRenderer.cpp" />
     <ClCompile Include="XRRenderEngineLinker.cpp" />
+    <ClCompile Include="XRRenderGroup.cpp" />
     <ClCompile Include="XRResourceManager.cpp" />
     <ClCompile Include="XRScene.cpp" />
     <ClCompile Include="XRSceneNode.cpp">

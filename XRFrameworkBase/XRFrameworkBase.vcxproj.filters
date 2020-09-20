@@ -66,6 +66,12 @@
     <Filter Include="소스 파일\Engine\Physics\Linker">
       <UniqueIdentifier>{88c3ed47-f865-4266-8a1d-a1e7dc9e26a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Engine\Render\Common">
+      <UniqueIdentifier>{4aa13904-baf5-42dc-b1cd-8c1b5d93e744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Render\Backends">
+      <UniqueIdentifier>{c80694cf-502d-4500-83ae-b58e4cd6c580}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XRWavefrontMaterial.h">
@@ -73,9 +79,6 @@
     </ClInclude>
     <ClInclude Include="XRUtility.h">
       <Filter>소스 파일\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="XRModel.h">
-      <Filter>소스 파일\Engine\Render</Filter>
     </ClInclude>
     <ClInclude Include="XRObject.h">
       <Filter>소스 파일\Object</Filter>
@@ -140,20 +143,26 @@
     <ClInclude Include="XRPlatformWindows.hpp">
       <Filter>소스 파일\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="XRTexture.h">
-      <Filter>소스 파일\Engine\Render</Filter>
-    </ClInclude>
     <ClInclude Include="XRBody.h">
       <Filter>소스 파일\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="XRPipeline.h">
-      <Filter>소스 파일\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="XRCommandBuffer.h">
-      <Filter>소스 파일\Engine\Render</Filter>
-    </ClInclude>
     <ClInclude Include="XRPlatformOSX.hpp">
       <Filter>소스 파일\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="XRModel.h">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="XRTexture.h">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="XRPipeline.h">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="XRCommandBuffer.h">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRenderGroup.h">
+      <Filter>소스 파일\Engine\Render\Common</Filter>
     </ClInclude>
     <ClInclude Include="XRFrameworkBaseRenderEngine.h">
       <Filter>소스 파일\Engine\Render</Filter>
@@ -202,9 +211,6 @@
     <ClCompile Include="XRResourceManager.cpp">
       <Filter>소스 파일\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="XRModel.cpp">
-      <Filter>소스 파일\Engine\Render</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
@@ -252,6 +258,12 @@
     </ClCompile>
     <ClCompile Include="XRActorNode.cpp">
       <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="XRModel.cpp">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRenderGroup.cpp">
+      <Filter>소스 파일\Engine\Render\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
