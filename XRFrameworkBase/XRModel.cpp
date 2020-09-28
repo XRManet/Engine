@@ -142,6 +142,14 @@ uint32_t XRInputLayoutDesc::calcHash()
 	return GetHash(bytes.data(), bytes.size());
 }
 
+void XRInputLayoutDesc::append(XRInputLayoutDesc& inputLayoutDesc)
+{
+	_vertexBuffers.reserve(_vertexBuffers.size() + inputLayoutDesc._vertexBuffers.size());
+
+	// XRInputLayoutDesc 생성자 참고해서 BindingPoint, AttibuteIndex 조정
+	_vertexBuffers.insert(_vertexBuffers.end(), inputLayoutDesc._vertexBuffers.begin(), inputLayoutDesc._vertexBuffers.end());
+}
+
 
 static std::unordered_map<uint32_t, XRInputLayout*> g_inputLayoutLibrary;
 
