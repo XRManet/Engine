@@ -93,28 +93,9 @@ XRModel::~XRModel()
 {
 }
 
-XRInputLayoutDesc::XRInputLayoutDesc(std::vector<XRVertexBufferDesc>&& vertexBuffers)
-	: _vertexBuffers(std::move(vertexBuffers))
+XRInputLayoutDesc::XRInputLayoutDesc(std::vector<XRVertexBufferDesc>& vertexBuffers)
 {
-	uint32_t numVertexBuffers = static_cast<uint32_t>(_vertexBuffers.size());
-	uint32_t vertexAttributeIndex = 0;
-	for (uint32_t i = 0; i < numVertexBuffers; ++i)
-	{
-		uint32_t numAttributes = static_cast<uint32_t>(_vertexBuffers[i].attributes.size());
-		uint32_t size = 0;
-		for(uint32_t j = 0; j < numAttributes; ++j)
-		{
-			_vertexBuffers[i].attributes[j].bindingIndex = i;
-			_vertexBuffers[i].attributes[j].shaderLocation = vertexAttributeIndex++;
-			_vertexBuffers[i].attributes[j].offset = size;
-			size += _vertexBuffers[i].attributes[j].format.getCommonSize();
-		}
-		
-		_vertexBuffers[i].bindingIndex = i;
-		_vertexBuffers[i].stride = size;
-	}
-	
-	_hash = calcHash();
+	append(vertexBuffers);
 }
 
 uint32_t XRInputLayoutDesc::calcHash()
@@ -144,10 +125,35 @@ uint32_t XRInputLayoutDesc::calcHash()
 
 void XRInputLayoutDesc::append(XRInputLayoutDesc& inputLayoutDesc)
 {
-	_vertexBuffers.reserve(_vertexBuffers.size() + inputLayoutDesc._vertexBuffers.size());
+	append(inputLayoutDesc._vertexBuffers);
+}
 
-	// XRInputLayoutDesc 생성자 참고해서 BindingPoint, AttibuteIndex 조정
-	_vertexBuffers.insert(_vertexBuffers.end(), inputLayoutDesc._vertexBuffers.begin(), inputLayoutDesc._vertexBuffers.end());
+void XRInputLayoutDesc::append(std::vector<XRVertexBufferDesc>& vertexBufferDescs)
+{
+	_vertexBuffers.reserve(_vertexBuffers.size() + vertexBufferDescs.size());
+	const uint32_t oldSize = _vertexBuffers.size();
+
+	_vertexBuffers.insert(_vertexBuffers.end(), vertexBufferDescs.begin(), vertexBufferDescs.end());
+	const uint32_t newSize = _vertexBuffers.size();
+
+	uint32_t vertexAttributeIndex = (oldSize > 0) ? _vertexBuffers[oldSize - 1].attributes.back().shaderLocation + 1 : 0;
+	for (uint32_t i = oldSize; i < newSize; ++i)
+	{
+		uint32_t numAttributes = static_cast<uint32_t>(_vertexBuffers[i].attributes.size());
+		uint32_t size = 0;
+		for (uint32_t j = 0; j < numAttributes; ++j)
+		{
+			_vertexBuffers[i].attributes[j].bindingIndex = i;
+			_vertexBuffers[i].attributes[j].shaderLocation = vertexAttributeIndex++;
+			_vertexBuffers[i].attributes[j].offset = size;
+			size += _vertexBuffers[i].attributes[j].format.getCommonSize();
+		}
+
+		_vertexBuffers[i].bindingIndex = i;
+		_vertexBuffers[i].stride = size;
+	}
+
+	_hash = calcHash();
 }
 
 

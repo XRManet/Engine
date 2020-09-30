@@ -422,11 +422,12 @@ private:
 	uint32_t _hash = 0;
 	
 public:
-	XRInputLayoutDesc(std::vector<XRVertexBufferDesc>&& vertexBuffers);
+	XRInputLayoutDesc(std::vector<XRVertexBufferDesc>& vertexBuffers);
 	XRInputLayoutDesc(const XRObjectHeader* objectHeader) {}
 
 public:
 	void append(XRInputLayoutDesc& inputLayoutDesc);
+	void append(std::vector<XRVertexBufferDesc>& vertexBufferDescs);
 	
 public:
 	inline uint32_t getStride(uint32_t bufferIndex) const { return _vertexBuffers[bufferIndex].stride; }

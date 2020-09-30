@@ -160,6 +160,7 @@
     <ClInclude Include="XRCommandBufferGL.h" />
     <ClInclude Include="XRModelGL.h" />
     <ClInclude Include="XRPipelineGL.h" />
+    <ClInclude Include="XRRenderGroupGL.h" />
     <ClInclude Include="XRTextureGL.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +175,7 @@
     <ClCompile Include="XRModelGL.cpp" />
     <ClCompile Include="XRPipelineGL.cpp" />
     <ClCompile Include="XRRenderEngineGL.cpp" />
+    <ClCompile Include="XRRenderGroupGL.cpp" />
     <ClCompile Include="XRTextureGL.cpp" />
   </ItemGroup>
   <ItemGroup>

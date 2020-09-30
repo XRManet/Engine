@@ -335,7 +335,7 @@ bool XRWavefrontObject::ProduceXRModelData(std::vector<XRWavefrontObjectMeshes>&
 		}
 #endif
 		
-		XRInputLayoutDesc inputLayoutDesc(std::move(vertexBufferDescs));
+		XRInputLayoutDesc inputLayoutDesc(vertexBufferDescs);
 		uint32_t inputLayoutDescKey = inputLayoutDesc.getHash();
 		XRInputLayout* inputLayout = XRInputLayout::GetInputLayoutByKey(inputLayoutDescKey);
 		if (inputLayout == nullptr)

@@ -3,6 +3,8 @@
 #include "stdafx.h"
 
 // Declared from here
+class XRRenderGroup;
+class XRRenderGroupManager;
 
 // Referenced by here
 class XRInputLayout;
@@ -11,6 +13,8 @@ class XRGMORule;
 
 class XRBaseExport XRRenderGroup
 {
+	friend XRRenderGroupManager;
+
 public:
 	enum class UpdateFrequency {
 		Static,
@@ -27,7 +31,7 @@ public:
 
 	struct Properties
 	{
-		uint32_t						_inputLayoutHash = 0;
+		uint32_t						_inputLayoutDescKey = 0;
 		UpdateFrequency					_updateFrequency = UpdateFrequency::Default;
 		GeometricalSector				_geometricalSector = GeometricalSector::Default;
 	};
@@ -39,8 +43,13 @@ private:
 	XRInputLayout*						_inputLayout = 0;
 
 
-private:
+protected:
 	std::vector<XRObjectGroup const*>	_objectGroups;
+
+
+protected:
+	Properties const& getPropery() const { return _properties; }
+	XRInputLayout const* getInputLayout() const { return _inputLayout; }
 
 public:
 	XRRenderGroup() = default;
@@ -52,6 +61,7 @@ private:
 
 public:
 	bool addObjectGroup(XRObjectGroup const* newGroup);
+	void updateObjectGroup(XRObjectGroup const* objectGroup);
 
 public:
 	uint32_t getRenderGroupPropertyHash()
@@ -62,7 +72,11 @@ public:
 		return _propertyHash = calcPropertyHash();
 	}
 
+private:
+	virtual void update() {}
+
 public:
+	void bind() const;
 	void draw() const;
 };
 

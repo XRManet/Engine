@@ -38,7 +38,6 @@ private:
 	struct GLBuffer {
 		GLuint _vbo[MAX_NUM_SLOTS];
 		uint32_t _numBuffers; // 1 ~ MAX_NUM_SLOTS
-		uint32_t _infoDataBufferOffset;
 	};
 
 	struct MeshInfo
