@@ -17,6 +17,11 @@
 		E81D4E7323769C9F003E4C0D /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E81D4E7423769C9F003E4C0D /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E81D4E7523769CA0003E4C0D /* libXRFrameworkBase.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E828C9382524FA43000FF36B /* XRRenderGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = E828C9352524FA43000FF36B /* XRRenderGroup.h */; };
+		E828C9392524FA43000FF36B /* XRRenderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E828C9362524FA43000FF36B /* XRRenderGroup.cpp */; };
+		E828C93A2524FA43000FF36B /* XRFrameworkBaseRenderEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = E828C9372524FA43000FF36B /* XRFrameworkBaseRenderEngine.h */; };
+		E828C93C2524FA9E000FF36B /* XRRenderGroupGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E828C93B2524FA9E000FF36B /* XRRenderGroupGL.h */; };
+		E828C93E2524FC01000FF36B /* XRRenderGroupGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E828C93D2524FC01000FF36B /* XRRenderGroupGL.cpp */; };
 		E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E88219C024CA26DE00868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E88219C224CA26E200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
@@ -177,6 +182,11 @@
 		E81D4E67237684EE003E4C0D /* XRPipelineGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRPipelineGL.cpp; sourceTree = "<group>"; };
 		E81D4E6C23768502003E4C0D /* XRCommandBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRCommandBuffer.h; sourceTree = "<group>"; };
 		E81D4E6D23768502003E4C0D /* XRPipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRPipeline.h; sourceTree = "<group>"; };
+		E828C9352524FA43000FF36B /* XRRenderGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRenderGroup.h; sourceTree = "<group>"; };
+		E828C9362524FA43000FF36B /* XRRenderGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderGroup.cpp; sourceTree = "<group>"; };
+		E828C9372524FA43000FF36B /* XRFrameworkBaseRenderEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRFrameworkBaseRenderEngine.h; sourceTree = "<group>"; };
+		E828C93B2524FA9E000FF36B /* XRRenderGroupGL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRRenderGroupGL.h; sourceTree = "<group>"; };
+		E828C93D2524FC01000FF36B /* XRRenderGroupGL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderGroupGL.cpp; sourceTree = "<group>"; };
 		E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRPrimitiveTypes.h; sourceTree = "<group>"; };
 		E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRFrameworkBase.h; sourceTree = "<group>"; };
 		E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderEngineLinker.cpp; sourceTree = "<group>"; };
@@ -396,6 +406,8 @@
 				E8C1BA8D22B63BBB006EDA1E /* targetver.h */,
 				E8C1BA8E22B63BBB006EDA1E /* stdafx.cpp */,
 				E8C1BA8F22B63BBB006EDA1E /* XRModelGL.h */,
+				E828C93B2524FA9E000FF36B /* XRRenderGroupGL.h */,
+				E828C93D2524FC01000FF36B /* XRRenderGroupGL.cpp */,
 			);
 			path = XRRenderEngineGL;
 			sourceTree = "<group>";
@@ -403,6 +415,9 @@
 		E8E59162226AF68200164749 /* XRFrameworkBase */ = {
 			isa = PBXGroup;
 			children = (
+				E828C9372524FA43000FF36B /* XRFrameworkBaseRenderEngine.h */,
+				E828C9362524FA43000FF36B /* XRRenderGroup.cpp */,
+				E828C9352524FA43000FF36B /* XRRenderGroup.h */,
 				E81D4E6C23768502003E4C0D /* XRCommandBuffer.h */,
 				E81D4E6D23768502003E4C0D /* XRPipeline.h */,
 				E8E67C35234A7AAD0015A403 /* XRBmp.cpp */,
@@ -476,6 +491,7 @@
 				E8C1BA9122B63BBB006EDA1E /* stdafx.h in Headers */,
 				E8E67C3F234A7DB10015A403 /* XRTextureGL.h in Headers */,
 				E8C1BA9622B63BBB006EDA1E /* XRModelGL.h in Headers */,
+				E828C93C2524FA9E000FF36B /* XRRenderGroupGL.h in Headers */,
 				E81D4E69237684EF003E4C0D /* XRCommandBufferGL.h in Headers */,
 				E81D4E6A237684EF003E4C0D /* XRPipelineGL.h in Headers */,
 			);
@@ -511,8 +527,10 @@
 				E8E59189226AF68200164749 /* XRGeometry.h in Headers */,
 				E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */,
 				E8E5918F226AF68200164749 /* XRBody.h in Headers */,
+				E828C93A2524FA43000FF36B /* XRFrameworkBaseRenderEngine.h in Headers */,
 				E8E67C3C234A7AAE0015A403 /* XRDXTC.h in Headers */,
 				E8E591A0226AF68200164749 /* XRRigidBody.h in Headers */,
+				E828C9382524FA43000FF36B /* XRRenderGroup.h in Headers */,
 				E8E5919E226AF68200164749 /* XRObjectManager.h in Headers */,
 				E8E59183226AF68200164749 /* XRLogging.h in Headers */,
 				E80F3662226B8AF6007414A1 /* XRType.h in Headers */,
@@ -666,6 +684,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8C1BA9022B63BBB006EDA1E /* XRRenderEngineGL.cpp in Sources */,
+				E828C93E2524FC01000FF36B /* XRRenderGroupGL.cpp in Sources */,
 				E81D4E68237684EF003E4C0D /* XRCommandBufferGL.cpp in Sources */,
 				E81D4E6B237684EF003E4C0D /* XRPipelineGL.cpp in Sources */,
 				E8C1BA9522B63BBB006EDA1E /* stdafx.cpp in Sources */,
@@ -688,6 +707,7 @@
 				E8E59198226AF68200164749 /* XRLoadable.cpp in Sources */,
 				E8E5918A226AF68200164749 /* XRFrameworkBase.cpp in Sources */,
 				E8EED0552475B3D7003852A7 /* XRHash.cpp in Sources */,
+				E828C9392524FA43000FF36B /* XRRenderGroup.cpp in Sources */,
 				E8E67C37234A7AAE0015A403 /* XRTextureData.cpp in Sources */,
 				E8E67C3B234A7AAE0015A403 /* XRBmp.cpp in Sources */,
 				E8E5919C226AF68200164749 /* XRModel.cpp in Sources */,
@@ -905,7 +925,7 @@
 		E8C1BA5F22B6319F006EDA1E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PBNTNUR4XK;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -924,7 +944,7 @@
 		E8C1BA6022B6319F006EDA1E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = PBNTNUR4XK;

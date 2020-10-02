@@ -14,6 +14,9 @@ XRPipeline* (*xrCreatePipeline)(XRPipelineDescriptor const* descriptor) = nullpt
 #include "XRCommandBuffer.h"
 XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
 
+#include "XRRenderGroup.h"
+XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
+
 #ifndef XRRENDER_ENGINE
 #define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineGL"
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
@@ -33,11 +36,12 @@ static struct XRRenderEngineLinker
     std::vector<std::string> dllLists;
     XRPlatform::ListDLLFunctions(_dso, dllLists);
 
-	GetProcAddress(xrCreateInputLayout, "xrCreateInputLayout");
-    GetProcAddress(xrCreateModel, "xrCreateModel");
-	GetProcAddress(xrCreateTexture, "xrCreateTexture");
-	GetProcAddress(xrCreatePipeline, "xrCreatePipeline");
-	GetProcAddress(xrCreateCommandBuffer, "xrCreateCommandBuffer");
+	GetProcAddress(xrCreateInputLayout,		"xrCreateInputLayout");
+    GetProcAddress(xrCreateModel, 			"xrCreateModel");
+	GetProcAddress(xrCreateTexture, 		"xrCreateTexture");
+	GetProcAddress(xrCreatePipeline, 		"xrCreatePipeline");
+	GetProcAddress(xrCreateCommandBuffer, 	"xrCreateCommandBuffer");
+	GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");
   }
 
   ~XRRenderEngineLinker()

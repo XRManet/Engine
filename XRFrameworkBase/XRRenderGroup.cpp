@@ -22,6 +22,7 @@ bool XRRenderGroup::addObjectGroup(XRObjectGroup const * newGroup)
 	if (true == isAdoptableObjectGroup(newGroup))
 	{
 		_objectGroups.push_back(newGroup);
+		_isInvalid = true;
 		return true;
 	}
 
@@ -93,7 +94,7 @@ bool XRRenderGroupManager::createRenderGroup(XRInputLayoutDesc& inputLayoutDesc,
 		assert(false);
 	}
 
-	auto renderGroup = new XRRenderGroup();
+	auto renderGroup = xrCreateRenderGroup();
 	renderGroup->_properties = in_properties;
 	renderGroup->_properties._inputLayoutDescKey = inputLayoutDescKey;
 	renderGroup->_inputLayout = inputLayout;

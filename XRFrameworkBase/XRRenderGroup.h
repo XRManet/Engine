@@ -8,6 +8,7 @@ class XRRenderGroupManager;
 
 // Referenced by here
 class XRInputLayout;
+class XRInputLayoutDesc;
 class XRObjectGroup;
 class XRGMORule;
 
@@ -41,6 +42,7 @@ private:
 	Properties							_properties;
 	uint32_t							_propertyHash = 0;
 	XRInputLayout*						_inputLayout = 0;
+	bool								_isInvalid = false;
 
 
 protected:
@@ -50,6 +52,7 @@ protected:
 protected:
 	Properties const& getPropery() const { return _properties; }
 	XRInputLayout const* getInputLayout() const { return _inputLayout; }
+	
 
 public:
 	XRRenderGroup() = default;
@@ -73,9 +76,20 @@ public:
 	}
 
 private:
-	virtual void update() {}
+	virtual bool updateImpl() { return false; }
 
 public:
+	void update()
+	{
+		if (_isInvalid == true)
+		{
+			const bool result = updateImpl();
+			if (result == true)
+			{
+				_isInvalid = false;
+			}
+		}
+	};
 	void bind() const;
 	void draw() const;
 };
@@ -119,3 +133,9 @@ public:
 		return result.second;
 	}
 };
+
+#ifdef XRRENDERENGINEGL_EXPORTS
+XRRenderExport XRRenderGroup* xrCreateRenderGroup();
+#else
+extern XRRenderGroup* (*xrCreateRenderGroup)();
+#endif

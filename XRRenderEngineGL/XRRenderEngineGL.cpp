@@ -6,6 +6,7 @@
 #include "XRTextureGL.h"
 #include "XRPipelineGL.h"
 #include "XRCommandBufferGL.h"
+#include "XRRenderGroupGL.h"
 
 #include <assert.h>
 
@@ -58,4 +59,10 @@ XRCommandBuffer* xrCreateCommandBuffer()
 {
 	RenderEngineGLInitializer::GetInitializer();
 	return new XRCommandBufferGL;
+}
+
+XRRenderGroup* xrCreateRenderGroup()
+{
+	RenderEngineGLInitializer::GetInitializer();
+	return new XRRenderGroupGL;
 }
