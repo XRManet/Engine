@@ -1,4 +1,4 @@
-//
+﻿//
 //  XRRenderGroupGL.h
 //  XRRenderEngineGL
 //
@@ -10,11 +10,18 @@
 
 #include <XRFrameworkBase/XRRenderGroup.h>
 
-class XRRenderGroupGL : public XRRenderGroup
+class XRInputLayoutGL;
+
+class XRRenderGroupGL :	public XRRenderGroup
 {
-public:
-	XRRenderGroupGL() = default;
+private:
+	GLuint _vertexBuffers[16];
+	uint32_t _numVertexBuffers;
+
+protected:
+	inline XRInputLayoutGL const* getInputLayout() const;
 	
-public:
+private:
 	bool updateImpl() override final;
 };
+
