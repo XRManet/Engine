@@ -35,6 +35,10 @@ uint32_t XRRenderGroup::calcPropertyHash()
 	return GetHash(&_properties, sizeof(_properties));
 }
 
+void XRRenderGroup::bind() const
+{
+}
+
 void XRRenderGroup::draw() const
 {
 	// Bind InputLayout (VAO)

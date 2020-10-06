@@ -514,9 +514,21 @@ void XRModelGL::bind() const
 #endif
 }
 
-uint32_t XRModelGL::getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const { return 0;
-	//_data->GetHeader()->vertex_count;
-	
+uint32_t XRModelGL::getNumVertices() const {
+	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+}
+uint32_t XRModelGL::getNumVertices(uint32_t meshIndex) const {
+	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+}
+uint32_t XRModelGL::getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const {
+	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+}
+
+uint32_t XRModelGL::getNumIndices() const {
+	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
+}
+uint32_t XRModelGL::getNumIndices(uint32_t meshIndex) const {
+	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
 }
 uint32_t XRModelGL::getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const {
 	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
@@ -552,4 +564,44 @@ void XRModelGL::getMultiDrawElementsBaseVertexInfo(MultiDrawElementsBaseVertexIn
 	getMultiDrawElementsInfo(info, meshIndex);
 
 	info._vertexBase = reinterpret_cast<GLsizei*>(info._indexByteOffsets + numSubmeshes);
+}
+
+void XRModelGL::getMultiDrawElementsIndirectInfo(MultiDrawElementsIndirectInfo& info) const
+{
+	const auto* header = _data->GetHeader();
+	const uint32_t numMeshes = header->_numMeshes;
+
+	if (info._drawCount == 0)
+	{
+		for (uint32_t m = 0; m < numMeshes; ++m)
+		{
+			const uint32_t numSubmeshes = header->_meshes[m]->_numSubmeshes;
+			info._drawCount += numSubmeshes;
+		}
+
+		return;
+	}
+	else
+	{
+		uint32_t cmdIdx = 0;
+		for (uint32_t m = 0; m < numMeshes; ++m)
+		{
+			MultiDrawElementsBaseVertexInfo mdebvInfo;
+			getMultiDrawElementsBaseVertexInfo(mdebvInfo, m);
+
+			const uint32_t indexSize = header->_meshes[m]->_indexSize;
+			const uint32_t numSubmeshes = header->_meshes[m]->_numSubmeshes;
+			for (uint32_t s = 0; s < numSubmeshes; ++s)
+			{
+				static_assert(sizeof(GLsizei) == sizeof(GLuint), "drawParameterBuffer");
+				info._indirectCommands[cmdIdx]._indexCount = mdebvInfo._indexCounts[s];
+				info._indirectCommands[cmdIdx]._instanceCount = 1;
+				info._indirectCommands[cmdIdx]._indexFirst = GLuint(mdebvInfo._indexByteOffsets[s] / indexSize);
+				info._indirectCommands[cmdIdx]._vertexBase = mdebvInfo._vertexBase[s];
+				info._indirectCommands[cmdIdx]._instanceBase = 0;
+
+				++cmdIdx;
+			}
+		}
+	}
 }

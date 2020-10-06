@@ -498,7 +498,11 @@ public:
 		bind();
 	}
 
+	virtual uint32_t getNumVertices() const { return 0; }
+	virtual uint32_t getNumVertices(uint32_t meshIndex) const { return 0; }
 	virtual uint32_t getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const { return 0; }
+	virtual uint32_t getNumIndices() const { return 0; }
+	virtual uint32_t getNumIndices(uint32_t meshIndex) const { return 0; }
 	virtual uint32_t getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const { return 0; }
 
 public:

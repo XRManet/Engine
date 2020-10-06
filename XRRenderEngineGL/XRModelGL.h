@@ -31,6 +31,21 @@ struct MultiDrawElementsBaseVertexInfo : public MultiDrawElementsInfo
 	GLsizei* _vertexBase; // in num
 };
 
+struct MultiDrawElementsIndirectInfo {
+	struct DrawElementsIndirectCommand
+	{
+		GLuint  _indexCount;
+		GLuint  _instanceCount;
+		GLuint  _indexFirst;
+		GLuint  _vertexBase;
+		GLuint  _instanceBase;
+	};
+
+	DrawElementsIndirectCommand*	_indirectCommands;
+	GLsizei							_drawCount;
+	GLsizei							_stride;
+};
+
 constexpr uint32_t MAX_NUM_SLOTS = 4;
 class XRModelGL : public XRModel
 {
@@ -59,10 +74,15 @@ public:
 public:
 	void bind() const override;
 
+	uint32_t getNumVertices() const override;
+	uint32_t getNumVertices(uint32_t meshIndex) const override;
 	uint32_t getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const override;
+	uint32_t getNumIndices() const override;
+	uint32_t getNumIndices(uint32_t meshIndex) const override;
 	uint32_t getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const override;
 
 	GLenum getIndexType(uint32_t meshIndex) const;
 	void getMultiDrawElementsInfo(MultiDrawElementsInfo& info, uint32_t meshIndex) const;
 	void getMultiDrawElementsBaseVertexInfo(MultiDrawElementsBaseVertexInfo& info, uint32_t meshIndex) const;
+	void getMultiDrawElementsIndirectInfo(MultiDrawElementsIndirectInfo& info) const;
 };

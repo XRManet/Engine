@@ -88,6 +88,10 @@ public:
 			{
 				_isInvalid = false;
 			}
+			else
+			{
+				// fallback process
+			}
 		}
 	};
 	void bind() const;
