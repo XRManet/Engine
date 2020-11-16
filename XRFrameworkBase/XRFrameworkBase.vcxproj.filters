@@ -167,6 +167,9 @@
     <ClInclude Include="XRFrameworkBaseRenderEngine.h">
       <Filter>소스 파일\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="XRRenderCommon.h">
+      <Filter>소스 파일\Engine\Render\Common</Filter>
+    </ClInclude>
     <ClInclude Include="XRIndexedString.h">
       <Filter>소스 파일\Utility</Filter>
     </ClInclude>
@@ -264,6 +267,12 @@
     </ClCompile>
     <ClCompile Include="XRRenderGroup.cpp">
       <Filter>소스 파일\Engine\Render\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRenderCommon.cpp">
+      <Filter>소스 파일\Engine\Render\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="XRTexture.cpp">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

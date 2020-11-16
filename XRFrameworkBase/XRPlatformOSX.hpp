@@ -46,6 +46,7 @@ namespace XRPlatform
         {
             listOfFunctionNames.push_back("xrCreateModel");
             listOfFunctionNames.push_back("xrCreateTexture");
+            listOfFunctionNames.push_back("xrCreateTextureFromData");
 			listOfFunctionNames.push_back("xrCreatePipeline");
 			listOfFunctionNames.push_back("xrCreateCommandBuffer");
         }

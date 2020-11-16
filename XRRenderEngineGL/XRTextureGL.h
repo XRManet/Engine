@@ -2,12 +2,15 @@
 
 #include <XRFrameworkBase/XRTexture.h>
 
-class XRTextureGL : public XRTexture
+class XRTextureGL : public XRTextureRHI
 {
 private:
 	GLuint _texture;
 
 public:
-	XRTextureGL(XRTextureData const* data);
+	XRTextureGL() {}
 	virtual ~XRTextureGL();
+
+public:
+	void upload(XRTextureData const* data);
 };

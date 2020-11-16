@@ -6,10 +6,11 @@ XRInputLayout* (*xrCreateInputLayout)(XRInputLayoutDesc &&inputLayoutDesc, uint3
 XRModel* (*xrCreateModel)(XRModelData const* loadable) = nullptr;
 
 #include "XRTexture.h"
-XRTexture* (*xrCreateTexture)(XRTextureData const* loadable) = nullptr;
+XRTexture* (*xrCreateTexture)(XRTextureCreateInfo const* createInfo) = nullptr;
+XRTexture* (*xrCreateTextureFromData)(XRTextureData const* loadable) = nullptr;
 
 #include "XRPipeline.h"
-XRPipeline* (*xrCreatePipeline)(XRPipelineDescriptor const* descriptor) = nullptr;
+XRPipeline* (*xrCreatePipeline)(XRShaderStageDescriptor const* descriptor) = nullptr;
 
 #include "XRCommandBuffer.h"
 XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
@@ -38,7 +39,8 @@ static struct XRRenderEngineLinker
 
 	GetProcAddress(xrCreateInputLayout,		"xrCreateInputLayout");
     GetProcAddress(xrCreateModel, 			"xrCreateModel");
-	GetProcAddress(xrCreateTexture, 		"xrCreateTexture");
+	GetProcAddress(xrCreateTexture,			"xrCreateTexture");
+	GetProcAddress(xrCreateTextureFromData, "xrCreateTextureFromData");
 	GetProcAddress(xrCreatePipeline, 		"xrCreatePipeline");
 	GetProcAddress(xrCreateCommandBuffer, 	"xrCreateCommandBuffer");
 	GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");

@@ -185,6 +185,7 @@
     <ClInclude Include="XRPlatformWindows.hpp" />
     <ClInclude Include="XRPrimitiveTypes.h" />
     <ClInclude Include="XRRenderer.h" />
+    <ClInclude Include="XRRenderCommon.h" />
     <ClInclude Include="XRRenderGroup.h" />
     <ClInclude Include="XRResourceManager.h" />
     <ClInclude Include="XRRigidBody.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="XRObjectManager.cpp" />
     <ClCompile Include="XRPlatform.cpp" />
     <ClCompile Include="XRRenderer.cpp" />
+    <ClCompile Include="XRRenderCommon.cpp" />
     <ClCompile Include="XRRenderEngineLinker.cpp" />
     <ClCompile Include="XRRenderGroup.cpp" />
     <ClCompile Include="XRResourceManager.cpp" />
@@ -228,6 +230,7 @@
     <ClCompile Include="XRSceneNode.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="XRTexture.cpp" />
     <ClCompile Include="XRTextureData.cpp" />
     <ClCompile Include="XRTransformNode.cpp" />
     <ClCompile Include="XRWavefrontObject.cpp" />

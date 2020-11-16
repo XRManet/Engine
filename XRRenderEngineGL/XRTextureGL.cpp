@@ -69,10 +69,10 @@ static uint32_t GetBlockLength(uint32_t length)
 	return length + 3 / 4;
 }
 
-XRTextureGL::XRTextureGL(XRTextureData const* data) : XRTexture(data)
+void XRTextureGL::upload(XRTextureData const* data)
 {
-	auto* header = _data->GetHeader();
-	auto* buffer = static_cast<uint8_t const*>(_data->GetData());
+	auto* header = data->GetHeader();
+	auto* buffer = static_cast<uint8_t const*>(data->GetData());
 
 	assert(header->num_mipmaps > 0);
 

@@ -43,13 +43,28 @@ XRModel* xrCreateModel(XRModelData const* loadable)
   return new XRModelGL(loadable);
 }
 
-XRTexture* xrCreateTexture(XRTextureData const* loadable)
+XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 {
 	RenderEngineGLInitializer::GetInitializer();
-	return new XRTextureGL(loadable);
+	auto textureGL = new XRTextureGL;
+	auto textureHandle = new XRTexture(createInfo);
+	textureHandle->_rhi = textureGL;
+	return textureHandle;
 }
 
-XRPipeline* xrCreatePipeline(XRPipelineDescriptor const* descriptor)
+XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
+{
+	RenderEngineGLInitializer::GetInitializer();
+	auto textureGL = new XRTextureGL;
+	if (nullptr != loadable)
+		textureGL->upload(loadable);
+
+	auto textureHandle = new XRTexture(loadable);
+	textureHandle->_rhi = textureGL;
+	return textureHandle;
+}
+
+XRPipeline* xrCreatePipeline(XRShaderStageDescriptor const* descriptor)
 {
 	RenderEngineGLInitializer::GetInitializer();
 	return new XRPipelineGL(descriptor);
