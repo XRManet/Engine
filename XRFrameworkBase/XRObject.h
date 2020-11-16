@@ -76,7 +76,7 @@ typedef enum XRCameraProjectionMode {
 class XRBaseExport XRCamera : public XRObject
 {
 private:
-	XRSize _half_size{};
+	XRSize<float> _half_size{};
 	float _near_positive{};
 	float _far_positive{};
 	CPM _projection_mode{ CPM::Perspective };
@@ -95,7 +95,7 @@ public:
 		return glm::perspective(atan(_half_size._height / _near_positive) * 2, _half_size._width / _half_size._height, _near_positive, _far_positive);
 	}
 
-	void SetFrustum(const XRSize& size, float near_positive, float far_positive) {
+	void SetFrustum(const XRSize<float>& size, float near_positive, float far_positive) {
 		_half_size._width = size._width / 2.f;
 		_half_size._height = size._height / 2.f;
 
@@ -109,7 +109,7 @@ class XRScene;
 class XRBaseExport XRViewport
 {
 private:
-	XRBound _viewport;
+	XRBound<float> _viewport;
 
 private:
 	std::vector<XRScene*> _scenes;

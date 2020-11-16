@@ -11,7 +11,7 @@ enum XRLoopManagerInfra : unsigned {
 template<XRLoopManagerInfra Infra>
 class XRRenderingInfra
 {
-	XRRenderingInfra(XRSize const& size) {}
+	XRRenderingInfra(XRSize<float> const& size) {}
 };
 
 struct GLFWwindow;
@@ -20,7 +20,7 @@ template<>
 class XRRenderingInfra<GLFW>
 {
 public:
-	XRRenderingInfra(XRSize const& size)
+	XRRenderingInfra(XRSize<float> const& size)
 	{
 		static const GLuint versions[][2] = {
 			{4, 6}, {4, 5}, {4, 3}, {4, 1}, {4, 0},
@@ -202,19 +202,19 @@ template<XRLoopManagerInfra Infra>
 class XRLoopManager
 {
 private:
-	XRSize _out_size;
+	XRSize<float> _out_size;
 	XRRenderingInfra<Infra> _infra;
 	XRFrameWalker _frame_walker;
 
 public:
-	XRLoopManager(XRSize&& size) : _out_size(size), _infra(size)
+	XRLoopManager(XRSize<float>&& size) : _out_size(size), _infra(size)
 	{
 	}
 	~XRLoopManager() {}
 
 
 public:
-	XRSize const& GetSize() { return _out_size; }
+	XRSize<float> const& GetSize() { return _out_size; }
 
 
 public:

@@ -8,27 +8,30 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+template<typename T>
 struct XRBaseExport XRSize {
-    float _width;
-    float _height;
+    T _width;
+    T _height;
 };
 
+template<typename T>
 struct XRBaseExport XRPosition {
-    float _x;
-    float _y;
+    T _x;
+    T _y;
 };
 
+template<typename T>
 struct XRBaseExport XRBound {
     union {
         struct {
-            XRPosition _position;
-            XRSize _size;
+            XRPosition<T> _position;
+            XRSize<T> _size;
         };
         struct {
-            float _x;
-            float _y;
-            float _width;
-            float _height;
+            T _x;
+            T _y;
+            T _width;
+            T _height;
         };
     };
 };

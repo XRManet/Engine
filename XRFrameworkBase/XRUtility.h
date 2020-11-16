@@ -41,3 +41,14 @@ constexpr int GetIndexOfLiteralStringList(string_tuple tuple, const char* find_s
 }} // namespace XR::utils
 
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
+
+
+#define STATIC_ENUM_BIT_BEGIN \
+	template<int Line> struct Shift { enum { Value = 0 }; }; \
+	template<int Line> struct Position { enum { Value = Position<Line-1>::Value << Shift<Line>::Value }; }; \
+	template<> struct Position<__LINE__> { enum { Value = 1 }; }
+
+#define ADD_BIT_ENUM(id, member) \
+	template<> struct Shift<__LINE__+1> { enum { Value = 1 }; }; \
+	static constexpr uint32_t id = Position<__LINE__>::Value; \
+	bool member : 1
