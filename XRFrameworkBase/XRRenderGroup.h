@@ -40,7 +40,7 @@ public:
 
 private:
 	Properties							_properties;
-	uint32_t							_propertyHash = 0;
+	uint32_t							_propertiesHash = 0;
 	XRInputLayout*						_inputLayout = 0;
 	bool								_isInvalid = false;
 
@@ -69,10 +69,10 @@ public:
 public:
 	uint32_t getRenderGroupPropertyHash()
 	{
-		if (_propertyHash != 0)
-			return _propertyHash;
+		if (_propertiesHash != 0)
+			return _propertiesHash;
 
-		return _propertyHash = calcPropertyHash();
+		return _propertiesHash = calcPropertyHash();
 	}
 
 private:

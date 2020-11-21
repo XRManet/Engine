@@ -9,6 +9,8 @@
 #include <XRFrameworkBase/XRLogging.h>
 #include <XRFrameworkBase/XRUtility.h>
 #include <XRFrameworkBase/XRCommandBuffer.h>
+#include <XRFrameworkBase/XRPipeline.h>
+#include <XRFrameworkBase/XRTexture.h>
 
 #include <XRFrameworkBase/XRActorNode.h>
 
@@ -36,20 +38,135 @@ XRSceneTest::XRSceneTest()
 
 	//_object_groups["teapots_1"] = { commandBuffer.get(), model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
 
-	constexpr GLuint var_test1 = XR::util::GetIndexOfLiteralStringList(g_deferredVar, "var_test1");
 
-	auto data = std::make_tuple(1.5f);
-	constexpr int value = XR::util::GetIndexOfLiteralStringList(g_programNameList, "program_name1");
-	printf("value: %d\n", value);
 }
-
 
 XRSceneTest::~XRSceneTest()
 {
 }
 
+template<typename Permutation, int Count>
+struct PipelineKeyImpl : public PipelineKeyImpl<Permutation, Count - 1>
+{
+};
+
+template<typename Permutation>
+struct PipelineKeyImpl<Permutation, 0>
+{
+};
+
+template<typename Permutation> struct PermutationDescription;
+
+struct Default {};
+template<typename Permutation>
+struct PipelineKey : public PipelineKeyImpl<Permutation, Permutation::NumPermutations>
+{
+	PipelineKey(typename PermutationDescription<Permutation>::Type&& permutation)
+	{
+	}
+
+	PipelineKey(Default) {}
+};
+
+enum SamplePermutation
+{
+	AlphaTest,
+	Lod,
+	NumPermutations
+};
+
+template<>
+struct PermutationDescription<SamplePermutation>
+{
+	using Type = std::tuple<bool, int>;
+};
+
+class XRExport XRRenderPassSample : public XRRenderPassBase
+{
+	struct PipelineState;
+
+public:
+	XRRenderPassSample()
+	{
+		_sampleState._testInt = 5;
+		//Create RenderPass
+		//	Define Attachment Descriptions
+		//	Define Subpasses
+
+		//Create PipelineStateObjects
+		_elementInfos.push_back({ "AlphaTest", 2 });
+		_elementInfos.push_back({ "Lod", 3 });
+	}
+
+	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) const override final
+	{
+		// Set Default Pipeline States
+	}
+
+	virtual bool CreatePipelineState(XRPipelineStateDescription& outPipeline) const override final
+	{
+		int32_t numElements = _elements.size();
+
+		if (_elements[AlphaTest]._value == 0 && _elements[Lod]._value > 0)
+		{
+			return true;
+		}
+
+		return false;
+	}
+};
+
+XRExport XRRenderPassSample* renderPassSample;
+
 void XRSceneTest::Update(float dt)
 {
+	int frameIndex = 0;
+
+	renderPassSample->Initialize([]() {
+		printf("initialize test\n");
+		});
+
+	renderPassSample->Update([](SampleState& sampleState, int frameIndex) {
+		printf("update test\n");
+
+		PipelineKey<SamplePermutation>* pipelineKey = nullptr;
+		if (frameIndex % 2 == 0)
+		{
+			static PipelineKey<SamplePermutation> pipelineKeyPermuted(std::make_tuple(true, 1));
+			pipelineKey = &pipelineKeyPermuted;
+		}
+		else
+		{
+			static PipelineKey<SamplePermutation> pipelineKeyPermuted(std::make_tuple(true, 0));
+			pipelineKey = &pipelineKeyPermuted;
+		}
+
+		//
+
+		});
+
+
+	XRTextureCreateInfo textureInfo;
+	XRTexture* textureA = xrCreateTexture(&textureInfo);
+
+	XRCommandBuffer* commandBuffer;
+	XRRenderPassBase* renderPass = renderPassSample;
+
+	renderPass->Initialize([]() {
+		});
+	renderPass->Update([](SampleState& sampleState, int frameIndex) {
+
+		});
+
+	commandBuffer->begin();
+	{
+		commandBuffer->beginPass(XRPass::Graphics, renderPass);
+		{
+
+		}
+		commandBuffer->endPass();
+	}
+	commandBuffer->end();
 }
 
 

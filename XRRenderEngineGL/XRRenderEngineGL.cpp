@@ -64,10 +64,10 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 	return textureHandle;
 }
 
-XRPipeline* xrCreatePipeline(XRShaderStageDescriptor const* descriptor)
+XRPipeline* xrCreatePipeline(XRShaderStageDescription const* description)
 {
 	RenderEngineGLInitializer::GetInitializer();
-	return new XRPipelineGL(descriptor);
+	return new XRPipelineGL(description);
 }
 
 XRCommandBuffer* xrCreateCommandBuffer()

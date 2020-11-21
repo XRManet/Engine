@@ -10,7 +10,7 @@ XRTexture* (*xrCreateTexture)(XRTextureCreateInfo const* createInfo) = nullptr;
 XRTexture* (*xrCreateTextureFromData)(XRTextureData const* loadable) = nullptr;
 
 #include "XRPipeline.h"
-XRPipeline* (*xrCreatePipeline)(XRShaderStageDescriptor const* descriptor) = nullptr;
+XRPipeline* (*xrCreatePipeline)(XRShaderStageDescription const* description) = nullptr;
 
 #include "XRCommandBuffer.h"
 XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;

@@ -2,6 +2,14 @@
 
 #include "stdafx.h"
 
+enum class XRPass
+{
+	Graphics,
+	Compute,
+};
+
+class XRRenderPassBase;
+
 class XRModel;
 class XRBaseExport XRCommandBuffer
 {
@@ -12,6 +20,9 @@ public:
 public:
 	virtual void begin() {}
 	virtual void end() {}
+
+	virtual void beginPass(XRPass pass, XRRenderPassBase* renderPass) {}
+	virtual void endPass() {}
 
 	virtual void draw(XRPrimitiveTopology topology, uint32_t vertexStart, uint32_t vertexCount) {}
 	virtual void drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t indexStart, uint32_t indexCount) {}

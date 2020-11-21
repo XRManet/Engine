@@ -515,20 +515,24 @@ void XRModelGL::bind() const
 }
 
 uint32_t XRModelGL::getNumVertices() const {
-	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+	return 0;
+	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
 }
 uint32_t XRModelGL::getNumVertices(uint32_t meshIndex) const {
-	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+	return 0;
+	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
 }
 uint32_t XRModelGL::getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const {
 	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
 }
 
 uint32_t XRModelGL::getNumIndices() const {
-	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
+	return 0;
+	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
 }
 uint32_t XRModelGL::getNumIndices(uint32_t meshIndex) const {
-	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
+	return 0;
+	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
 }
 uint32_t XRModelGL::getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const {
 	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;

@@ -4,7 +4,7 @@
 
 #include <XRFrameworkBase/XRScene.h>
 
-class XRExport XRSceneTest :
+class /*XRExport */XRSceneTest :
   public XRScene
 {
 public:

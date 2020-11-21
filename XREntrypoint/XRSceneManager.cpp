@@ -51,6 +51,11 @@ XRSceneManager::XRSceneManager()
 
 			// refresh dso_name
 			info.dso_name = _list_of_dsos.find(dso_name)->first.c_str();
+
+			std::vector<std::string> dllLists;
+			XRPlatform::ListDLLFunctions(dso, dllLists);
+
+			//XRRenderPassBase* ;
 		}
 		else if (has_already == false)
 		{

@@ -57,7 +57,7 @@ bool XRRenderGroupGL::updateImpl()
 	
 	for (uint32_t v = 0; v < numVertexBuffers; ++v)
 	{
-		glBindBuffer(GL_COPY_WRITE_BUFFER, );
+		//glBindBuffer(GL_COPY_WRITE_BUFFER, );
 
 		for (uint32_t i = 0; i < numObjectGroups; ++i)
 		{
@@ -67,7 +67,7 @@ bool XRRenderGroupGL::updateImpl()
 			GLintptr readOffset = 0;
 			GLsizeiptr bufferSize = 0;
 			// Copy vertex data from model to render group vbo with offset
-			glBindBuffer(GL_COPY_READ_BUFFER, );
+			//glBindBuffer(GL_COPY_READ_BUFFER, );
 
 			glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, readOffset, writeOffset, bufferSize);
 		}

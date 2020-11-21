@@ -614,6 +614,7 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 }
 
 #include <XRRenderEngineGL/XRModelGL.h>
+#include <XRRenderEngineGL/XRPipelineGL.h>
 
 void XRRenderingStratagyTest::Render(XRScene* scene)
 {
@@ -622,6 +623,8 @@ void XRRenderingStratagyTest::Render(XRScene* scene)
     glClear(GL_COLOR_BUFFER_BIT);
 
 	GL_CALL(glUseProgram(_glProgram));
+
+	XRPipeline* pipeline;
 
 	XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapots_1");
 	teapotGroup->draw();
