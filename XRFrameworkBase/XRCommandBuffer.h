@@ -32,6 +32,9 @@ public:
 	virtual void drawIndirect() {}
 
 	virtual void dispatch() {}
+
+	// Note: non that state bleeds back of toward the primary command buffer
+	virtual void executeCommands() {}
 	
 	virtual void addBarrier() {}
 };

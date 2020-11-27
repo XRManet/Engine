@@ -2,15 +2,20 @@
 
 namespace xr
 {
+	template<typename Type> struct vec1;
+	template<typename Type> struct vec2;
+	template<typename Type> struct vec3;
+	template<typename Type> struct vec4;
+
 	template<typename Type>
 	struct vec1
 	{
 		Type x;
 
 		inline bool const operator == (vec1<Type> const& rhs) const { return x == rhs.x; }
-		inline bool const operator == (vec2<type> const& rhs) const { return rhs = *this; }
-		inline bool const operator == (vec3<type> const& rhs) const { return rhs = *this; }
-		inline bool const operator == (vec4<type> const& rhs) const { return rhs = *this; }
+		inline bool const operator == (vec2<Type> const& rhs) const { return rhs == *this; }
+		inline bool const operator == (vec3<Type> const& rhs) const { return rhs == *this; }
+		inline bool const operator == (vec4<Type> const& rhs) const { return rhs == *this; }
 	};
 
 	template<typename Type>
@@ -20,8 +25,8 @@ namespace xr
 
 		inline bool const operator == (vec1<Type> const& rhs) const { return vec1<Type>::operator ==(rhs) && (y == 0); }
 		inline bool const operator == (vec2<Type> const& rhs) const { return vec1<Type>::operator ==(rhs) && (y == rhs.y); }
-		inline bool const operator == (vec3<type> const& rhs) const { return rhs = *this; }
-		inline bool const operator == (vec4<type> const& rhs) const { return rhs = *this; }
+		inline bool const operator == (vec3<Type> const& rhs) const { return rhs == *this; }
+		inline bool const operator == (vec4<Type> const& rhs) const { return rhs == *this; }
 	};
 
 	template<typename Type>
@@ -32,7 +37,7 @@ namespace xr
 		inline bool const operator == (vec1<Type> const& rhs) const { return vec2<Type>::operator ==(rhs) && (z == 0); }
 		inline bool const operator == (vec2<Type> const& rhs) const { return vec2<Type>::operator ==(rhs) && (z == 0); }
 		inline bool const operator == (vec3<Type> const& rhs) const { return vec2<Type>::operator ==(rhs) && (z == rhs.z); }
-		inline bool const operator == (vec4<type> const& rhs) const { return rhs = *this; }
+		inline bool const operator == (vec4<Type> const& rhs) const { return rhs == *this; }
 	};
 
 	template<typename Type>

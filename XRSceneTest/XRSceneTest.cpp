@@ -101,11 +101,20 @@ public:
 	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) const override final
 	{
 		// Set Default Pipeline States
+		outDefault._shaderStageDescription->_vertexFilename = "SimpleVertex.glsl";
+		outDefault._shaderStageDescription->_fragmentFilename = "SimpleFragment.glsl";
+
+		// Step1. Render group을 가져와서 그것의 InputLayout을 넣을 수도 있을 것.
+		outDefault._vertexInputStateDescription->_inputlayout = XRInputLayout::GetInputLayoutByKey(0);
+		outDefault._vertexInputStateDescription->_primitiveTopology = XRPrimitiveTopology::TriangleList;
 	}
 
 	virtual bool CreatePipelineState(XRPipelineStateDescription& outPipeline) const override final
 	{
 		int32_t numElements = _elements.size();
+
+		// Step2. Permutation에 의해 오브젝트군이 달라질 경우 여기서 다시 변경함
+		outPipeline._vertexInputStateDescription->_inputlayout = XRInputLayout::GetInputLayoutByKey(0);
 
 		if (_elements[AlphaTest]._value == 0 && _elements[Lod]._value > 0)
 		{

@@ -20,14 +20,30 @@ struct XRPrimitiveTopology
 		PatchList,
 	};
 
+	//static constexpr XRPrimitiveTopology PointList = Value::PointList;
+	//static constexpr XRPrimitiveTopology LineList = Value::LineList;
+	//static constexpr XRPrimitiveTopology LineListWithAdjacency = Value::LineListWithAdjacency;
+	//static constexpr XRPrimitiveTopology LineStrip = Value::LineStrip;
+	//static constexpr XRPrimitiveTopology LineStripWithAdjacency = Value::LineStripWithAdjacency;
+	//static constexpr XRPrimitiveTopology TriangleList = Value::TriangleList;
+	//static constexpr XRPrimitiveTopology TriangleListWithAdjacency = Value::TriangleListWithAdjacency;
+	//static constexpr XRPrimitiveTopology TriangleFan = Value::TriangleFan;
+	//static constexpr XRPrimitiveTopology TriangleStrip = Value::TriangleStrip;
+	//static constexpr XRPrimitiveTopology TriangleStripWithAdjacency = Value::TriangleStripWithAdjacency;
+	//static constexpr XRPrimitiveTopology QuadList = Value::QuadList;
+	//static constexpr XRPrimitiveTopology PatchList = Value::PatchList;
+
 private:
 	uint32_t _value = UNKNOWN;
 
 public:
 	XRPrimitiveTopology() = default;
-	XRPrimitiveTopology(uint32_t rhs) : _value(rhs) {}
-	inline uint32_t operator = (uint32_t rhs) { return _value = rhs; }
-	inline operator uint32_t() const 	{ return _value; }
+	inline XRPrimitiveTopology(uint32_t rhs) : _value(rhs) {}
+	//inline uint32_t operator = (uint32_t rhs) { return _value = static_cast<Value>(rhs); }
+	//inline operator uint32_t() const 	{ return _value; }
+
+	inline operator uint32_t const& () const { return reinterpret_cast<uint32_t const&>(_value); }
+	inline operator uint32_t& () { return reinterpret_cast<uint32_t&>(_value); }
 
 public:
 	inline uint32_t getNumVertices() const
@@ -39,7 +55,7 @@ public:
 		case LineList:					return 2;
 		case LineListWithAdjacency:		return 2;
 		case LineStrip:					return 2;
-		case LineStripWithAdjacency:	return 2;
+		case LineStripWithAdjacency:		return 2;
 		case TriangleList:				return 3;
 		case TriangleListWithAdjacency:	return 3;
 		case TriangleFan:				return 3;

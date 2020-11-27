@@ -50,15 +50,23 @@ void XRRenderGroup::draw() const
 	// Draw Command
 }
 
-/***********************************************************
- * XRInputLayoutDesc: Vertex input layout
- * XRRenderGroup::Properties: Properties for render group
- * Remark:
-	per-instance input layout을 기존에 생성된 per-vertex input layout에 덧붙여 생성하는 경우,
-	in_properties::_inputLayoutDescKey는 per-vertex input이 포함된 input layout이다.
-	per-vertex와 per-instance 모두를 새로 생성하는 경우 in_properties::_inputLayoutDescKey는 반드시 0이어야 한다.
-	그 외의 경우는 정의하지 않음.
+/**
+ * @fn	bool XRRenderGroupManager::createRenderGroup(XRInputLayoutDesc& inputLayoutDesc, XRRenderGroup::Properties& in_properties)
+ *
+ * @brief	per-instance input layout을 기존에 생성된 per-vertex input layout에 덧붙여 생성하는 경우,
+ * 			in_properties::_inputLayoutDescKey는 per-vertex input이 포함된 input layout이다. per-vertex와
+ * 			per-instance 모두를 새로 생성하는 경우 in_properties::_inputLayoutDescKey는 반드시 0이어야 한다.
+ * 			그 외의 경우는 정의하지 않음.
+ *
+ * @author	Jiman Jeong
+ * @date	2020-11-27
+ *
+ * @param [in,out]	inputLayoutDesc	Information describing the  Vertex input layout.
+ * @param [in,out]	in_properties  	Properties for render group.
+ *
+ * @returns	True if it succeeds, false if it fails.
  */
+
 bool XRRenderGroupManager::createRenderGroup(XRInputLayoutDesc& inputLayoutDesc, XRRenderGroup::Properties& in_properties)
 {
 	// Merge Input Layout Based on input layout got above

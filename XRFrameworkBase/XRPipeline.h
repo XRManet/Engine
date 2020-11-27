@@ -1,7 +1,9 @@
 #pragma once
 
 #include "stdafx.h"
+#include <XRFrameworkBase/XRPrimitiveTypes.h>
 #include <XRFrameworkBase/XRGeometry.h>
+#include <XRFrameworkBase/XRRenderCommon.h>
 
 /******************************************************************************
   GL State to Vulkan State Mapping
@@ -25,7 +27,7 @@
 		PolygonSmooth				?
 		PolygonMode					RasterizationState
 		PolygonOffset				RasterizationState
-	Multisampling
+	Multisampling					MultisampleState
 	PixelOperation					ViewportState/DepthStencilState/ColorBlendState
 		ScissorTest					ViewportState
 		StencilTest					DepthStencilState
@@ -60,7 +62,7 @@ class XRScissorRect
 
 };
 
-struct XRRasterizationDescription
+struct XRRasterizationStateDescription
 {
 	// RASTERIZER DISCARD
 	bool _enableRasterizerDiscard;
@@ -151,60 +153,200 @@ struct XRMultisampleDescription
 
 // GL Transformation State
 
-// GL PixelOperation
-// Scissor			VK ViewportState
-// Depth/Stencil	VK DepthStencilState
-// Alpha/Blend		VK ColorBlendState
-struct XRPixelOperationDescription
+/**
+ * @struct	XRCompareOp
+ *
+ * @brief	An xr compare operation.
+ *
+ * @author	Jiman Jeong
+ * @date	2020-11-28
+ */
+
+struct XRCompareOp
 {
-	// SCISSOR TEST
-	// SCISSOR BOX
-	// ALPHA TEST - legacy
-	// ALPHA TEST FUNC - legacy
-	// ALPHA TEST REF - legacy
-	// STENCIL TEST
-	// STENCIL FUNC
-	// STENCIL VALUE MASK
-	// STENCIL REF
-	// STENCIL FAIL
-	// STENCIL PASS DEPTH FAIL
-	// STENCIL PASS DEPTH PASS
-	// STENCIL BACK FUNC
-	// STENCIL BACK VALUE MASK
-	// STENCIL BACK REF
-	// STENCIL BACK FAIL
-	// STENCIL BACK PASS DEPTH FAIL
-	// STENCIL BACK PASS DEPTH PASS
-	// DEPTH TEST
-	// DEPTH FUNC
-	// BLEND
-	// BLEND SRC RGB
-	// BLEND SRC ALPHA
-	// BLEND DST RGB
-	// BLEND DST ALPHA
-	// BLEND EQUATION RGB
-	// BLEND EQUATION ALPHA
-	// BLEND COLOR
-	// FRAMEBUFFER SRGB
-	// DITHER
-	// INDEX LOGIC OP
-	// COLOR LOGIC OP
-	// LOGIC OP MODE
+	STATIC_ENUM_BIT_BEGIN;
+	ADD_BIT_ENUM(Less, _less);
+	ADD_BIT_ENUM(Equal, _equal);
+	ADD_BIT_ENUM(Greater, _greater);
+
+	static constexpr uint32_t Never			= 0;
+	static constexpr uint32_t LessOrEqual	= Less | Equal;
+	static constexpr uint32_t GreaterOrEqual= Greater | Equal;
+	static constexpr uint32_t NotEqual		= Less | Greater;
+	static constexpr uint32_t Always		= Less | Equal | Greater;
+
+	operator uint8_t const& () const { return reinterpret_cast<uint8_t const&>(*this); }
+	operator uint8_t& () { return reinterpret_cast<uint8_t&>(*this); }
+
+	XRCompareOp() { *this = 0; }
+	XRCompareOp(uint8_t rhs) { *this = rhs; }
+};
+constexpr uint32_t sizeofXRCompareOp = sizeof(XRCompareOp);
+
+enum class XRStencilOp : uint8_t
+{
+	Keep,
+	Zero,
+	Replace,
+	IncrementAndClamp,
+	DecrementAndClamp,
+	Invert,
+	IncrementAndWrap,
+	DecrementAndWrap,
 };
 
-struct XRFramebufferControlDescription
+struct XRDepthStencilStateDescription
 {
-	// INDEX WRITEMASK
-	// COLOR WRITEMASK
-	// DEPTH WRITEMASK
-	// STENCIL WRITEMASK
-	// STENCIL BACK WRITEMASK
-	// COLOR CLEAR VALUE
-	// INDEX CLEAR VALUE
-	// DEPTH CLEAR VALUE
-	// STENCIL CLEAR VALUE
-	// ACCUM CLEAR VALUE
+public: // Enable Tests
+	bool _enableDepthTest = false; /** @brief	True to enable, false to disable the depth test */
+	bool _enableStencilTest = false; /** @brief	True to enable, false to disable the stencil test */
+	bool _enableDepthBoundsTest = false; /** @brief	True to enable, false to disable the depth bounds test */
+	bool _enableDepthWrite = true; /** @brief	True to enable, false to disable the depth write */
+
+public: // Depth Test
+	XRCompareOp _depthCompareOp = XRCompareOp::Never; /** @brief	The depth compare operation */
+
+public: // Stencil Front
+	XRStencilOp _stencilFrontPassOp; /** @brief	The stencil front pass operation */
+	XRStencilOp _stencilFrontFailOp; /** @brief	The stencil front fail operation */
+	XRStencilOp _stencilFrontDepthFailOp; /** @brief	The stencil front depth fail operation */
+	XRCompareOp _stencilFrontCompareOp = XRCompareOp::Never; /** @brief	The stencil front compare operation */
+	uint32_t _stencilFrontCompareMask; /** @brief	The stencil front compare mask */
+	uint32_t _stencilFrontWriteMask; /** @brief	The stencil front write mask */
+	uint32_t _stencilFrontReference; /** @brief	The stencil front reference */
+
+public: // Stencil Back
+	XRStencilOp _stencilBackPassOp; /** @brief	The stencil back pass operation */
+	XRStencilOp _stencilBackFailOp; /** @brief	The stencil back fail operation */
+	XRStencilOp _stencilBackDepthFailOp; /** @brief	The stencil back depth fail operation */
+	XRCompareOp _stencilBackCompareOp = XRCompareOp::Never; /** @brief	The stencil back compare operation */
+	uint32_t _stencilBackCompareMask; /** @brief	The stencil back compare mask */
+	uint32_t _stencilBackWriteMask; /** @brief	The stencil back write mask */
+	uint32_t _stencilBackReference; /** @brief	The stencil back reference */
+	
+public: // Depth Bounds
+	float _depthBoundsMin; /** @brief	The minimum depth bounds */
+	float _depthBoundsMax; /** @brief	The maximum depth bounds */
 };
+constexpr uint32_t sizeofXRDepthStencilState = sizeof(XRDepthStencilStateDescription);
+
+struct XRColorBlendStateDescription
+{
+	enum class LogicOp : uint8_t
+	{
+		Clear,
+		And,
+		AndReverse,
+		Copy,
+		AndInverted,
+		NoOp,
+		Xor,
+		Or,
+		Nor,
+		Equivalent,
+		Invert,
+		OrReverse,
+		CopyInverted,
+		OrInverted,
+		Nand,
+		Set
+	};
+	
+	struct TargetSlotDescription
+	{
+		enum class BlendFactor : uint8_t
+		{
+			Zero,
+			One,
+			SrcColor,
+			OneMinusSrcColor,
+			DstColor,
+			OneMinusDstColor,
+			SrcAlpha,
+			OneMinusSrcAlpha,
+			DstAlpha,
+			OneMinusDstAlpha,
+			ConstantColor,
+			OneMinusConstantColor,
+			ConstantAlpha,
+			OneMinusConstantAlpha,
+			SrcAlphaSaturate,
+			Src1Color,
+			OneMinusSrc1Color,
+			Src1Alpha,
+			OneMinusSrc1Alpha,
+		};
+
+		enum class BlendOp : uint8_t
+		{
+			Add,				//
+			Subtract,			//
+			ReverseSubtract,	//
+			Min,				//
+			Max,				//
+
+			// Belows are considered for f/X/Y/Z Advanced Blend Operations
+			Zero,		// (X, Y, Z) = (0, 0, 0), f(Cs, Cd) = 0
+			Src,		// (X, Y, Z) = (1, 1, 0), f(Cs, Cd) = Cs
+			Dst,		// (X, Y, Z) = (1, 0, 1), f(Cs, Cd) = Cd
+			SrcOver,	// (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = Cs
+			DstOver,	// (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = Cd
+			SrcIn,		// (X, Y, Z) = (1, 0, 0), f(Cs, Cd) = Cs
+			DstIn,		// (X, Y, Z) = (1, 0, 0), f(Cs, Cd) = Cd
+			SrcOut,		// (X, Y, Z) = (0, 1, 0), f(Cs, Cd) = 0
+			DstOut,		// (X, Y, Z) = (0, 0, 1), f(Cs, Cd) = 0
+			SrcAtop,	// (X, Y, Z) = (1, 0, 1), f(Cs, Cd) = Cs
+			DstAtop,	// (X, Y, Z) = (1, 1, 0), f(Cs, Cd) = Cd
+			Xor,		// (X, Y, Z) = (0, 1, 1), f(Cs, Cd) = 0
+			Multiply,	// (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = CsCd
+			Screen,		// (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = Cs + Cd - CsCd
+			Overlay,	/* (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = 
+						 * if Cd <= 0.5, then 2CsCd 
+						 * otherwise, 1 - 2(1 - Cs)(1 - Cd) */
+			Darken,		// (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = min(Cs, Cd)
+			Lighten,	// (X, Y, Z) = (1, 1, 1), f(Cs, Cd) = max(Cs, Cd)
+		};
+
+		enum class ColorComponentBits : uint8_t { None = 0, R = 0b0001, G = 0b0010, B = 0b0100, A = 0b1000, All = 0xf };
+
+	public:
+		bool _enableBlend; // BLEND
+		BlendFactor _colorBlendFactorSrc; // BLEND SRC RGB
+		BlendFactor _colorBlendFactorDst; // BLEND DST RGB
+		BlendOp _colorBlendOp;
+		BlendFactor _alphaBlendFactorSrc; // BLEND SRC ALPHA
+		BlendFactor _alphaBlendFactorDst; // BLEND DST ALPHA
+		BlendOp _alphaBlendOp;
+		ColorComponentBits _colorWriteMask = ColorComponentBits::All;
+		// BLEND EQUATION RGB (legacy)
+		// BLEND EQUATION ALPHA (legacy)
+	};
+
+public:
+	bool _enableLogicOp; /** @brief	True to enable, false to disable the logic operation */ // LOGIC OP MODE
+	LogicOp _logicOp; /** @brief	The logic operation */ // COLOR LOGIC OP
+	// INDEX LOGIC OP (legacy)
+
+public:
+	uint32_t _numTargetSlots; /** @brief	Number of target slots */
+	TargetSlotDescription* _targetSlotDescriptions;
+	xr::vec4<float> _blendConstants; /** @brief	The blend constants */ // BLEND COLOR
+};
+constexpr uint32_t sizeofXRColorBlendStateDescription = sizeof(XRColorBlendStateDescription);
+
+//struct XRFramebufferControlDescription
+//{
+//	// INDEX WRITEMASK
+//	// COLOR WRITEMASK
+//	// DEPTH WRITEMASK
+//	// STENCIL WRITEMASK
+//	// STENCIL BACK WRITEMASK
+//	// COLOR CLEAR VALUE
+//	// INDEX CLEAR VALUE
+//	// DEPTH CLEAR VALUE
+//	// STENCIL CLEAR VALUE
+//	// ACCUM CLEAR VALUE
+//};
 
 struct XRFramebufferDescription
 {
@@ -272,11 +414,6 @@ struct XRViewportStateDescription
 	const XRScissorRect*			_scissorRects;
 };
 
-struct XRRasterizeationStateDescription
-{
-
-};
-
 struct XRResourceLayout
 {
 
@@ -284,14 +421,17 @@ struct XRResourceLayout
 
 struct XRPipelineStateDescription
 {
-	const XRShaderStageDescription*			_shaderStageDescription;
-	const XRVertexInputStateDescription*		_vertexInputStateDescription;
+	XRShaderStageDescription*			_shaderStageDescription = nullptr;
+	XRVertexInputStateDescription*		_vertexInputStateDescription = nullptr;
 
-//	XRTessellationStateDescription*			_tessellationStateDescription;
-//	
-	const XRRasterizeationStateDescription*	_rasterizationStateDescription;
+//	XRTessellationStateDescription*		_tessellationStateDescription;
 
-	const XRResourceLayout*				_resourceLayout;
+	XRRasterizationStateDescription*	_rasterizationStateDescription = nullptr;
+	XRMultisampleDescription*			_multisampleStateDescription = nullptr;
+	XRDepthStencilStateDescription*		_depthStencilStateDescription = nullptr;
+	XRColorBlendStateDescription*		_colorBlendStateDescription = nullptr;
+
+	XRResourceLayout*					_resourceLayout;
 };
 
 enum class XRDynamicState
@@ -338,13 +478,13 @@ struct XRAttachmentDescription
 	{
 		Load,
 		Clear,
-		DontCare,
+		DontCareLoad,
 	};
 
 	enum StoreOp
 	{
 		Store,
-		DontCare,
+		DontCareStore,
 	};
 
 public:
@@ -360,8 +500,16 @@ public:
 	StoreOp	_stencilStoreOp;
 };
 
-class XRRenderTargetView {};
-class XRDepthStencilView {};
+class XRImageView {};
+class XRRenderTargetView : public XRImageView {};
+class XRDepthStencilView : public XRImageView {};
+class XRRenderPassBase;
+
+struct XRFramebufferLayout
+{
+	xr::vec3<uint32_t> _extent; // width, height, layers
+	XRRenderPassBase* _compatibleRenderPass;
+};
 
 /**
  * @class	XRFramebuffer
@@ -376,6 +524,8 @@ class XRDepthStencilView {};
 
 class XRFramebuffer
 {
+private:
+	XRFramebufferLayout _layout;
 public:
 	XRFramebuffer(const XRFramebufferLayout& layout)
 	{

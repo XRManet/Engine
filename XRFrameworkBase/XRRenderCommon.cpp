@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "XRRenderCommon.h"
 
 uint32_t XRFormat::getCommonSize() const
