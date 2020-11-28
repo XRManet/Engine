@@ -10,6 +10,8 @@
 #include <XRFrameworkBase/XRUtility.h>
 #include <XRFrameworkBase/XRCommandBuffer.h>
 
+#include <XRFrameworkBase/XRActorNode.h>
+
 #include <GL/glew.h>
 
 #include <stdio.h>
@@ -17,24 +19,22 @@
 // Todo) Menifest를 별도로 둬서 scene에서 읽을 수 있는 형식을 갖출 것
 XRSceneTest::XRSceneTest()
 {
-	auto model = _resource_manager.GetModelByKey("wolf");
-	auto objects = _object_manager.GenerateObjects(5);
-
-	glm::vec4 position{ -2, 0, 0, 1 };
-	for (auto object : objects) {
-		object->BindModel(model);
-		object->SetPosition(position);
-		position.x += 1;
-	}
-
-	static std::unique_ptr<XRCommandBuffer> commandBuffer(xrCreateCommandBuffer());
-
-	_object_groups["teapots_1"] = { commandBuffer.get(), model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
-
 	_cameras.resize(1);
 
 	_cameras[0].SetFrustum({ 16, 9 }, 1, 10000);
 	_cameras[0].SetPosition(glm::vec4{ 0, 1, 2.5, 1 });
+
+	XRActorNode* actor = new XRActorNode();
+
+	auto model = _resource_manager.GetModelByKey("wolf");
+	glm::vec4 position{ -2, 0, 0, 1 };
+
+	actor->BindModel(model);
+	actor->SetPosition(position);
+
+	static std::unique_ptr<XRCommandBuffer> commandBuffer(xrCreateCommandBuffer());
+
+	//_object_groups["teapots_1"] = { commandBuffer.get(), model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
 
 	constexpr GLuint var_test1 = XR::util::GetIndexOfLiteralStringList(g_deferredVar, "var_test1");
 

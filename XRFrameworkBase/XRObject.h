@@ -14,10 +14,6 @@ class XRBackground;
 class XRNonInteractive;
 class XREffect;
 
-// Referenced by here
-class XRModel;
-class XRBody;
-
 
 class XRBaseExport XRInteractive
 {
@@ -40,20 +36,9 @@ private:
 	glm::vec4 _position{};
 	glm::quat _orientation{ glm::identity<glm::quat>() };
 
-
-private:
-	XRModel * _model = nullptr;
-	XRBody * _body = nullptr;
-
-
 public:
 	XRObject() {}
 	virtual ~XRObject() {}
-
-public:
-	void BindModel(XRModel* model) { _model = model; }
-	void BindBody(XRBody* body) { _body = body; }
-
 
 public:
 	void SetPosition(const glm::vec4& position) { _position = position; }

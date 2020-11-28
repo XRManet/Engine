@@ -4,8 +4,11 @@
 
 #include "XRObjectManager.h"
 #include "XRResourceManager.h"
+#include "XRSceneNode.h"
 
 class XRCamera;
+class XRRenderer;
+
 
 class XRBaseExport XRScene
 {
@@ -13,6 +16,7 @@ protected:
   XRObjectManager _object_manager;
   XRResourceManager _resource_manager;
   std::vector<XRCamera> _cameras;
+  XRSceneNode* _root;
 
   std::unordered_map<std::string, XRObjectGroup> _object_groups;
 
@@ -25,15 +29,17 @@ public:
 		return &it->second;
 	}
 
-
 public:
   XRScene();
   virtual ~XRScene();
 
+public:
+	// 왠지 이런게 필요할거같긴한데...
+	XRSceneNode* GenerateNode(XRSceneNodeType type);
 
 public:
   virtual void Update(float dt) {}
-
+  void Render(XRRenderer* renderer);
 
 public:
   virtual void PrepareToWakeUp() {}

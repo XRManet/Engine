@@ -155,12 +155,29 @@
     <ClInclude Include="XRPlatformOSX.hpp">
       <Filter>소스 파일\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="XRFrameworkBaseRenderEngine.h" />
+    <ClInclude Include="XRFrameworkBaseRenderEngine.h">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClInclude>
     <ClInclude Include="XRIndexedString.h">
       <Filter>소스 파일\Utility</Filter>
     </ClInclude>
     <ClInclude Include="XRLock.h">
       <Filter>소스 파일\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="XRSceneNode.h">
+      <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRenderer.h">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="XRLightNode.h">
+      <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="XRTransformNode.h">
+      <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="XRActorNode.h">
+      <Filter>소스 파일\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +237,21 @@
     </ClCompile>
     <ClCompile Include="XRLockWindows.cpp">
       <Filter>소스 파일\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="XRSceneNode.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRenderer.cpp">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="XRLightNode.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="XRTransformNode.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="XRActorNode.cpp">
+      <Filter>소스 파일\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

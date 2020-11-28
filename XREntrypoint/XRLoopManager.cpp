@@ -627,10 +627,12 @@ void XRRenderingStratagyTest::Render(XRScene* scene)
 	teapotGroup->draw();
 }
 
+#include <XRFrameworkBase/XRRenderer.h>
+
 XRFrameWalker::XRFrameWalker()
 {
     // TODO) select a stratagy by reading from manifest.
-    _rendering_stratagy.reset(new XRRenderingStratagyTest);
+    _renderer = new XRRenderer();
 }
 
 void XRFrameWalker::UpdateFrame()
@@ -638,6 +640,6 @@ void XRFrameWalker::UpdateFrame()
     auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
     
     scene->Update(0);
-	_rendering_stratagy->Update(scene);
-    _rendering_stratagy->Render(scene);
+	scene->Render(_renderer);
+	_renderer->Render();
 }

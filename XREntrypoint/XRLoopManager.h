@@ -179,10 +179,11 @@ public:
 };
 
 #include <memory>
+class XRRenderer;
 class XRFrameWalker
 {
 private:
-	std::unique_ptr<XRRenderingStratagy> _rendering_stratagy;
+	XRRenderer* _renderer;
 
 
 public:
@@ -190,7 +191,7 @@ public:
 
 	void Initialize()
 	{
-		_rendering_stratagy->Initialize();
+		
 	}
 
 public:
