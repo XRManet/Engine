@@ -167,7 +167,9 @@
     <ClInclude Include="XRFrameworkBase.h" />
     <ClInclude Include="XRFrameworkBaseRenderEngine.h" />
     <ClInclude Include="XRGeometry.h" />
+    <ClInclude Include="XRIndexedString.h" />
     <ClInclude Include="XRLoadable.h" />
+    <ClInclude Include="XRLock.h" />
     <ClInclude Include="XRLogging.h" />
     <ClInclude Include="XRModel.h" />
     <ClInclude Include="XRModelData.h" />
@@ -202,7 +204,10 @@
     <ClCompile Include="XRBody.cpp" />
     <ClCompile Include="XRDXTC.cpp" />
     <ClCompile Include="XRFrameworkBase.cpp" />
+    <ClCompile Include="XRIndexedString.cpp" />
     <ClCompile Include="XRLoadable.cpp" />
+    <ClCompile Include="XRLock.cpp" />
+    <ClCompile Include="XRLockWindows.cpp" />
     <ClCompile Include="XRModel.cpp" />
     <ClCompile Include="XRModelData.cpp" />
     <ClCompile Include="XRObjectManager.cpp" />

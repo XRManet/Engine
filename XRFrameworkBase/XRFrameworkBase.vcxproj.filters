@@ -156,6 +156,12 @@
       <Filter>소스 파일\Platform</Filter>
     </ClInclude>
     <ClInclude Include="XRFrameworkBaseRenderEngine.h" />
+    <ClInclude Include="XRIndexedString.h">
+      <Filter>소스 파일\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="XRLock.h">
+      <Filter>소스 파일\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -205,6 +211,15 @@
     </ClCompile>
     <ClCompile Include="XRBody.cpp">
       <Filter>소스 파일\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="XRIndexedString.cpp">
+      <Filter>소스 파일\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="XRLock.cpp">
+      <Filter>소스 파일\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="XRLockWindows.cpp">
+      <Filter>소스 파일\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
