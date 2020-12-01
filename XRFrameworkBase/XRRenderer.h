@@ -8,7 +8,7 @@ class XRTransformNode;
 class XRLightNode;
 class XRActorNode;
 
-class XRRenderer
+class XRBaseExport XRRenderer
 {
 public:
 	XRRenderer();
