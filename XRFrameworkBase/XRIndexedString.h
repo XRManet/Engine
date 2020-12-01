@@ -12,6 +12,27 @@
 namespace xr
 {
 struct DefaultStringCategory {};
+
+template<typename Category, typename Capacity = uint16_t>
+struct IndexedStringContainer
+{
+	IndexedStringContainer();
+
+public:
+	std::unordered_map<std::string, Capacity> _allStrings;
+	std::vector<std::string const*> _allAccessors;
+	Capacity _indexCounter;
+	MutexLock _mutexLock;
+};
+
+template<typename Category, typename Capacity>
+inline IndexedStringContainer<Category, Capacity>::IndexedStringContainer()
+	: _allStrings({ {"", 0 } })
+	, _allAccessors({ &_allStrings.begin()->first })
+	, _indexCounter(1)
+{
+}
+
 template<typename Category = DefaultStringCategory, typename Capacity = uint16_t>
 class IndexedString
 {
@@ -34,14 +55,18 @@ public:
 
 	IndexedString(std::string const& string)
 	{
-		ScopedLocker<MutexLock> locker(sMutexLock);
-		auto found = sAllStrings.find(string);
-		if (found != sAllStrings.end())
+		ScopedLocker<MutexLock> locker(sContainer._mutexLock);
+		auto found = sContainer._allStrings.find(string);
+		if (found != sContainer._allStrings.end())
 			_index = found->second;
 		else
 		{
-			_index = sIndexCounter++;
-			sAllStrings.insert({string, _index});
+			_index = sContainer._indexCounter++;
+			auto result = sContainer._allStrings.insert({ string, _index });
+			if (result.second == true)
+			{
+				sContainer._allAccessors.push_back(&(result.first->first));
+			}
 		}
 	}
 
@@ -52,19 +77,19 @@ public:
 	friend std::hash<xr::IndexedString<Category, Capacity>>;
 
 public:
-	inline char const* c_str() const { return sAllAccessors[_index]->c_str(); }
-	inline size_t length() const { return sAllAccessors[_index]->length(); }
+	inline char const* c_str() const { return sContainer._allAccessors[_index]->c_str(); }
+	inline size_t length() const { return sContainer._allAccessors[_index]->length(); }
 
 private:
 	Capacity _index = 0;
 
 private:
-	XRBaseExport static std::unordered_map<std::string, Capacity> sAllStrings;
-	XRBaseExport static std::vector<std::string*> sAllAccessors;
-	XRBaseExport static Capacity sIndexCounter;
-	XRBaseExport static MutexLock sMutexLock;
+	XRBaseExport	static IndexedStringContainer<Category, Capacity>	sContainer_PS;
+					static IndexedStringContainer<Category, Capacity>&	sContainer;
 };
 
+template<typename Category, typename Capacity>
+IndexedStringContainer<Category, Capacity>& IndexedString<Category, Capacity>::sContainer = IndexedString<Category, Capacity>::sContainer_PS;
 }
 
 /**
