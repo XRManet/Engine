@@ -5,8 +5,8 @@
 #include "XRFrameworkBase/XRPrimitiveTypes.h"
 #include "XRFrameworkBase/XRRenderCommon.h"
 
-class XRTexture;
 struct XRTextureCreateInfo;
+class XRTexture;
 class XRTextureData;
 class XRTextureRHI
 {
@@ -41,7 +41,7 @@ struct XRTextureProperties
 	/** @brief	Texture format */
 	XRFormat			_format;
 	/** @brief	Texture extent */
-	xr::vec3<float>		_extent;
+	xr::vec3<uint32_t>	_extent;
 	/** @brief	Number of mip levels */
 	uint32_t			_numMipLevels;
 	/** @brief	Number of array layers */
@@ -79,7 +79,7 @@ class XRBaseExport XRTexture
 {
 #ifdef XRRENDERENGINEGL_EXPORTS
 	/** @brief	Factory function */
-	friend XRTexture* xrCreateTexture(XRTextureCreateInfo const* loadable);
+	friend XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
 	friend XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);
 #endif
 

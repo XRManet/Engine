@@ -164,9 +164,6 @@
     <ClInclude Include="XRRenderGroup.h">
       <Filter>소스 파일\Engine\Render\Common</Filter>
     </ClInclude>
-    <ClInclude Include="XRFrameworkBaseRenderEngine.h">
-      <Filter>소스 파일\Engine\Render</Filter>
-    </ClInclude>
     <ClInclude Include="XRRenderCommon.h">
       <Filter>소스 파일\Engine\Render\Common</Filter>
     </ClInclude>
@@ -190,6 +187,12 @@
     </ClInclude>
     <ClInclude Include="XRActorNode.h">
       <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRenderEngine.h">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBuffer.h">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,16 +9,16 @@
 class XRCamera;
 class XRRenderer;
 
-
+class XRPipelineManager;
 class XRBaseExport XRScene
 {
 protected:
-  XRObjectManager _object_manager;
-  XRResourceManager _resource_manager;
-  std::vector<XRCamera> _cameras;
-  XRSceneNode* _root;
+	XRObjectManager _object_manager;
+	XRResourceManager _resource_manager;
+	std::vector<XRCamera> _cameras;
+	XRSceneNode* _root;
 
-  std::unordered_map<std::string, XRObjectGroup> _object_groups;
+	std::unordered_map<std::string, XRObjectGroup> _object_groups;
 
 public:
 	std::vector<XRCamera>& getCameras() { return _cameras; }
@@ -30,53 +30,54 @@ public:
 	}
 
 public:
-  XRScene();
-  virtual ~XRScene();
+	XRScene();
+	virtual ~XRScene();
 
 public:
 	// 왠지 이런게 필요할거같긴한데...
 	XRSceneNode* GenerateNode(XRSceneNodeType type);
 
 public:
-  virtual void Update(float dt) {}
-  void Render(XRRenderer* renderer);
+	virtual void Initialize() {}
+	virtual void Update(float dt) {}
+	void Render(XRRenderer* renderer);
 
 public:
-  virtual void PrepareToWakeUp() {}
-  virtual void ReadyToBePaused() {}
+	virtual void PrepareToWakeUp() {}
+	virtual void ReadyToBePaused() {}
 };
 
 using XRPFNCREATESCENE = XRScene * (*)();
 
-struct XRBaseExport XRSceneInfo
+struct XRSceneInfo
 {
-  char const* dso_name = nullptr;
+	char const* dso_name = nullptr;
 
-  XRPFNCREATESCENE CreateScene = nullptr;
-
-
-public:
-  inline bool IsAvailable() {
-    return dso_name != nullptr
-      && CreateScene != nullptr;
-  }
-
+	XRPFNCREATESCENE CreateScene = nullptr;
+	XRScene* scene = nullptr;
+	std::vector<std::string> renderers;
 
 public:
-  inline bool operator == (XRSceneInfo const& scene) {
-    return dso_name == scene.dso_name
-      && CreateScene == scene.CreateScene;
-  }
+	inline bool IsAvailable() {
+		return dso_name != nullptr
+			&& CreateScene != nullptr;
+	}
 
-  inline bool operator == (XRSceneInfo&& scene) {
-    return (*this == scene);
-  }
+public:
+	XRScene* GetScene()
+	{
+		if (scene == nullptr)
+			scene = CreateScene();
+		return scene;
+	}
 
-  inline bool operator != (XRSceneInfo const& scene) {
-    return !(*this == scene);
-  }
+public:
+	inline bool operator == (XRSceneInfo const& sceneInfo) {
+		return dso_name == sceneInfo.dso_name
+			&& CreateScene == sceneInfo.CreateScene;
+	}
 
-  inline bool operator != (XRSceneInfo&& scene) {
-    return !(*this == scene);
-  }
+	inline bool operator != (XRSceneInfo const& sceneInfo) {
+		return !(*this == sceneInfo);
+	}
 };

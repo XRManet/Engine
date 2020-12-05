@@ -1,5 +1,6 @@
 #pragma once
 
+#include <XRFrameworkBase/XRRenderCommon.h>
 #include <XRFrameworkBase/XRCommandBuffer.h>
 
 class XRModel;

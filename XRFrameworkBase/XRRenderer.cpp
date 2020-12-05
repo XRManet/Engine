@@ -5,12 +5,26 @@
 #include "XRLightNode.h"
 #include "XRActorNode.h"
 
+#include "XRPipeline.h"
+
+static XRPipelineManager* GetDefaultPipelineManager()
+{
+	static XRPipelineManager _default;
+	return &_default;
+}
+
 XRRenderer::XRRenderer()
+	: _pipelineManager(GetDefaultPipelineManager())
 {
 
 }
 
 XRRenderer::~XRRenderer()
+{
+
+}
+
+void XRRenderer::Update()
 {
 
 }

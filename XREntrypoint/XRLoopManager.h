@@ -120,63 +120,51 @@ public:
 };
 
 class XRScene;
-class XRRenderingStratagy
-{
-public:
-	virtual ~XRRenderingStratagy() {}
-
-public:
-	virtual void Initialize() {}
-
-public:
-	virtual void Update(XRScene* scene) {}
-	virtual void Render(XRScene* scene) {}
-};
-
-class XRRenderingStratagyTest : public XRRenderingStratagy
-{
-	// Todo) 일단 렌더링 되는지 테스트해보려고 여기다 선언해서 그냥 써봄.
-	// 아래 멤버변수들은 그래픽스 파이프라인에서나 선언해다 쓰고
-	// 나중엔 Rendering stratagy와 pipeline 간의 관계를 정립한 뒤,
-	// 렌더링으로 연결될 수 있게 변경할 것.
-	GLuint _glProgram;
-	GLuint _glVertexShader;
-	GLuint _glFragmentShader;
-
-	struct UNIFORM_BINDING_NAME
-	{
-		enum : GLuint
-		{
-			Matrix,
-			Light,
-			Material,
-			Count
-		};
-	};
-
-	std::vector<GLuint> _uniformBuffers;
-
-	struct Light
-	{
-		float position[4];
-		float intensity[3];
-		float attenuation;
-	};
-
-	struct Material
-	{
-		float diffuse[4];
-	};
-
-public:
-	XRRenderingStratagyTest();
-	~XRRenderingStratagyTest();
-
-	virtual void Initialize();
-
-	virtual void Update(XRScene* scene);
-	virtual void Render(XRScene* scene);
-};
+//
+//class XRRendererTest : public XRRenderer
+//{
+//	// Todo) 일단 렌더링 되는지 테스트해보려고 여기다 선언해서 그냥 써봄.
+//	// 아래 멤버변수들은 그래픽스 파이프라인에서나 선언해다 쓰고
+//	// 나중엔 Rendering stratagy와 pipeline 간의 관계를 정립한 뒤,
+//	// 렌더링으로 연결될 수 있게 변경할 것.
+//	GLuint _glProgram;
+//	GLuint _glVertexShader;
+//	GLuint _glFragmentShader;
+//
+//	struct UNIFORM_BINDING_NAME
+//	{
+//		enum : GLuint
+//		{
+//			Matrix,
+//			Light,
+//			Material,
+//			Count
+//		};
+//	};
+//
+//	std::vector<GLuint> _uniformBuffers;
+//
+//	struct Light
+//	{
+//		float position[4];
+//		float intensity[3];
+//		float attenuation;
+//	};
+//
+//	struct Material
+//	{
+//		float diffuse[4];
+//	};
+//
+//public:
+//	XRRendererTest();
+//	~XRRendererTest();
+//
+//	void Initialize() override;
+//
+//	void Update() override;
+//	void Render() override;
+//};
 
 #include <memory>
 class XRRenderer;

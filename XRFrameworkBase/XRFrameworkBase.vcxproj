@@ -163,10 +163,11 @@
     <ClInclude Include="XRBmp.h" />
     <ClInclude Include="XRBody.h" />
     <ClInclude Include="XRBodyData.h" />
+    <ClInclude Include="XRBuffer.h" />
     <ClInclude Include="XRCommandBuffer.h" />
     <ClInclude Include="XRDXTC.h" />
     <ClInclude Include="XRFrameworkBase.h" />
-    <ClInclude Include="XRFrameworkBaseRenderEngine.h" />
+    <ClInclude Include="XRRenderEngine.h" />
     <ClInclude Include="XRGeometry.h" />
     <ClInclude Include="XRIndexedString.h" />
     <ClInclude Include="XRLightNode.h" />

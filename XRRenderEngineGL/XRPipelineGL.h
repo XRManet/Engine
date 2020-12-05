@@ -11,4 +11,10 @@ public:
 
 public:
 	void bind() override;
+
+
+private:
+	GLuint _glProgram;
+	GLuint _glVertexShader;
+	GLuint _glFragmentShader;
 };

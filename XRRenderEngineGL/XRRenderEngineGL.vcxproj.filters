@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -16,54 +12,66 @@
     <Filter Include="리소스 파일\Shaders">
       <UniqueIdentifier>{6e4d7dc1-7b1f-477b-9912-8a6bf325c538}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Linker">
+      <UniqueIdentifier>{00593b58-ed1d-4821-890f-8f99bf0be24a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{33f19eaf-e02d-449d-a060-90beec0a9736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\RHI">
+      <UniqueIdentifier>{6c52d295-7fbf-4f45-80e5-a46e6f2ef59d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Win32</Filter>
     </ClInclude>
-    <ClInclude Include="XRModelGL.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRTextureGL.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XRPipelineGL.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="stdafx.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="XRCommandBufferGL.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="XRModelGL.h">
+      <Filter>소스 파일\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="XRPipelineGL.h">
+      <Filter>소스 파일\RHI</Filter>
     </ClInclude>
     <ClInclude Include="XRRenderGroupGL.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="XRTextureGL.h">
+      <Filter>소스 파일\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="XRBufferGL.h">
+      <Filter>소스 파일\RHI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="XRRenderEngineGL.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Linker</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Win32</Filter>
     </ClCompile>
-    <ClCompile Include="XRModelGL.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="XRTextureGL.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="XRPipelineGL.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="XRCommandBufferGL.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="XRModelGL.cpp">
+      <Filter>소스 파일\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="XRPipelineGL.cpp">
+      <Filter>소스 파일\RHI</Filter>
     </ClCompile>
     <ClCompile Include="XRRenderGroupGL.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="XRTextureGL.cpp">
+      <Filter>소스 파일\RHI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

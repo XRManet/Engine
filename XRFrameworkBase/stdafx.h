@@ -37,13 +37,13 @@
 #include <string>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
+#include <functional>
 #include <memory>
 #include <assert.h>
 
 #include <stdio.h>
 #include <errno.h>
-
-#include "XRFrameworkBaseRenderEngine.h"
 
 namespace xr
 {

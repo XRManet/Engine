@@ -4,7 +4,15 @@
     {
       "key": "main",
       "dso_name": "XRSceneTest",
-      "CreateScene": "CreateSceneTest"
+      "CreateScene": "CreateSceneTest",
+      "renderers": [ "main" ]
+    }
+  ],
+  "renderers": [
+    {
+      "key": "main",
+      "dso_name": "XRSceneTest",
+      "CreateRenderer": "CreateRendererTest"
     }
   ]
 }

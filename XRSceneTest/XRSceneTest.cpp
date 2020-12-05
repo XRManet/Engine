@@ -1,17 +1,15 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
+#include <unordered_set>
 
 #include "XRSceneTest.h"
 
 #define COMPILE_CPP
 #include "Shader/DeferredSample.h"
 
-#include <XRFrameworkBase/XRObject.h>
 #include <XRFrameworkBase/XRLogging.h>
 #include <XRFrameworkBase/XRUtility.h>
-#include <XRFrameworkBase/XRCommandBuffer.h>
-#include <XRFrameworkBase/XRPipeline.h>
-#include <XRFrameworkBase/XRTexture.h>
 
+#include <XRFrameworkBase/XRObject.h>
 #include <XRFrameworkBase/XRActorNode.h>
 
 #include <GL/glew.h>
@@ -34,148 +32,19 @@ XRSceneTest::XRSceneTest()
 	actor->BindModel(model);
 	actor->SetPosition(position);
 
-	static std::unique_ptr<XRCommandBuffer> commandBuffer(xrCreateCommandBuffer());
-
 	//_object_groups["teapots_1"] = { commandBuffer.get(), model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
-
-
 }
 
 XRSceneTest::~XRSceneTest()
 {
 }
 
-template<typename Permutation, int Count>
-struct PipelineKeyImpl : public PipelineKeyImpl<Permutation, Count - 1>
+void XRSceneTest::Initialize()
 {
-};
-
-template<typename Permutation>
-struct PipelineKeyImpl<Permutation, 0>
-{
-};
-
-template<typename Permutation> struct PermutationDescription;
-
-struct Default {};
-template<typename Permutation>
-struct PipelineKey : public PipelineKeyImpl<Permutation, Permutation::NumPermutations>
-{
-	PipelineKey(typename PermutationDescription<Permutation>::Type&& permutation)
-	{
-	}
-
-	PipelineKey(Default) {}
-};
-
-enum SamplePermutation
-{
-	AlphaTest,
-	Lod,
-	NumPermutations
-};
-
-template<>
-struct PermutationDescription<SamplePermutation>
-{
-	using Type = std::tuple<bool, int>;
-};
-
-class XRExport XRRenderPassSample : public XRRenderPassBase
-{
-	struct PipelineState;
-
-public:
-	XRRenderPassSample()
-	{
-		_sampleState._testInt = 5;
-		//Create RenderPass
-		//	Define Attachment Descriptions
-		//	Define Subpasses
-
-		//Create PipelineStateObjects
-		_elementInfos.push_back({ "AlphaTest", 2 });
-		_elementInfos.push_back({ "Lod", 3 });
-	}
-
-	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) const override final
-	{
-		// Set Default Pipeline States
-		outDefault._shaderStageDescription->_vertexFilename = "SimpleVertex.glsl";
-		outDefault._shaderStageDescription->_fragmentFilename = "SimpleFragment.glsl";
-
-		// Step1. Render group을 가져와서 그것의 InputLayout을 넣을 수도 있을 것.
-		outDefault._vertexInputStateDescription->_inputlayout = XRInputLayout::GetInputLayoutByKey(0);
-		outDefault._vertexInputStateDescription->_primitiveTopology = XRPrimitiveTopology::TriangleList;
-	}
-
-	virtual bool CreatePipelineState(XRPipelineStateDescription& outPipeline) const override final
-	{
-		int32_t numElements = _elements.size();
-
-		// Step2. Permutation에 의해 오브젝트군이 달라질 경우 여기서 다시 변경함
-		outPipeline._vertexInputStateDescription->_inputlayout = XRInputLayout::GetInputLayoutByKey(0);
-
-		if (_elements[AlphaTest]._value == 0 && _elements[Lod]._value > 0)
-		{
-			return true;
-		}
-
-		return false;
-	}
-};
-
-XRExport XRRenderPassSample* renderPassSample;
+}
 
 void XRSceneTest::Update(float dt)
 {
-	int frameIndex = 0;
-
-	renderPassSample->Initialize([]() {
-		printf("initialize test\n");
-		});
-
-	renderPassSample->Update([](SampleState& sampleState, int frameIndex) {
-		printf("update test\n");
-
-		PipelineKey<SamplePermutation>* pipelineKey = nullptr;
-		if (frameIndex % 2 == 0)
-		{
-			static PipelineKey<SamplePermutation> pipelineKeyPermuted(std::make_tuple(true, 1));
-			pipelineKey = &pipelineKeyPermuted;
-		}
-		else
-		{
-			static PipelineKey<SamplePermutation> pipelineKeyPermuted(std::make_tuple(true, 0));
-			pipelineKey = &pipelineKeyPermuted;
-		}
-
-		//
-
-		});
-
-
-	XRTextureCreateInfo textureInfo;
-	XRTexture* textureA = xrCreateTexture(&textureInfo);
-
-	XRCommandBuffer* commandBuffer;
-	XRRenderPassBase* renderPass = renderPassSample;
-
-	renderPass->Initialize([]() {
-		});
-	renderPass->Update([](SampleState& sampleState, int frameIndex) {
-
-		});
-
-	commandBuffer->begin();
-	{
-		commandBuffer->beginPass(XRPass::Graphics, renderPass);
-		{
-
-		}
-		commandBuffer->endPass();
-	}
-	commandBuffer->end();
 }
 
 

@@ -213,17 +213,6 @@ void GLAPIENTRY MessageCallback(
 	assert(type != GL_DEBUG_TYPE_ERROR);
 }
 
-XRRenderingStratagyTest::XRRenderingStratagyTest()
-{
-    // TODO) Initialize()의 내용을 glew 초기화 특정되는 순간 할 수 있는게 좋음.
-    // 1. Observer를 둬서 라이브러리 준비가 끝나면 Initialize()가 호출되도록,
-    // 2. 아니면 람다를 등록해서 라이브러리 준비가 끝나면 그 즉시 호출되도록
-}
-
-XRRenderingStratagyTest::~XRRenderingStratagyTest()
-{
-}
-
 static GLint MAX_UNIFORM_BUFFER_BINDINGS = 0;
 static GLint MAX_UNIFORM_LOCATIONS = 0;
 static GLint UNIFORM_BUFFER_OFFSET_ALIGNMENT = 0;
@@ -264,7 +253,7 @@ public:
 };
 ProgramResources programResources;
 
-void XRRenderingStratagyTest::Initialize()
+void XRRendererTest::Initialize()
 {
     assert(glGetError() == GL_NO_ERROR);
     
@@ -531,7 +520,7 @@ void XRRenderingStratagyTest::Initialize()
 	}
 }
 
-void XRRenderingStratagyTest::Update(XRScene* scene)
+void XRRendererTest::Update()
 {
 	std::vector<unsigned char> uniformBufferData;
 	{
@@ -616,7 +605,7 @@ void XRRenderingStratagyTest::Update(XRScene* scene)
 #include <XRRenderEngineGL/XRModelGL.h>
 #include <XRRenderEngineGL/XRPipelineGL.h>
 
-void XRRenderingStratagyTest::Render(XRScene* scene)
+void XRRendererTest::Render()
 {
     glClearColor(1, 1, 1, 1);
     
@@ -634,15 +623,17 @@ void XRRenderingStratagyTest::Render(XRScene* scene)
 
 XRFrameWalker::XRFrameWalker()
 {
-    // TODO) select a stratagy by reading from manifest.
-    _renderer = new XRRenderer();
+    // TODO) select a strategy by reading from manifest.
+    //_renderer = new XRRenderer();
 }
 
 void XRFrameWalker::UpdateFrame()
 {
     auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
+	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
     
     scene->Update(0);
-	scene->Render(_renderer);
-	_renderer->Render();
+	scene->Render(renderer);
+	renderer->Update();
+	renderer->Render();
 }

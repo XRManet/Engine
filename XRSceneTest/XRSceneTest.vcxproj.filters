@@ -27,6 +27,9 @@
     <ClInclude Include="Shader\DeferredSample.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="XRRendererTest.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +39,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRendererTest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

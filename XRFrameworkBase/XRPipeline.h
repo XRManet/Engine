@@ -4,6 +4,7 @@
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
 #include <XRFrameworkBase/XRGeometry.h>
 #include <XRFrameworkBase/XRRenderCommon.h>
+#include <XRFrameworkBase/XRIndexedString.h>
 
 /******************************************************************************
   GL State to Vulkan State Mapping
@@ -399,9 +400,18 @@ struct XRRenderbufferDescription
 class XRInputLayout;
 struct XRVertexInputStateDescription
 {
-	const XRInputLayout*			_inputlayout;
+	const XRInputLayout*			_inputLayout;
 	XRPrimitiveTopology				_primitiveTopology;
 	bool							_isEnabledPrimitivaRestart;
+
+	inline void init(const XRInputLayout* inputLayout, XRPrimitiveTopology primitiveTopology) {
+		init(inputLayout, primitiveTopology, false);
+	}
+	inline void init(const XRInputLayout* inputLayout, XRPrimitiveTopology primitiveTopology, bool enablePrimitiveRestart) {
+		_inputLayout = inputLayout;
+		_primitiveTopology = primitiveTopology;
+		_isEnabledPrimitivaRestart = enablePrimitiveRestart;
+	}
 };
 
 class XRViewport;
@@ -611,7 +621,14 @@ struct Element
 	int32_t _value;
 };
 
-struct XRPipelineStateDescription;
+struct XRPipelineCreateInfo
+{
+	xr::IndexedString<XRPipeline>						_name;
+	XRPipelineStateDescription							_description;
+	std::vector<ElementInfo>							_permutationElementInfos;
+	std::function<bool(XRPipelineStateDescription&, std::vector<Element> const&)>	_permute;
+};
+
 class XRPipeline;
 class XRBaseExport XRRenderPassBase
 {
@@ -620,9 +637,10 @@ public:
 	using LinkUpdateFunc = void(SampleState& sampleState, int frameIndex);
 
 protected: // Permutations
-	std::vector<ElementInfo> _elementInfos;
+	std::unordered_set<xr::IndexedString<XRPipeline>> _pipelineNames;
+	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
+
 	std::vector<Element> _elements;
-	SampleState _sampleState;
 
 protected: // Attachments
 	/** @brief	The attachments. 이 렌더패스 내에서 사용할 모든 attachments에 대한 설명. */
@@ -645,9 +663,9 @@ public:
 private:
 	// 공용으로 필요한 PipelineState를 지정합니다.
 	// 여기서 지정한 PipelineState를 기본값으로 하여 CreatePipelineState()의 기본 인자로 사용합니다.
-	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) const = 0;
+	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) = 0;
 	// 파생 파이프라인이 필요한 경우에 override 합니다.
-	virtual bool CreatePipelineState(XRPipelineStateDescription& outPipeline) const { return true; }
+	virtual bool CreatePipelineState(XRPipelineStateDescription& outPipeline) { return true; }
 
 public:
 	void dependency();
@@ -660,6 +678,35 @@ public:
 private:
 	LinkInitializeFunc* _initialize;
 	LinkUpdateFunc* _update;
+};
+
+class XRBaseExport XRPipelineManager
+{
+public:
+	XRPipeline* GetPipeline(const char* pipelineName)
+	{
+		return nullptr;
+	}
+};
+
+struct CommandStep
+{
+	xr::IndexedString<CommandStep>	_name;
+	uint16_t						_step;
+};
+
+class XRCommandBuffer;
+class CommandFootprint
+{
+	std::vector<CommandStep> _steps;
+	std::vector<std::function<void(XRCommandBuffer*)>> _capturedCcommands;
+
+public:
+	void push_back(CommandStep&& step, std::function<void(XRCommandBuffer*)>&& capturedCommand)
+	{
+		_steps.push_back(std::move(step));
+		_capturedCcommands.push_back(std::move(capturedCommand));
+	}
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS

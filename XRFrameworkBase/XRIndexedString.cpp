@@ -6,6 +6,8 @@
 
 class XRPipeline;
 
+struct CommandStep;
+
 namespace xr
 {
 // Note(jiman): 특정 타입에 대한 템플릿 인스턴싱이 수행될 때마다 static member의 정의도 존재해야 함.
@@ -36,4 +38,5 @@ namespace xr
 // Debugging:	XRFrameworkBase.dll!xr::IndexedString<Category,unsigned short>::sContainer
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(DefaultStringCategory);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPipeline);
+EXPLICIT_GEN_INDEXED_STRING_SYMBOL(CommandStep);
 }

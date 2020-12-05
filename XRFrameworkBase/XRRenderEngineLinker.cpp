@@ -9,6 +9,9 @@ XRModel* (*xrCreateModel)(XRModelData const* loadable) = nullptr;
 XRTexture* (*xrCreateTexture)(XRTextureCreateInfo const* createInfo) = nullptr;
 XRTexture* (*xrCreateTextureFromData)(XRTextureData const* loadable) = nullptr;
 
+#include "XRBuffer.h"
+XRBuffer* (*xrCreateBuffer)(XRBufferCreateInfo const* createInfo) = nullptr;
+
 #include "XRPipeline.h"
 XRPipeline* (*xrCreatePipeline)(XRShaderStageDescription const* description) = nullptr;
 
@@ -41,6 +44,7 @@ static struct XRRenderEngineLinker
     GetProcAddress(xrCreateModel, 			"xrCreateModel");
 	GetProcAddress(xrCreateTexture,			"xrCreateTexture");
 	GetProcAddress(xrCreateTextureFromData, "xrCreateTextureFromData");
+	GetProcAddress(xrCreateBuffer,			"xrCreateBuffer");
 	GetProcAddress(xrCreatePipeline, 		"xrCreatePipeline");
 	GetProcAddress(xrCreateCommandBuffer, 	"xrCreateCommandBuffer");
 	GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");

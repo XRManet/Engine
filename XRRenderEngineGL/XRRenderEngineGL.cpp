@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "XRModelGL.h"
 #include "XRTextureGL.h"
+#include "XRBufferGL.h"
 #include "XRPipelineGL.h"
 #include "XRCommandBufferGL.h"
 #include "XRRenderGroupGL.h"
@@ -62,6 +63,15 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 	auto textureHandle = new XRTexture(loadable);
 	textureHandle->_rhi = textureGL;
 	return textureHandle;
+}
+
+XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
+{
+	RenderEngineGLInitializer::GetInitializer();
+	auto bufferGL = new XRBufferGL;
+	auto bufferHandle = new XRBuffer(createInfo);
+	bufferHandle->_rhi = bufferGL;
+	return bufferHandle;
 }
 
 XRPipeline* xrCreatePipeline(XRShaderStageDescription const* description)

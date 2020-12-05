@@ -53,6 +53,19 @@ public:
 		rhs._index = 0;
 	}
 
+	IndexedString& operator = (IndexedString const& rhs)
+	{
+		_index = rhs._index;
+		return *this;
+	}
+
+	IndexedString& operator = (IndexedString&& rhs)
+	{
+		_index = rhs._index;
+		rhs._index = 0;
+		return *this;
+	}
+
 	IndexedString(std::string const& string)
 	{
 		ScopedLocker<MutexLock> locker(sContainer._mutexLock);

@@ -5,9 +5,10 @@
 #include "XRTransformNode.h"
 #include "XRLightNode.h"
 #include "XRActorNode.h"
+#include "XRPipeline.h"
 
-XRScene::XRScene() :
-	_root(nullptr)
+XRScene::XRScene()
+	: _root(nullptr)
 {
 	_root = new XRSceneNode();
 }
