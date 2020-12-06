@@ -186,6 +186,7 @@ protected:
 public:
 	static XRInputLayout* GetInputLayoutByKey(uint32_t keyInputLayout);
 	static bool InsertInputLayout(uint32_t keyInputLayout, XRInputLayout* inputLayout);
+	static uint32_t getNumInputLayouts();
 };
 
 class XRBaseExport XRModel

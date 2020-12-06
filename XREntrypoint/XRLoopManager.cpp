@@ -627,6 +627,16 @@ XRFrameWalker::XRFrameWalker()
     //_renderer = new XRRenderer();
 }
 
+void XRFrameWalker::Initialize()
+{
+	auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
+	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
+
+	// Note(jiman): ResourceManager를 씬에서 얻는게 맞을까?
+	auto resourceManager = scene->GetResourceManager();
+	renderer->Initialize(resourceManager);
+}
+
 void XRFrameWalker::UpdateFrame()
 {
     auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();

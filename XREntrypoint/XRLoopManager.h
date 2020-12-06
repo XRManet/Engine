@@ -177,12 +177,7 @@ private:
 public:
 	XRFrameWalker();
 
-	void Initialize()
-	{
-		
-	}
-
-public:
+	void Initialize();
 	void UpdateFrame();
 };
 

@@ -629,6 +629,24 @@ struct XRPipelineCreateInfo
 	std::function<bool(XRPipelineStateDescription&, std::vector<Element> const&)>	_permute;
 };
 
+// Note(jiman): 이름 적절한 것으로 변경 필요
+class XRPipelineGroup
+{
+	std::vector<XRPipeline*> _pipelines;
+	std::vector<Element> _currentKey;
+	uint32_t _createInfoIndex;
+
+public:
+	XRPipelineGroup() = default;
+	XRPipelineGroup(uint32_t infoIndex) : _createInfoIndex(infoIndex) {}
+	virtual ~XRPipelineGroup() {}
+
+public:
+	void AddPipelineWithKey(XRPipeline* pipeline, std::vector<Element>& elementKey);
+	void GetCurrentKey(std::vector<Element>& elementKey);
+	void SetCurrentKey(std::vector<Element>& elementKey);
+};
+
 class XRPipeline;
 class XRBaseExport XRRenderPassBase
 {
@@ -682,10 +700,85 @@ private:
 
 class XRBaseExport XRPipelineManager
 {
+	std::unordered_map<xr::IndexedString<XRPipeline>, XRPipelineGroup*> _pipelines;
+	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
+
 public:
-	XRPipeline* GetPipeline(const char* pipelineName)
+	XRPipelineGroup* GetPipeline(const char* pipelineName)
 	{
 		return nullptr;
+	}
+
+	bool CreatePipeline(XRPipelineCreateInfo&& createInfo)
+	{
+		_pipelineCreateInfos.emplace_back(std::move(createInfo));
+
+		XRPipelineGroup* pipelineGroup = new XRPipelineGroup(_pipelineCreateInfos.size() - 1);
+		XRPipelineCreateInfo& pipelineCreateInfo = _pipelineCreateInfos.back();
+		_pipelines.insert({pipelineCreateInfo._name, pipelineGroup});
+
+		std::vector<uint32_t> roundSizes;
+		std::vector<XRPipelineStateDescription> pipelineDescriptions;
+
+		uint32_t const numPermutationElements = pipelineCreateInfo._permutationElementInfos.size();
+		roundSizes.resize(numPermutationElements + 1);
+		uint32_t numAllPermutations = 1;
+		{
+			for (uint32_t i = 0; i < numPermutationElements; ++i)
+			{
+				ElementInfo& elementInfo = pipelineCreateInfo._permutationElementInfos[i];
+
+				numAllPermutations *= elementInfo._count;
+				roundSizes[i] = numAllPermutations;
+			}
+			roundSizes[numPermutationElements] = numAllPermutations;
+
+			pipelineDescriptions.reserve(numAllPermutations);
+		}
+
+		std::vector<Element> permutationElements;
+		{
+			permutationElements.resize(numPermutationElements);
+
+			for (uint32_t i = 0; i < numPermutationElements; ++i)
+			{
+				ElementInfo& elementInfo = pipelineCreateInfo._permutationElementInfos[i];
+				permutationElements[i]._info = &elementInfo;
+				permutationElements[i]._value = 0;
+			}
+		}
+
+		// Permute pipelines
+		{
+			uint32_t numAvailablePermutations = 0;
+			bool doCreatePipeline = true;
+
+			for (uint32_t i = 0; i < numAllPermutations; ++i)
+			{
+				for (uint32_t j = 0; j < numPermutationElements; ++j)
+					permutationElements[j]._value = i % roundSizes[j];
+
+				if (doCreatePipeline == true)
+					pipelineDescriptions.resize(numAvailablePermutations + 1);
+				pipelineDescriptions[numAvailablePermutations] = pipelineCreateInfo._description;
+
+				doCreatePipeline = pipelineCreateInfo._permute(pipelineDescriptions[numAvailablePermutations], permutationElements);
+
+				XRPipeline* pipeline = nullptr;
+				if (doCreatePipeline == true)
+				{
+					pipeline = xrCreatePipeline(&pipelineDescriptions[numAvailablePermutations]);
+				}
+
+				if (pipeline != nullptr)
+				{
+					pipelineGroup->AddPipelineWithKey(pipeline, permutationElements);
+					++numAvailablePermutations;
+				}
+			}
+		}
+
+		return true;
 	}
 };
 
@@ -710,7 +803,7 @@ public:
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRPipeline* xrCreatePipeline(XRShaderStageDescription const* description);
+XRRenderExport XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* createInfo);
 #else
-extern XRPipeline* (*xrCreatePipeline)(XRShaderStageDescription const* description);
+extern XRPipeline* (*xrCreatePipeline)(XRPipelineStateDescription const* createInfo);
 #endif

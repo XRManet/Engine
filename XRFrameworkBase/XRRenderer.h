@@ -8,6 +8,7 @@ class XRTransformNode;
 class XRLightNode;
 class XRActorNode;
 
+class XRResourceManager;
 class XRPipelineManager;
 
 class XRBaseExport XRRenderer
@@ -20,7 +21,7 @@ public:
 	~XRRenderer();
 
 public:
-	virtual void Initialize() {}
+	virtual void Initialize(XRResourceManager* resourceManager) {}
 
 	virtual void Update();
 	virtual void Render();

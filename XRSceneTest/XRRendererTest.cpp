@@ -2,6 +2,9 @@
 
 #include "XRRendererTest.h"
 
+#include <XRFrameworkBase/XRResourceManager.h>
+#include <XRFrameworkBase/XRModel.h>
+
 #include <XRFrameworkBase/XRIndexedString.h>
 
 #include <XRFrameworkBase/XRCommandBuffer.h>
@@ -110,8 +113,40 @@ XRRendererTest::~XRRendererTest()
 {
 }
 
-void XRRendererTest::Initialize()
+void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 {
+	XRShaderStageDescription _defaultShaderDescription;
+	XRShaderStageDescription _alphaShaderDescription;
+	XRVertexInputStateDescription _defaultVertexInputStateDescription;
+
+	{
+		XRPipelineCreateInfo pipelineCreateInfo;
+		pipelineCreateInfo._name = xr::IndexedString<XRPipeline>("SampleFirstPipeline");
+
+		const char* CommonVertex = "SimpleVertex.glsl";
+		_defaultShaderDescription._vertexFilename = CommonVertex;
+		_defaultShaderDescription._fragmentFilename = "SimpleFragment.glsl";
+		_alphaShaderDescription._vertexFilename = CommonVertex;
+		_alphaShaderDescription._fragmentFilename = "SimpleFragmentAlpha.glsl";
+		pipelineCreateInfo._description._shaderStageDescription = &_defaultShaderDescription;
+
+		auto testInputLayout = resourceManager->GetInputLayoutByCategory("Skeletal");
+		_defaultVertexInputStateDescription.init(testInputLayout, XRPrimitiveTopology::TriangleList);
+		pipelineCreateInfo._description._vertexInputStateDescription = &_defaultVertexInputStateDescription;
+
+		pipelineCreateInfo._permutationElementInfos.push_back({ "AlphaTest", 2 });
+		pipelineCreateInfo._permute = [&_alphaShaderDescription](XRPipelineStateDescription& outDescription, std::vector<Element> const& elements)
+		{
+			if (elements[AlphaTest]._value == 1)
+			{
+				outDescription._shaderStageDescription = &_alphaShaderDescription;
+			}
+
+			return true;
+		};
+
+		_pipelineManager->CreatePipeline(std::move(pipelineCreateInfo));
+	}
 }
 
 void XRRendererTest::Update()

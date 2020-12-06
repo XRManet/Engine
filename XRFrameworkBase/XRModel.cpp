@@ -91,3 +91,9 @@ bool XRInputLayout::InsertInputLayout(uint32_t keyInputLayout, XRInputLayout* in
 	// Log if not inserted.
 	return result.second;
 }
+
+uint32_t XRInputLayout::getNumInputLayouts()
+{
+	auto i = g_inputLayoutLibrary.begin();
+	return static_cast<uint32_t>(g_inputLayoutLibrary.size());
+}

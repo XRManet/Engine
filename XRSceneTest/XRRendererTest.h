@@ -40,7 +40,7 @@ public:
 	XRRendererTest();
 	~XRRendererTest();
 
-	void Initialize() override;
+	void Initialize(XRResourceManager* resourceManager) override;
 
 	void Update() override;
 	void Render() override;

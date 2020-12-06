@@ -34,6 +34,9 @@ public:
 	virtual ~XRScene();
 
 public:
+	XRResourceManager* GetResourceManager() { return &_resource_manager; }
+
+public:
 	// 왠지 이런게 필요할거같긴한데...
 	XRSceneNode* GenerateNode(XRSceneNodeType type);
 
