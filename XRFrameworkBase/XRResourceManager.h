@@ -3,18 +3,21 @@
 #include "stdafx.h"
 
 class XRModel;
+class XRInputLayout;
 
 class XRBaseExport XRResourceManager
 {
 private:
-  std::unordered_map<std::string, XRModel*> _models;
+	std::unordered_map<std::string, XRModel*> _modelsForKey;
+	std::unordered_map<std::string, XRInputLayout const*> _inputLayoutsForCategory;
 
 
 public:
-  XRResourceManager();
+	XRResourceManager();
 
 
 public:
-  std::vector<std::string>&& QueryListOfModels();
-  XRModel* GetModelByKey(std::string&& key) noexcept;
+	std::vector<std::string>&& QueryListOfModels();
+	XRModel* GetModelByKey(std::string&& key) noexcept;
+	XRInputLayout const* GetInputLayoutByCategory(std::string&& category) noexcept;
 };

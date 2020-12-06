@@ -14,12 +14,14 @@ XRResourceManager::XRResourceManager()
 	loadable = new XRModelData("Resources/teapot.obj");
 	loadable->LoadDataFromFile();
 	model = xrCreateModel(loadable);
-	_models["teapot"] = model;
+	_modelsForKey["teapot"] = model;
+	_inputLayoutsForCategory["Static"] = model->getInputLayout();
 
 	loadable = new XRModelData("Resources/Wolf_obj.obj");
 	loadable->LoadDataFromFile();
 	model = xrCreateModel(loadable);
-	_models["wolf"] = model;
+	_modelsForKey["wolf"] = model;
+	_inputLayoutsForCategory["Skeletal"] = model->getInputLayout();
 }
 
 // Desc) 설정된 경로로부터 얻을 수 있는 모든 모델에 대한 데이터를 획득한다.
@@ -37,6 +39,12 @@ std::vector<std::string>&& XRResourceManager::QueryListOfModels()
 
 XRModel* XRResourceManager::GetModelByKey(std::string&& key) noexcept
 {
-	if (_models.find(key) != _models.end()) return _models[key];
+	if (_modelsForKey.find(key) != _modelsForKey.end()) return _modelsForKey[key];
+	else return nullptr;
+}
+
+XRInputLayout const* XRResourceManager::GetInputLayoutByCategory(std::string&& category) noexcept
+{
+	if (_inputLayoutsForCategory.find(category) != _inputLayoutsForCategory.end()) return _inputLayoutsForCategory[category];
 	else return nullptr;
 }

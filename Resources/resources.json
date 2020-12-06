@@ -1,3 +1,13 @@
 {
-  "models":  
+  "version": "1.0.0",
+  "models": {
+    "teapot": {
+      "category": "Static",
+      "path": "Resources/teapot.obj"
+    },
+    "wolf": {
+      "category": "Skeletal",
+      "path": "Resources/Wolf_obj.obj"
+    }
+  }
 }
