@@ -43,6 +43,50 @@ constexpr int GetIndexOfLiteralStringList(string_tuple tuple, const char* find_s
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
 
 
+template<typename T> struct __INTERNAL_TypeCarrier;
+
+// Static Enum per count
+#define STATIC_ENUM_BEGIN(ENUM_CLASS_NAME, ENUM_TYPE) \
+union ENUM_CLASS_NAME##_WRAPPER; \
+using ENUM_CLASS_NAME = __INTERNAL_TypeCarrier<const ENUM_CLASS_NAME##_WRAPPER>; \
+constexpr static const union ENUM_CLASS_NAME##_WRAPPER \
+{ \
+	typedef ENUM_TYPE ADD_ENUM_TYPE; \
+	struct INCREASE_ENUM { \
+		template<int Value> \
+		struct INNER_ENUM_TYPE { \
+			constexpr const ADD_ENUM_TYPE* operator -> () const; \
+			constexpr operator uint32_t const& () const { return _value; } \
+			uint32_t _value; \
+		}; \
+		template<int Value> struct DECLARED_ENUM; \
+		template<int Line> struct Add { enum { Value = 0 }; }; \
+		template<int Line> struct Position { enum { Value = Position<Line-1>::Value + Add<Line>::Value }; }; \
+		template<> struct Position<__LINE__> { enum { Value = 0 }; }; \
+
+#define ADD_ENUM(id, ...) \
+	public: \
+		static constexpr INNER_ENUM_TYPE<Position<__LINE__>::Value> id = { Position<__LINE__>::Value }; \
+		template<> struct Add<__LINE__+1> { enum { Value = 1 }; }; \
+	private: \
+		 template<> struct DECLARED_ENUM<id._value> { constexpr static ADD_ENUM_TYPE declared { #id, __VA_ARGS__ }; }; \
+
+#define ADD_ENUM_CTOR(id, func, ...) \
+	public: \
+		static constexpr INNER_ENUM_TYPE<Position<__LINE__>::Value> id = { Position<__LINE__>::Value }; \
+		template<> struct Add<__LINE__+1> { enum { Value = 1 }; }; \
+	private: \
+template<> struct DECLARED_ENUM<id._value> { constexpr static ADD_ENUM_TYPE declared = func(id, __VA_ARGS__); }; \
+
+#define STATIC_ENUM_END(name) \
+	public: \
+		static constexpr uint32_t COUNT = Position<__LINE__>::Value; \
+	}; \
+} name = {}; using name##_wrapper = decltype(name); \
+template<> struct __INTERNAL_TypeCarrier<name##_wrapper> : public name##_wrapper::INCREASE_ENUM {}; \
+template<int Value> constexpr const name##_wrapper::ADD_ENUM_TYPE* name##_wrapper::INCREASE_ENUM::INNER_ENUM_TYPE<Value>::operator -> () const { return &name##_wrapper::INCREASE_ENUM::DECLARED_ENUM<Value>::declared; }
+
+// Static Enum per Bit
 #define STATIC_ENUM_BIT_BEGIN \
 	template<int Line> struct Shift { enum { Value = 0 }; }; \
 	template<int Line> struct Position { enum { Value = Position<Line-1>::Value << Shift<Line>::Value }; }; \
