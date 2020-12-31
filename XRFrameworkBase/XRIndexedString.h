@@ -66,6 +66,17 @@ public:
 		return *this;
 	}
 
+	IndexedString(char const* string)
+		: IndexedString(std::string(string))
+	{
+	}
+
+#define IndexedStringLiteral(string, index) { #string, index }
+	constexpr IndexedString(char const* string, Capacity index) : _index(index)
+	{
+
+	}
+
 	IndexedString(std::string const& string)
 	{
 		ScopedLocker<MutexLock> locker(sContainer._mutexLock);

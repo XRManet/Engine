@@ -632,7 +632,7 @@ void XRFrameWalker::Initialize()
 	auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
 
-	// Note(jiman): ResourceManager를 씬에서 얻는게 맞을까?
+	// Note(jiman): 임시로 ResourceManager를 씬에서 얻게 함. 나중에 전역으로 변경
 	auto resourceManager = scene->GetResourceManager();
 	renderer->Initialize(resourceManager);
 }

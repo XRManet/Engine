@@ -2,6 +2,8 @@
 
 #include "XRRendererTest.h"
 
+#include <XRFrameworkBase/XRUtility.h>
+
 #include <XRFrameworkBase/XRResourceManager.h>
 #include <XRFrameworkBase/XRModel.h>
 
@@ -25,7 +27,7 @@ template<typename Permutation> struct PermutationDescription;
 
 struct Default {};
 template<typename Permutation>
-struct PipelineKey : public PipelineKeyImpl<Permutation, Permutation::NumPermutations>
+struct PipelineKey : public PipelineKeyImpl<Permutation, Permutation::COUNT>
 {
 	PipelineKey(typename PermutationDescription<Permutation>::Type&& permutation)
 	{
@@ -34,12 +36,36 @@ struct PipelineKey : public PipelineKeyImpl<Permutation, Permutation::NumPermuta
 	PipelineKey(Default) {}
 };
 
-enum SamplePermutation
+//enum SamplePermutation
+//{
+//	AlphaTest,
+//	Lod,
+//	NumPermutations
+//};
+
+struct EnumTest
 {
-	AlphaTest,
-	Lod,
-	NumPermutations
+
+	uint32_t operator() ()
+	{
+
+	}
 };
+
+struct ParentConstruct { int a; };
+struct DerivedConstruct : public ParentConstruct { };
+
+struct PermutationEnum
+{
+	char const* _id;
+};
+
+#define PermutationEnumStaticEnumCtor(id, index) { {#id} }
+
+STATIC_ENUM_BEGIN(SamplePermutation, PermutationEnum);
+	ADD_ENUM(SamplePermutation, AlphaTest);
+	ADD_ENUM(SamplePermutation, Lod);
+STATIC_ENUM_END(SamplePermutation);
 
 template<>
 struct PermutationDescription<SamplePermutation>
@@ -85,11 +111,12 @@ public:
 
 			_defaultVertexInputStateDescription.init(_inputLayout, XRPrimitiveTopology::TriangleList);
 			pipelineCreateInfo._description._vertexInputStateDescription = &_defaultVertexInputStateDescription;
-
-			pipelineCreateInfo._permutationElementInfos.push_back({ "AlphaTest", 2 });
-			pipelineCreateInfo._permute = [this](XRPipelineStateDescription& outDescription, std::vector<Element> const& elements)
+			
+			static xr::IndexedString<XRPermutationElement> strAlphaTest = "AlphaTest";
+			pipelineCreateInfo._permutationElementInfos.emplace_back( strAlphaTest, 2 );
+			pipelineCreateInfo._permute = [this](XRPipelineStateDescription& outDescription, std::vector<XRPermutationElement> const& elements)
 			{
-				if (elements[AlphaTest]._value == 1)
+				if (elements[SamplePermutation::AlphaTest]._value == 1)
 				{
 					outDescription._shaderStageDescription = &_alphaShaderDescription;
 				}
@@ -135,9 +162,9 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 		pipelineCreateInfo._description._vertexInputStateDescription = &_defaultVertexInputStateDescription;
 
 		pipelineCreateInfo._permutationElementInfos.push_back({ "AlphaTest", 2 });
-		pipelineCreateInfo._permute = [&_alphaShaderDescription](XRPipelineStateDescription& outDescription, std::vector<Element> const& elements)
+		pipelineCreateInfo._permute = [&_alphaShaderDescription](XRPipelineStateDescription& outDescription, std::vector<XRPermutationElement> const& elements)
 		{
-			if (elements[AlphaTest]._value == 1)
+			if (elements[SamplePermutation::AlphaTest]._value == 1)
 			{
 				outDescription._shaderStageDescription = &_alphaShaderDescription;
 			}
@@ -190,7 +217,8 @@ void XRRendererTest::Render()
 
 		secondCommands->beginPass(renderPass, extent);
 
-		XRPipeline* pipeline = _pipelineManager->GetPipeline("samplePipelineName");
+		XRPipelineGroup* pipeline = _pipelineManager->GetPipeline("samplePipelineName");
+		pipeline->SetCurrentPermutation({});
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
 		secondCommands->endPass();

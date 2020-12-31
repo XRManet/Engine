@@ -277,6 +277,9 @@
     <ClCompile Include="XRTexture.cpp">
       <Filter>소스 파일\Engine\Render\Backends</Filter>
     </ClCompile>
+    <ClCompile Include="XRPipeline.cpp">
+      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="XRFrameworkBase.natvis" />

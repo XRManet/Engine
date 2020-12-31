@@ -221,6 +221,7 @@
     <ClCompile Include="XRModel.cpp" />
     <ClCompile Include="XRModelData.cpp" />
     <ClCompile Include="XRObjectManager.cpp" />
+    <ClCompile Include="XRPipeline.cpp" />
     <ClCompile Include="XRPlatform.cpp" />
     <ClCompile Include="XRRenderer.cpp" />
     <ClCompile Include="XRRenderCommon.cpp" />

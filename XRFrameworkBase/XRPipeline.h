@@ -609,31 +609,38 @@ struct SampleState
 	int32_t _testInt = 0;
 };
 
-struct ElementInfo
+struct XRPermutationElementInfo;
+struct XRPermutationElement
 {
-	std::string _name;
-	int32_t _count;
+	const XRPermutationElementInfo* _info;
+	int16_t _value;
 };
 
-struct Element
+struct XRPermutationElementInfo
 {
-	const ElementInfo* _info;
-	int32_t _value;
+	xr::IndexedString<XRPermutationElement> _name;
+	int16_t _count;
+};
+
+struct XRPermutationElementArgument
+{
+	xr::IndexedString<XRPermutationElement> _name;
+	int16_t _value;
 };
 
 struct XRPipelineCreateInfo
 {
 	xr::IndexedString<XRPipeline>						_name;
 	XRPipelineStateDescription							_description;
-	std::vector<ElementInfo>							_permutationElementInfos;
-	std::function<bool(XRPipelineStateDescription&, std::vector<Element> const&)>	_permute;
+	std::vector<XRPermutationElementInfo>							_permutationElementInfos;
+	std::function<bool(XRPipelineStateDescription&, std::vector<XRPermutationElement> const&)>	_permute;
 };
 
 // Note(jiman): 이름 적절한 것으로 변경 필요
 class XRPipelineGroup
 {
 	std::vector<XRPipeline*> _pipelines;
-	std::vector<Element> _currentKey;
+	std::vector<XRPermutationElement> _currentKey;
 	uint32_t _createInfoIndex;
 
 public:
@@ -642,9 +649,10 @@ public:
 	virtual ~XRPipelineGroup() {}
 
 public:
-	void AddPipelineWithKey(XRPipeline* pipeline, std::vector<Element>& elementKey);
-	void GetCurrentKey(std::vector<Element>& elementKey);
-	void SetCurrentKey(std::vector<Element>& elementKey);
+	void AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElement>& permutationDefinition);
+	void GetCurrentPermutation(std::vector<XRPermutationElementArgument>& elementArguments);
+	void SetCurrentPermutation(std::vector<XRPermutationElementArgument> const& elementArguments);
+	void SetCurrentPermutation(std::vector<XRPermutationElementArgument>&& elementArguments) { SetCurrentPermutation(elementArguments); }
 };
 
 class XRPipeline;
@@ -658,7 +666,7 @@ protected: // Permutations
 	std::unordered_set<xr::IndexedString<XRPipeline>> _pipelineNames;
 	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
 
-	std::vector<Element> _elements;
+	std::vector<XRPermutationElement> _elements;
 
 protected: // Attachments
 	/** @brief	The attachments. 이 렌더패스 내에서 사용할 모든 attachments에 대한 설명. */
@@ -709,77 +717,7 @@ public:
 		return nullptr;
 	}
 
-	bool CreatePipeline(XRPipelineCreateInfo&& createInfo)
-	{
-		_pipelineCreateInfos.emplace_back(std::move(createInfo));
-
-		XRPipelineGroup* pipelineGroup = new XRPipelineGroup(_pipelineCreateInfos.size() - 1);
-		XRPipelineCreateInfo& pipelineCreateInfo = _pipelineCreateInfos.back();
-		_pipelines.insert({pipelineCreateInfo._name, pipelineGroup});
-
-		std::vector<uint32_t> roundSizes;
-		std::vector<XRPipelineStateDescription> pipelineDescriptions;
-
-		uint32_t const numPermutationElements = pipelineCreateInfo._permutationElementInfos.size();
-		roundSizes.resize(numPermutationElements + 1);
-		uint32_t numAllPermutations = 1;
-		{
-			for (uint32_t i = 0; i < numPermutationElements; ++i)
-			{
-				ElementInfo& elementInfo = pipelineCreateInfo._permutationElementInfos[i];
-
-				numAllPermutations *= elementInfo._count;
-				roundSizes[i] = numAllPermutations;
-			}
-			roundSizes[numPermutationElements] = numAllPermutations;
-
-			pipelineDescriptions.reserve(numAllPermutations);
-		}
-
-		std::vector<Element> permutationElements;
-		{
-			permutationElements.resize(numPermutationElements);
-
-			for (uint32_t i = 0; i < numPermutationElements; ++i)
-			{
-				ElementInfo& elementInfo = pipelineCreateInfo._permutationElementInfos[i];
-				permutationElements[i]._info = &elementInfo;
-				permutationElements[i]._value = 0;
-			}
-		}
-
-		// Permute pipelines
-		{
-			uint32_t numAvailablePermutations = 0;
-			bool doCreatePipeline = true;
-
-			for (uint32_t i = 0; i < numAllPermutations; ++i)
-			{
-				for (uint32_t j = 0; j < numPermutationElements; ++j)
-					permutationElements[j]._value = i % roundSizes[j];
-
-				if (doCreatePipeline == true)
-					pipelineDescriptions.resize(numAvailablePermutations + 1);
-				pipelineDescriptions[numAvailablePermutations] = pipelineCreateInfo._description;
-
-				doCreatePipeline = pipelineCreateInfo._permute(pipelineDescriptions[numAvailablePermutations], permutationElements);
-
-				XRPipeline* pipeline = nullptr;
-				if (doCreatePipeline == true)
-				{
-					pipeline = xrCreatePipeline(&pipelineDescriptions[numAvailablePermutations]);
-				}
-
-				if (pipeline != nullptr)
-				{
-					pipelineGroup->AddPipelineWithKey(pipeline, permutationElements);
-					++numAvailablePermutations;
-				}
-			}
-		}
-
-		return true;
-	}
+	bool CreatePipeline(XRPipelineCreateInfo&& createInfo);
 };
 
 struct CommandStep
