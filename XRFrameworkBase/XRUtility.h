@@ -42,49 +42,87 @@ constexpr int GetIndexOfLiteralStringList(string_tuple tuple, const char* find_s
 
 #define NEXT_ALIGN_2(offset, size_2) ((offset + size_2 - 1) & ~(size_2 - 1))
 
+#define LinedName_Concat(name, line)					name##line
+#define LinedName_Eval(name, line)						LinedName_Concat(name, line)
+#define LinedName(name)									LinedName_Eval(name , __LINE__)
+
+#define StaticName(type, name, fn, ...)					static type LinedName(name); fn(LinedName(name), __VA_ARGS__)
 
 template<typename T> struct __INTERNAL_TypeCarrier;
 
-// Static Enum per count
+struct STATIC_ENUM_TYPE
+{
+	const char* _id;
+};
+
 #define STATIC_ENUM_BEGIN(ENUM_CLASS_NAME, ENUM_TYPE) \
-union ENUM_CLASS_NAME##_WRAPPER; \
-using ENUM_CLASS_NAME = __INTERNAL_TypeCarrier<const ENUM_CLASS_NAME##_WRAPPER>; \
-constexpr static const union ENUM_CLASS_NAME##_WRAPPER \
-{ \
+struct ENUM_CLASS_NAME; \
+namespace ENUM_CLASS_NAME##_SPACE { \
 	typedef ENUM_TYPE ADD_ENUM_TYPE; \
-	struct INCREASE_ENUM { \
-		template<int Value> \
-		struct INNER_ENUM_TYPE { \
-			constexpr const ADD_ENUM_TYPE* operator -> () const; \
-			constexpr operator uint32_t const& () const { return _value; } \
-			uint32_t _value; \
-		}; \
-		template<int Value> struct DECLARED_ENUM; \
-		template<int Line> struct Add { enum { Value = 0 }; }; \
-		template<int Line> struct Position { enum { Value = Position<Line-1>::Value + Add<Line>::Value }; }; \
-		template<> struct Position<__LINE__> { enum { Value = 0 }; }; \
-
-#define ADD_ENUM(id, ...) \
-	public: \
-		static constexpr INNER_ENUM_TYPE<Position<__LINE__>::Value> id = { Position<__LINE__>::Value }; \
-		template<> struct Add<__LINE__+1> { enum { Value = 1 }; }; \
-	private: \
-		 template<> struct DECLARED_ENUM<id._value> { constexpr static ADD_ENUM_TYPE declared { #id, __VA_ARGS__ }; }; \
-
-#define ADD_ENUM_CTOR(id, func, ...) \
-	public: \
-		static constexpr INNER_ENUM_TYPE<Position<__LINE__>::Value> id = { Position<__LINE__>::Value }; \
-		template<> struct Add<__LINE__+1> { enum { Value = 1 }; }; \
-	private: \
-template<> struct DECLARED_ENUM<id._value> { constexpr static ADD_ENUM_TYPE declared = func(id, __VA_ARGS__); }; \
-
-#define STATIC_ENUM_END(name) \
-	public: \
-		static constexpr uint32_t COUNT = Position<__LINE__>::Value; \
+	template<int Value> struct INNER_ENUM_TYPE { \
+		constexpr const ADD_ENUM_TYPE* operator -> () const; \
+		constexpr operator ENUM_CLASS_NAME& const() const; \
+		constexpr operator unsigned const () const { return Value; } \
 	}; \
-} name = {}; using name##_wrapper = decltype(name); \
-template<> struct __INTERNAL_TypeCarrier<name##_wrapper> : public name##_wrapper::INCREASE_ENUM {}; \
-template<int Value> constexpr const name##_wrapper::ADD_ENUM_TYPE* name##_wrapper::INCREASE_ENUM::INNER_ENUM_TYPE<Value>::operator -> () const { return &name##_wrapper::INCREASE_ENUM::DECLARED_ENUM<Value>::declared; }
+	template<int Value> struct DECLARED_ENUM; \
+	template<int Line> struct Add { enum { Value = 0 }; }; \
+	template<int Line> struct Position; \
+	template<int Line> struct Position { enum { Value = Position<Line-1>::Value +  Add<Line>::Value }; }; \
+	template<> struct Position<__LINE__> { enum { Value = 0}; }; \
+	template<int Value> struct ENUM_CLASS_NAME##_BASE; template<> struct ENUM_CLASS_NAME##_BASE<0> {};\
+	template<int Value> struct ARRAY_ENUM_TYPE; template<> struct ARRAY_ENUM_TYPE<0> {};\
+} \
+
+#define ADD_ENUM(ENUM_CLASS_NAME, id, ...) namespace ENUM_CLASS_NAME##_SPACE { \
+	constexpr unsigned __##id = Position<__LINE__>::Value; \
+	template<> struct ENUM_CLASS_NAME##_BASE<__##id + 1> : public ENUM_CLASS_NAME##_BASE<__##id> { \
+	static constexpr INNER_ENUM_TYPE<__##id> id {}; };\
+	template<> struct Add<__LINE__+1> { enum { Value = 1 }; }; \
+	template<> struct DECLARED_ENUM<__##id> { constexpr static ADD_ENUM_TYPE declared { #id, __VA_ARGS__ }; }; \
+	template<> struct ARRAY_ENUM_TYPE<__##id + 1> : public ARRAY_ENUM_TYPE<__##id> { \
+		ARRAY_ENUM_TYPE() : ARRAY_ENUM_TYPE<__##id>(), \
+							element(&DECLARED_ENUM<__##id>::declared) {} \
+		const ADD_ENUM_TYPE* element; \
+	}; \
+} \
+
+#define ADD_ENUM_CTOR(ENUM_CLASS_NAME, id, func, ...) namespace ENUM_CLASS_NAME##_SPACE { \
+	constexpr unsigned __##id = Position<__LINE__>::Value; \
+	template<> struct ENUM_CLASS_NAME##_BASE<__##id + 1> : public ENUM_CLASS_NAME##_BASE<__##id> { \
+	static constexpr INNER_ENUM_TYPE<__##id> id = {}; };\
+	template<> struct Add<__LINE__+1> { enum { Value = 1 }; }; \
+	template<> struct DECLARED_ENUM<__##id> { constexpr static ADD_ENUM_TYPE declared = func(id, __##id, __VA_ARGS__); }; \
+	template<> struct ARRAY_ENUM_TYPE<__##id + 1> : public ARRAY_ENUM_TYPE<__##id> { \
+		ARRAY_ENUM_TYPE() : ARRAY_ENUM_TYPE<__##id>(), \
+							element(&DECLARED_ENUM<__##id>::declared) {} \
+		const ADD_ENUM_TYPE* element; \
+	}; \
+} \
+
+#define STATIC_ENUM_END(ENUM_CLASS_NAME) namespace ENUM_CLASS_NAME##_SPACE { \
+	static constexpr unsigned COUNT = Position<__LINE__>::Value; \
+	template<int Value> constexpr const ADD_ENUM_TYPE* INNER_ENUM_TYPE<Value>::operator -> () const { return &DECLARED_ENUM<Value>::declared; } \
+} \
+struct ENUM_CLASS_NAME : public ENUM_CLASS_NAME##_SPACE::ENUM_CLASS_NAME##_BASE<ENUM_CLASS_NAME##_SPACE::COUNT> {\
+	static constexpr unsigned COUNT = ENUM_CLASS_NAME##_SPACE::COUNT; \
+public: \
+	constexpr ENUM_CLASS_NAME(unsigned value) : _value(value) {} \
+	template<int Value> ENUM_CLASS_NAME(ENUM_CLASS_NAME##_SPACE::INNER_ENUM_TYPE<Value> const& rhs) : _value(Value) {} \
+public: \
+	const ENUM_CLASS_NAME##_SPACE::ADD_ENUM_TYPE* operator -> () const { \
+		static ENUM_CLASS_NAME##_SPACE::ARRAY_ENUM_TYPE<COUNT> array;\
+		static ENUM_CLASS_NAME##_SPACE::ADD_ENUM_TYPE const* (*accessor)[COUNT] = reinterpret_cast<ENUM_CLASS_NAME##_SPACE::ADD_ENUM_TYPE const*(*)[COUNT]>(&array); \
+		return (*accessor)[_value];\
+	} \
+	operator unsigned const () const { return _value; } \
+	operator unsigned& () { return _value; } \
+	template<int Value> bool operator == (ENUM_CLASS_NAME##_SPACE::INNER_ENUM_TYPE<Value> const& rhs) const { return Value == _value; } \
+private: \
+	unsigned _value; \
+}; \
+namespace ENUM_CLASS_NAME##_SPACE { \
+	template<int Value> constexpr const ADD_ENUM_TYPE* INNER_ENUM_TYPE<Value>::operator -> () const { return &DECLARED_ENUM<Value>::declared; } \
+} \
 
 // Static Enum per Bit
 #define STATIC_ENUM_BIT_BEGIN \
