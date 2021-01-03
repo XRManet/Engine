@@ -186,7 +186,7 @@ void XRSceneManager::BindPrimaryScene(std::string&& key)
 		_list_of_renderers[i].GetRenderer();
 	}
 
-	_current_renderer = _list_of_renderers[0].GetRenderer();
+	_current_renderer = _list_of_renderers[key].GetRenderer();
 }
 
 void XRSceneManager::InitializeRenderers(std::string&& sceneKey)
