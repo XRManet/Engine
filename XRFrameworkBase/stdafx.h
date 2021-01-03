@@ -14,8 +14,10 @@
 
 #ifdef XRFRAMEWORKBASE_EXPORTS
 #define XRBaseExport __declspec(dllexport)
+#define XRBaseSupply __declspec(dllexport)
 #else
 #define XRBaseExport __declspec(dllimport)
+#define XRBaseSupply __declspec(dllimport)
 #endif
 #define XRBaseHidden
 
@@ -23,12 +25,21 @@
 #define XRRenderExport extern __declspec(dllimport)
 #endif
 
-#else
+#elif defined(__APPLE__)
+
 #define XRBaseExport __attribute__((visibility("default")))
 #define XRBaseHidden __attribute__((visibility("hidden")))
 
+#ifdef XRFRAMEWORKBASE_EXPORTS
+#define XRBaseSupply __attribute__((visibility("default")))
+#else // #ifdef XRFRAMEWORKBASE_EXPORTS
+#define XRBaseSupply extern __attribute__((visibility("default")))
+#endif // #ifdef XRFRAMEWORKBASE_EXPORTS
+
 #define XRRenderExport extern "C" __attribute__((visibility("default")))
 
+#else
+#error "Not considered yet"
 #endif
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.

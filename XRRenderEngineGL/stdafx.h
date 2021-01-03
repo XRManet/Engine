@@ -29,8 +29,10 @@
 #ifdef XRRENDERENGINEGL_EXPORTS
 #if defined(_WIN32) || defined(_WIN64)
 #define XRRenderExport extern "C" __declspec(dllexport)
-#else
+#elif (__APPLE__)
 #define XRRenderExport extern "C" __attribute__((visibility("default")))
+#else
+#error "Not considered yet"
 #endif
 #endif
 
@@ -39,8 +41,12 @@
 #ifndef XRFRAMEWORKBASE_EXPORTS
 #if defined(_WIN32) || defined(_WIN64)
 #define XRBaseExport __declspec(dllimport)
-#else
+#define XRBaseSupply __declspec(dllimport)
+#elif (__APPLE__)
 #define XRBaseExport __attribute__((visibility("default")))
+#define XRBaseSupply extern __attribute__((visibility("default")))
+#else
+#error "Not considered yet"
 #endif
 #endif
 

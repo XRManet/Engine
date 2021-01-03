@@ -11,6 +11,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <tchar.h>
+
+#elif defined(__APPLE__)
+
+#else
+#error "Not considered yet"
 #endif
 
 #include <stdio.h>

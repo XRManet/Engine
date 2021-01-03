@@ -25,6 +25,28 @@
 		E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E88219C024CA26DE00868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
 		E88219C224CA26E200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E8B5188F259E3C2D00351BE9 /* XRLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B5187B259E3C2D00351BE9 /* XRLightNode.cpp */; };
+		E8B51890259E3C2D00351BE9 /* XRRenderCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5187C259E3C2D00351BE9 /* XRRenderCommon.h */; };
+		E8B51891259E3C2D00351BE9 /* XRActorNode.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5187D259E3C2D00351BE9 /* XRActorNode.h */; };
+		E8B51892259E3C2D00351BE9 /* XRSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B5187E259E3C2D00351BE9 /* XRSceneNode.cpp */; };
+		E8B51893259E3C2D00351BE9 /* XRLightNode.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5187F259E3C2D00351BE9 /* XRLightNode.h */; };
+		E8B51894259E3C2D00351BE9 /* XRIndexedString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B51880259E3C2D00351BE9 /* XRIndexedString.cpp */; };
+		E8B51895259E3C2D00351BE9 /* XRRenderEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B51881259E3C2D00351BE9 /* XRRenderEngine.h */; };
+		E8B51896259E3C2D00351BE9 /* XRLock.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B51882259E3C2D00351BE9 /* XRLock.h */; };
+		E8B51897259E3C2D00351BE9 /* XRRenderCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B51883259E3C2D00351BE9 /* XRRenderCommon.cpp */; };
+		E8B51898259E3C2D00351BE9 /* XRRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B51884259E3C2D00351BE9 /* XRRenderer.cpp */; };
+		E8B51899259E3C2D00351BE9 /* XRPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B51885259E3C2D00351BE9 /* XRPipeline.cpp */; };
+		E8B5189A259E3C2D00351BE9 /* XRTransformNode.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B51886259E3C2D00351BE9 /* XRTransformNode.h */; };
+		E8B5189B259E3C2D00351BE9 /* XRLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B51887259E3C2D00351BE9 /* XRLock.cpp */; };
+		E8B5189C259E3C2D00351BE9 /* XRActorNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B51888259E3C2D00351BE9 /* XRActorNode.cpp */; };
+		E8B5189D259E3C2E00351BE9 /* XRSceneNode.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B51889259E3C2D00351BE9 /* XRSceneNode.h */; };
+		E8B5189E259E3C2E00351BE9 /* XRTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B5188A259E3C2D00351BE9 /* XRTexture.cpp */; };
+		E8B5189F259E3C2E00351BE9 /* XRBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5188B259E3C2D00351BE9 /* XRBuffer.h */; };
+		E8B518A0259E3C2E00351BE9 /* XRIndexedString.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5188C259E3C2D00351BE9 /* XRIndexedString.h */; };
+		E8B518A1259E3C2E00351BE9 /* XRRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5188D259E3C2D00351BE9 /* XRRenderer.h */; };
+		E8B518A2259E3C2E00351BE9 /* XRTransformNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B5188E259E3C2D00351BE9 /* XRTransformNode.cpp */; };
+		E8B518A5259E5BA300351BE9 /* XRRendererTest.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B518A3259E5BA300351BE9 /* XRRendererTest.h */; };
+		E8B518A6259E5BA300351BE9 /* XRRendererTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B518A4259E5BA300351BE9 /* XRRendererTest.cpp */; };
 		E8C1BA3C22B621B9006EDA1E /* XRPrimitiveTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */; };
 		E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */; };
 		E8C1BA3F22B621B9006EDA1E /* XRRenderEngineLinker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */; };
@@ -94,6 +116,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E83D72BE25A1ED5B0093ACF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E812F83E2263417E00C87624 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E8C1BA5922B6319F006EDA1E;
+			remoteInfo = XREntrypoint;
+		};
 		E8C1BA7422B634C9006EDA1E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E812F83E2263417E00C87624 /* Project object */;
@@ -187,6 +216,28 @@
 		E828C9372524FA43000FF36B /* XRFrameworkBaseRenderEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRFrameworkBaseRenderEngine.h; sourceTree = "<group>"; };
 		E828C93B2524FA9E000FF36B /* XRRenderGroupGL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRRenderGroupGL.h; sourceTree = "<group>"; };
 		E828C93D2524FC01000FF36B /* XRRenderGroupGL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderGroupGL.cpp; sourceTree = "<group>"; };
+		E8B5187B259E3C2D00351BE9 /* XRLightNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRLightNode.cpp; sourceTree = "<group>"; };
+		E8B5187C259E3C2D00351BE9 /* XRRenderCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRenderCommon.h; sourceTree = "<group>"; };
+		E8B5187D259E3C2D00351BE9 /* XRActorNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRActorNode.h; sourceTree = "<group>"; };
+		E8B5187E259E3C2D00351BE9 /* XRSceneNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRSceneNode.cpp; sourceTree = "<group>"; };
+		E8B5187F259E3C2D00351BE9 /* XRLightNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRLightNode.h; sourceTree = "<group>"; };
+		E8B51880259E3C2D00351BE9 /* XRIndexedString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRIndexedString.cpp; sourceTree = "<group>"; };
+		E8B51881259E3C2D00351BE9 /* XRRenderEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRenderEngine.h; sourceTree = "<group>"; };
+		E8B51882259E3C2D00351BE9 /* XRLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRLock.h; sourceTree = "<group>"; };
+		E8B51883259E3C2D00351BE9 /* XRRenderCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderCommon.cpp; sourceTree = "<group>"; };
+		E8B51884259E3C2D00351BE9 /* XRRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderer.cpp; sourceTree = "<group>"; };
+		E8B51885259E3C2D00351BE9 /* XRPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRPipeline.cpp; sourceTree = "<group>"; };
+		E8B51886259E3C2D00351BE9 /* XRTransformNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTransformNode.h; sourceTree = "<group>"; };
+		E8B51887259E3C2D00351BE9 /* XRLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRLock.cpp; sourceTree = "<group>"; };
+		E8B51888259E3C2D00351BE9 /* XRActorNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRActorNode.cpp; sourceTree = "<group>"; };
+		E8B51889259E3C2D00351BE9 /* XRSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSceneNode.h; sourceTree = "<group>"; };
+		E8B5188A259E3C2D00351BE9 /* XRTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTexture.cpp; sourceTree = "<group>"; };
+		E8B5188B259E3C2D00351BE9 /* XRBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRBuffer.h; sourceTree = "<group>"; };
+		E8B5188C259E3C2D00351BE9 /* XRIndexedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRIndexedString.h; sourceTree = "<group>"; };
+		E8B5188D259E3C2D00351BE9 /* XRRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRenderer.h; sourceTree = "<group>"; };
+		E8B5188E259E3C2D00351BE9 /* XRTransformNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTransformNode.cpp; sourceTree = "<group>"; };
+		E8B518A3259E5BA300351BE9 /* XRRendererTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRRendererTest.h; sourceTree = "<group>"; };
+		E8B518A4259E5BA300351BE9 /* XRRendererTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRendererTest.cpp; sourceTree = "<group>"; };
 		E8C1BA3822B621B9006EDA1E /* XRPrimitiveTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRPrimitiveTypes.h; sourceTree = "<group>"; };
 		E8C1BA3A22B621B9006EDA1E /* XRFrameworkBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRFrameworkBase.h; sourceTree = "<group>"; };
 		E8C1BA3B22B621B9006EDA1E /* XRRenderEngineLinker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderEngineLinker.cpp; sourceTree = "<group>"; };
@@ -336,6 +387,8 @@
 		E812F860226345A600C87624 /* XRSceneTest */ = {
 			isa = PBXGroup;
 			children = (
+				E8B518A4259E5BA300351BE9 /* XRRendererTest.cpp */,
+				E8B518A3259E5BA300351BE9 /* XRRendererTest.h */,
 				E812F861226345A600C87624 /* XRSceneTest.h */,
 				E812F862226345A600C87624 /* stdafx.h */,
 				E812F863226345A600C87624 /* dllmain.cpp */,
@@ -415,6 +468,26 @@
 		E8E59162226AF68200164749 /* XRFrameworkBase */ = {
 			isa = PBXGroup;
 			children = (
+				E8B51888259E3C2D00351BE9 /* XRActorNode.cpp */,
+				E8B5187D259E3C2D00351BE9 /* XRActorNode.h */,
+				E8B5188B259E3C2D00351BE9 /* XRBuffer.h */,
+				E8B51880259E3C2D00351BE9 /* XRIndexedString.cpp */,
+				E8B5188C259E3C2D00351BE9 /* XRIndexedString.h */,
+				E8B5187B259E3C2D00351BE9 /* XRLightNode.cpp */,
+				E8B5187F259E3C2D00351BE9 /* XRLightNode.h */,
+				E8B51887259E3C2D00351BE9 /* XRLock.cpp */,
+				E8B51882259E3C2D00351BE9 /* XRLock.h */,
+				E8B51885259E3C2D00351BE9 /* XRPipeline.cpp */,
+				E8B51883259E3C2D00351BE9 /* XRRenderCommon.cpp */,
+				E8B5187C259E3C2D00351BE9 /* XRRenderCommon.h */,
+				E8B51881259E3C2D00351BE9 /* XRRenderEngine.h */,
+				E8B51884259E3C2D00351BE9 /* XRRenderer.cpp */,
+				E8B5188D259E3C2D00351BE9 /* XRRenderer.h */,
+				E8B5187E259E3C2D00351BE9 /* XRSceneNode.cpp */,
+				E8B51889259E3C2D00351BE9 /* XRSceneNode.h */,
+				E8B5188A259E3C2D00351BE9 /* XRTexture.cpp */,
+				E8B5188E259E3C2D00351BE9 /* XRTransformNode.cpp */,
+				E8B51886259E3C2D00351BE9 /* XRTransformNode.h */,
 				E828C9372524FA43000FF36B /* XRFrameworkBaseRenderEngine.h */,
 				E828C9362524FA43000FF36B /* XRRenderGroup.cpp */,
 				E828C9352524FA43000FF36B /* XRRenderGroup.h */,
@@ -481,6 +554,7 @@
 			files = (
 				E8E67C2D234A5B620015A403 /* XRSceneTest.h in Headers */,
 				E8E67C2E234A5B620015A403 /* stdafx.h in Headers */,
+				E8B518A5259E5BA300351BE9 /* XRRendererTest.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,10 +576,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8C1BA3C22B621B9006EDA1E /* XRPrimitiveTypes.h in Headers */,
+				E8B5189F259E3C2E00351BE9 /* XRBuffer.h in Headers */,
 				E8C1BA4622B62365006EDA1E /* XRPlatform.h in Headers */,
+				E8B518A1259E3C2E00351BE9 /* XRRenderer.h in Headers */,
 				E8E5919D226AF68200164749 /* XRWavefrontMaterial.h in Headers */,
+				E8B51890259E3C2D00351BE9 /* XRRenderCommon.h in Headers */,
 				E8E67C39234A7AAE0015A403 /* XRBmp.h in Headers */,
 				E8E59186226AF68200164749 /* XRBodyData.h in Headers */,
+				E8B518A0259E3C2E00351BE9 /* XRIndexedString.h in Headers */,
 				E8E59190226AF68200164749 /* XRSavable.h in Headers */,
 				E8EED0562475B3D7003852A7 /* XRHash.h in Headers */,
 				E8C1BA4722B62365006EDA1E /* XRPlatformWindows.hpp in Headers */,
@@ -515,16 +593,21 @@
 				E8E59196226AF68200164749 /* XRLoadable.h in Headers */,
 				E8E59195226AF68200164749 /* XRTexture.h in Headers */,
 				E81D4E6F23768502003E4C0D /* XRPipeline.h in Headers */,
+				E8B51896259E3C2D00351BE9 /* XRLock.h in Headers */,
+				E8B51893259E3C2D00351BE9 /* XRLightNode.h in Headers */,
 				E81D4E6E23768502003E4C0D /* XRCommandBuffer.h in Headers */,
+				E8B51895259E3C2D00351BE9 /* XRRenderEngine.h in Headers */,
 				E8E5919F226AF68200164749 /* XRScene.h in Headers */,
 				E8E59191226AF68200164749 /* XRModelData.h in Headers */,
 				E8E59199226AF68200164749 /* XRModel.h in Headers */,
 				E8E59197226AF68200164749 /* XRUtility.h in Headers */,
 				E8E59185226AF68200164749 /* XRResourceManager.h in Headers */,
 				E8E5918E226AF68200164749 /* XRWavefrontObject.h in Headers */,
+				E8B5189D259E3C2E00351BE9 /* XRSceneNode.h in Headers */,
 				E8E59192226AF68200164749 /* targetver.h in Headers */,
 				E8E67C38234A7AAE0015A403 /* XRTextureData.h in Headers */,
 				E8E59189226AF68200164749 /* XRGeometry.h in Headers */,
+				E8B51891259E3C2D00351BE9 /* XRActorNode.h in Headers */,
 				E8C1BA3E22B621B9006EDA1E /* XRFrameworkBase.h in Headers */,
 				E8E5918F226AF68200164749 /* XRBody.h in Headers */,
 				E828C93A2524FA43000FF36B /* XRFrameworkBaseRenderEngine.h in Headers */,
@@ -533,6 +616,7 @@
 				E828C9382524FA43000FF36B /* XRRenderGroup.h in Headers */,
 				E8E5919E226AF68200164749 /* XRObjectManager.h in Headers */,
 				E8E59183226AF68200164749 /* XRLogging.h in Headers */,
+				E8B5189A259E3C2D00351BE9 /* XRTransformNode.h in Headers */,
 				E80F3662226B8AF6007414A1 /* XRType.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -552,6 +636,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E83D72BF25A1ED5B0093ACF6 /* PBXTargetDependency */,
 				E8C1BA9822B63BCD006EDA1E /* PBXTargetDependency */,
 			);
 			name = XRSceneTest;
@@ -664,6 +749,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8E67C2B234A5B420015A403 /* XRSceneTest.cpp in Sources */,
+				E8B518A6259E5BA300351BE9 /* XRRendererTest.cpp in Sources */,
 				E8E67C2C234A5B420015A403 /* stdafx.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -697,22 +783,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8B51899259E3C2D00351BE9 /* XRPipeline.cpp in Sources */,
+				E8B5188F259E3C2D00351BE9 /* XRLightNode.cpp in Sources */,
 				E8E5918C226AF68200164749 /* XRObjectManager.cpp in Sources */,
 				E8E59194226AF68200164749 /* XRModelData.cpp in Sources */,
 				E8E59184226AF68200164749 /* XRBody.cpp in Sources */,
 				E8E5919A226AF68200164749 /* XRWavefrontObject.cpp in Sources */,
 				E8E67C3A234A7AAE0015A403 /* XRDXTC.cpp in Sources */,
 				E8E5918D226AF68200164749 /* XRScene.cpp in Sources */,
+				E8B51892259E3C2D00351BE9 /* XRSceneNode.cpp in Sources */,
+				E8B5189E259E3C2E00351BE9 /* XRTexture.cpp in Sources */,
+				E8B51897259E3C2D00351BE9 /* XRRenderCommon.cpp in Sources */,
 				E8E59193226AF68200164749 /* XRResourceManager.cpp in Sources */,
 				E8E59198226AF68200164749 /* XRLoadable.cpp in Sources */,
 				E8E5918A226AF68200164749 /* XRFrameworkBase.cpp in Sources */,
 				E8EED0552475B3D7003852A7 /* XRHash.cpp in Sources */,
+				E8B5189B259E3C2D00351BE9 /* XRLock.cpp in Sources */,
 				E828C9392524FA43000FF36B /* XRRenderGroup.cpp in Sources */,
+				E8B5189C259E3C2D00351BE9 /* XRActorNode.cpp in Sources */,
 				E8E67C37234A7AAE0015A403 /* XRTextureData.cpp in Sources */,
+				E8B51894259E3C2D00351BE9 /* XRIndexedString.cpp in Sources */,
 				E8E67C3B234A7AAE0015A403 /* XRBmp.cpp in Sources */,
 				E8E5919C226AF68200164749 /* XRModel.cpp in Sources */,
 				E8E5919B226AF68200164749 /* stdafx.cpp in Sources */,
 				E8C1BA3F22B621B9006EDA1E /* XRRenderEngineLinker.cpp in Sources */,
+				E8B51898259E3C2D00351BE9 /* XRRenderer.cpp in Sources */,
+				E8B518A2259E3C2E00351BE9 /* XRTransformNode.cpp in Sources */,
 				E8C1BA4922B62365006EDA1E /* XRPlatform.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -720,6 +816,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		E83D72BF25A1ED5B0093ACF6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E8C1BA5922B6319F006EDA1E /* XREntrypoint */;
+			targetProxy = E83D72BE25A1ED5B0093ACF6 /* PBXContainerItemProxy */;
+		};
 		E8C1BA7522B634C9006EDA1E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E8E5915D226AF66300164749 /* XRFrameworkBase */;

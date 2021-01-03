@@ -19,9 +19,12 @@
 #endif
 #define XRHidden
 
-#else
+#elif defined(__APPLE__)
 #define XRExport __attribute__((visibility("default")))
 #define XRHidden __attribute__((visibility("hidden")))
+
+#else
+#error "Not considered yet"
 #endif
 
 

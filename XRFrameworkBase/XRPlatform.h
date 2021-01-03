@@ -52,14 +52,26 @@ namespace XRPlatform
 
 #if defined(_WIN32) || defined(_WIN64)
 #define XR_PLATFORM				XR_PLATFORM_WINDOWS
+
 #if defined(_MSC_BUILD)
 #define XR_BUILD_SYSTEM			XR_BUILD_SYSTEM_MSBUILD_VS
 #define XR_BUILD_SYSTEM_MSBUILD_VS_2019 (_MSC_VER >= 1920)
 #define XR_BUILD_SYSTEM_MSBUILD_VS_2017 (_MSC_VER >= 1910)
 #endif // defined(_MSC_BUILD)
-#else
+
+///< APPLE
+#elif defined(__APPLE__)
 #define XR_PLATFORM				XR_PLATFORM_OSX
+
+#if defined(__apple_build_version__)
 #define XR_BUILD_SYSTEM			XR_BUILD_SYSTEM_XCODE
+#define XR_BUILD_SYSTEM_XCODE_CLANG_11 (__clang_major__ >= 11)
+#define XR_BUILD_SYSTEM_XCODE_CLANG_10 (__clang_major__ >= 10)
+#define XR_BUILD_SYSTEM_XCODE_CLANG_9 (__clang_major__ >= 9)
+#else
+#error "Not defined"
+#endif
+
 #endif
 
 #endif /* XRPlatform_h */
