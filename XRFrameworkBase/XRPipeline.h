@@ -712,7 +712,17 @@ class XRBaseExport XRPipelineManager
 	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
 
 public:
-	XRPipelineGroup* GetPipeline(const char* pipelineName)
+	XRPipelineGroup* GetPipelineGroup(const char* pipelineName)
+	{
+		return nullptr;
+	}
+	
+	XRPipeline* GetPipeline(char const* pipelineName)
+	{
+		return nullptr;
+	}
+	
+	XRPipeline* GetPipeline(char const* pipelineName, std::vector<XRPermutationElementArgument> const& elementArguments)
 	{
 		return nullptr;
 	}

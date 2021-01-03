@@ -7,6 +7,7 @@
 #include <XRFrameworkBase/XRPlatform.h>
 
 class XRScene;
+class XRRenderer;
 struct XRSceneInfo;
 struct XRRendererInfo;
 

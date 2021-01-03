@@ -253,6 +253,8 @@ public:
 };
 ProgramResources programResources;
 
+#if TEST_CODE// TEST_CODE
+
 void XRRendererTest::Initialize()
 {
     assert(glGetError() == GL_NO_ERROR);
@@ -618,6 +620,8 @@ void XRRendererTest::Render()
 	XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapots_1");
 	teapotGroup->draw();
 }
+
+#endif // TEST_CODE
 
 #include <XRFrameworkBase/XRRenderer.h>
 

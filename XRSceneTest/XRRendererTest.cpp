@@ -36,25 +36,6 @@ struct PipelineKey : public PipelineKeyImpl<Permutation, Permutation::COUNT>
 	PipelineKey(Default) {}
 };
 
-//enum SamplePermutation
-//{
-//	AlphaTest,
-//	Lod,
-//	NumPermutations
-//};
-
-struct EnumTest
-{
-
-	uint32_t operator() ()
-	{
-
-	}
-};
-
-struct ParentConstruct { int a; };
-struct DerivedConstruct : public ParentConstruct { };
-
 struct PermutationEnum
 {
 	char const* _id;
@@ -113,7 +94,8 @@ public:
 			pipelineCreateInfo._description._vertexInputStateDescription = &_defaultVertexInputStateDescription;
 			
 			static xr::IndexedString<XRPermutationElement> strAlphaTest = "AlphaTest";
-			pipelineCreateInfo._permutationElementInfos.emplace_back( strAlphaTest, 2 );
+			pipelineCreateInfo._permutationElementInfos.push_back( {strAlphaTest, 2} );
+			//pipelineCreateInfo._permutationElementInfos.emplace_back( strAlphaTest, 2 );
 			pipelineCreateInfo._permute = [this](XRPipelineStateDescription& outDescription, std::vector<XRPermutationElement> const& elements)
 			{
 				if (elements[SamplePermutation::AlphaTest]._value == 1)
@@ -145,6 +127,19 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 	XRShaderStageDescription _defaultShaderDescription;
 	XRShaderStageDescription _alphaShaderDescription;
 	XRVertexInputStateDescription _defaultVertexInputStateDescription;
+	
+	static_assert(SamplePermutation::AlphaTest == 0, "");
+	printf("%s %d\n", SamplePermutation::AlphaTest->_id, SamplePermutation::AlphaTest);
+	printf("%d %s\n", SamplePermutation::AlphaTest, SamplePermutation::AlphaTest->_id);
+	
+	SamplePermutation a = SamplePermutation::AlphaTest;
+	printf("%d %s\n", a, a->_id);
+	
+	a = SamplePermutation::Lod;
+	printf("%d %s\n", a, a->_id);
+	
+	a = 0;
+	printf("%d %s\n", a, a->_id);
 
 	{
 		XRPipelineCreateInfo pipelineCreateInfo;
@@ -217,8 +212,8 @@ void XRRendererTest::Render()
 
 		secondCommands->beginPass(renderPass, extent);
 
-		XRPipelineGroup* pipeline = _pipelineManager->GetPipeline("samplePipelineName");
-		pipeline->SetCurrentPermutation({});
+		std::vector<XRPermutationElementArgument> permutation;
+		XRPipeline* pipeline = _pipelineManager->GetPipeline("samplePipelineName", permutation);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
 		secondCommands->endPass();
