@@ -6,11 +6,21 @@
 #include <XRFrameworkBase/XRRenderCommon.h>
 #include <XRFrameworkBase/XRIndexedString.h>
 
+struct XRPipelineStateDescription;
+class XRPipeline;
+
+#ifdef XRRENDERENGINEGL_EXPORTS
+XRRenderExport XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* createInfo);
+#else
+extern XRPipeline* (*xrCreatePipeline)(XRPipelineStateDescription const* createInfo);
+#endif
+
+
 /******************************************************************************
   GL State to Vulkan State Mapping
  -----------------------------------------------------------------------
 	GL								VK
- 	Transformation
+	Transformation
 		Viewport					ViewportState
 		DepthRange					RasterizationState->RasterizationDepthClipState
 		DepthClamp					RasterizationState
@@ -467,7 +477,7 @@ enum class XRDynamicState
 class XRBaseExport XRPipeline
 {
 public:
-	XRPipeline(XRShaderStageDescription const* description) {}
+	XRPipeline(XRPipelineStateDescription const* description) {}
 	virtual ~XRPipeline() {}
 
 
@@ -749,9 +759,3 @@ public:
 		_capturedCcommands.push_back(std::move(capturedCommand));
 	}
 };
-
-#ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* createInfo);
-#else
-extern XRPipeline* (*xrCreatePipeline)(XRPipelineStateDescription const* createInfo);
-#endif

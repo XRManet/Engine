@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
-XRPipelineGL::XRPipelineGL(XRShaderStageDescription const* Description)
+XRPipelineGL::XRPipelineGL(XRPipelineStateDescription const* Description)
 	: XRPipeline(Description)
 {
 

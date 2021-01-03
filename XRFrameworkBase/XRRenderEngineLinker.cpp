@@ -2,7 +2,7 @@
 #include "XRPlatform.h"
 
 #include "XRModel.h"
-XRInputLayout* (*xrCreateInputLayout)(XRInputLayoutDesc &&inputLayoutDesc, uint32_t preferredStrideSize) = nullptr;
+XRInputLayout* (*xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize) = nullptr;
 XRModel* (*xrCreateModel)(XRModelData const* loadable) = nullptr;
 
 #include "XRTexture.h"
@@ -28,39 +28,39 @@ XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 
 static struct XRRenderEngineLinker
 {
-  XRPlatform::XRDSO* _dso;
+	XRPlatform::XRDSO* _dso;
 
-  XRRenderEngineLinker()
-  {
-    static const char* renderEngineName = XRRENDER_ENGINE;
-    _dso = XRPlatform::LoadDSO(renderEngineName);
-    assert(_dso != nullptr);
+	XRRenderEngineLinker()
+	{
+		static const char* renderEngineName = XRRENDER_ENGINE;
+		_dso = XRPlatform::LoadDSO(renderEngineName);
+		assert(_dso != nullptr);
 
-    // Todo) List up and check availability
-    std::vector<std::string> dllLists;
-    XRPlatform::ListDLLFunctions(_dso, dllLists);
+		// Todo) List up and check availability
+		std::vector<std::string> dllLists;
+		XRPlatform::ListDLLFunctions(_dso, dllLists);
 
-	GetProcAddress(xrCreateInputLayout,		"xrCreateInputLayout");
-    GetProcAddress(xrCreateModel, 			"xrCreateModel");
-	GetProcAddress(xrCreateTexture,			"xrCreateTexture");
-	GetProcAddress(xrCreateTextureFromData, "xrCreateTextureFromData");
-	GetProcAddress(xrCreateBuffer,			"xrCreateBuffer");
-	GetProcAddress(xrCreatePipeline, 		"xrCreatePipeline");
-	GetProcAddress(xrCreateCommandBuffer, 	"xrCreateCommandBuffer");
-	GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");
-  }
+		GetProcAddress(xrCreateInputLayout,		"xrCreateInputLayout");
+		GetProcAddress(xrCreateModel,			"xrCreateModel");
+		GetProcAddress(xrCreateTexture,			"xrCreateTexture");
+		GetProcAddress(xrCreateTextureFromData,	"xrCreateTextureFromData");
+		GetProcAddress(xrCreateBuffer,			"xrCreateBuffer");
+		GetProcAddress(xrCreatePipeline,		"xrCreatePipeline");
+		GetProcAddress(xrCreateCommandBuffer,	"xrCreateCommandBuffer");
+		GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");
+	}
 
-  ~XRRenderEngineLinker()
-  {
-    XRPlatform::UnloadDSO(_dso);
-  }
+	~XRRenderEngineLinker()
+	{
+		XRPlatform::UnloadDSO(_dso);
+	}
 
 private:
-  template<typename func>
-  void GetProcAddress(func& outFunction, const char* name)
-  {
-    outFunction = reinterpret_cast<func>(XRPlatform::GetProcAddress(_dso, name));
-    assert(outFunction != nullptr);
-  }
+	template<typename func>
+	void GetProcAddress(func& outFunction, const char* name)
+	{
+		outFunction = reinterpret_cast<func>(XRPlatform::GetProcAddress(_dso, name));
+		assert(outFunction != nullptr);
+	}
 
 } EngineLinkerStarter;

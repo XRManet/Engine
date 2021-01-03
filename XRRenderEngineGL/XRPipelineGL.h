@@ -5,7 +5,7 @@
 class XRPipelineGL : public XRPipeline
 {
 public:
-	XRPipelineGL(XRShaderStageDescription const* description);
+	XRPipelineGL(XRPipelineStateDescription const* description);
 	virtual ~XRPipelineGL();
 
 

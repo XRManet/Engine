@@ -74,7 +74,7 @@ XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 	return bufferHandle;
 }
 
-XRPipeline* xrCreatePipeline(XRShaderStageDescription const* description)
+XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
 {
 	RenderEngineGLInitializer::GetInitializer();
 	return new XRPipelineGL(description);
