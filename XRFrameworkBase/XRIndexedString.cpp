@@ -14,19 +14,30 @@ namespace xr
 // Note(jiman): 특정 타입에 대한 템플릿 인스턴싱이 수행될 때마다 static member의 정의도 존재해야 함.
 //				더불어 이 정의는 프로세스 내에 공유해서 사용되어야 하므로 import 해야함.
 //				이 때 모든 모듈에서 이 기호의 정의를 확인할 수 있도록 어떤 모듈에선 정의된 기호를 export 해야함.
-#if defined(XR_BUILD_SYSTEM_MSBUILD_VS)
+#if XR_BUILD_SYSTEM == XR_BUILD_SYSTEM_MSBUILD_VS
 #if XR_BUILD_SYSTEM_MSBUILD_VS_2019
 #define EXPLICIT_GEN_INDEXED_STRING_SYMBOL(Category, ...) \
-	XRBaseExport IndexedStringContainer<Category, __VA_ARGS__> IndexedString<Category, __VA_ARGS__>::sContainer_PS;
+	XRBaseExport IndexedStringContainer<Category, ##__VA_ARGS__> IndexedString<Category, ##__VA_ARGS__>::sContainer_PS;
 #elif XR_BUILD_SYSTEM_MSBUILD_VS_2017
 #define EXPLICIT_GEN_INDEXED_STRING_SYMBOL(Category, ...) \
-	XRBaseExport IndexedStringContainer<Category, __VA_ARGS__> IndexedString<Category, __VA_ARGS__>::sContainer_PS;
-//	template<> XRBaseExport IndexedStringContainer<Category, __VA_ARGS__> IndexedString<Category, __VA_ARGS__>::sContainer_PS;
+	XRBaseExport IndexedStringContainer<Category, ##__VA_ARGS__> IndexedString<Category, ##__VA_ARGS__>::sContainer_PS;
+	//template<> XRBaseExport IndexedStringContainer<Category, __VA_ARGS__> IndexedString<Category, __VA_ARGS__>::sContainer_PS;
 #endif // XR_BUILD_SYSTEM_MSBUILD_VS
 
-#elif defined(XR_BUILD_SYSTEM_XCODE)
+#elif XR_BUILD_SYSTEM == XR_BUILD_SYSTEM_XCODE
+#if XR_BUILD_SYSTEM_XCODE_CLANG_11
+// Note(jiman): template class member를 export할 땐 instantiation을 통해 해당 심볼의 storage를 반드시 특정 라이브러리에 한정시켜야 함.
+//				clang은 VC++과 달리 class member에 대해 implicit instantiation을 사용할 수 없는 것으로 보임.
+//				때문에 explicit instantiation으로 처리하되, 이 때 이 static member에 대한 template definition이 필요하므로 이 cpp 내에 한정적으로 정의함.
+template<typename Category, typename Capacity>
+IndexedStringContainer<Category, Capacity> IndexedString<Category, Capacity>::sContainer_PS;
+
+#define EXPLICIT_GEN_INDEXED_STRING_SYMBOL(Category, ...) \
+	template XRBaseExport IndexedStringContainer<Category, ##__VA_ARGS__> IndexedString<Category, ##__VA_ARGS__>::sContainer_PS;
+#else
 #define EXPLICIT_GEN_INDEXED_STRING_SYMBOL(Category, ...) \
 	static_assert(false, "Not implemented yet");
+#endif
 #endif // defined(XR_BUILD_SYSTEM)
 
 // Note(jiman): XRFrameworkBase 에서 정의한 IndexedString에 대해 프로세스 전체에 걸쳐 전역적인 관리 객체 하나에만 접근되어야 한다.
