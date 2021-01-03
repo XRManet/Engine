@@ -7,7 +7,7 @@
 
 namespace xr
 {
-#if defined(XR_PLATFORM_OSX)
+#if XR_PLATFORM == XR_PLATFORM_OSX
 MutexLock::MutexLock()
 {
 	std::mutex& mutex = reinterpret_cast<std::mutex&>(_mutex);
