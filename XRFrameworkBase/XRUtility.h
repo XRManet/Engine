@@ -63,6 +63,7 @@ namespace ENUM_CLASS_NAME##_SPACE { \
 		constexpr const ADD_ENUM_TYPE* operator -> () const; \
 		constexpr operator ENUM_CLASS_NAME const& () const; \
 		constexpr operator unsigned const () const { return Value; } \
+		unsigned _value = Value; /* Note(jiman): printf와 같은 memory access 직접 접근 처리 시 필요 */ \
 	}; \
 	template<int Value> struct DECLARED_ENUM; \
 	template<int Line> struct Add { enum { Value = 0 }; }; \
