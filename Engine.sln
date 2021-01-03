@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2000
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XREntrypoint", "XREntrypoint\XREntrypoint.vcxproj", "{77214991-5C66-4213-9FA1-C447596F3EFC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -20,6 +20,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XRRenderEngineGL", "XRRenderEngineGL\XRRenderEngineGL.vcxproj", "{66E3C0F6-F9AB-4C36-AE40-5CA2B4F18E16}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F8BF6CF0-A168-4EE7-A71C-9462A21B2386} = {F8BF6CF0-A168-4EE7-A71C-9462A21B2386}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{572FF8C3-173B-4564-8A32-DB2C6FC17A27}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Global
