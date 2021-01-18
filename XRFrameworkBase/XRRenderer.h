@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #include "stdafx.h"
@@ -9,16 +9,26 @@ class XRLightNode;
 class XRActorNode;
 
 class XRResourceManager;
+class XRRenderPassManager;
 class XRPipelineManager;
+
+namespace XRPlatform
+{
+struct XRDSO;
+}
 
 class XRBaseExport XRRenderer
 {
 protected:
+	XRRenderPassManager* const _renderPassManager;
 	XRPipelineManager* const _pipelineManager;
 
 public:
 	XRRenderer();
 	~XRRenderer();
+
+public:
+	bool Bind(XRPlatform::XRDSO* dso);
 
 public:
 	virtual void Initialize(XRResourceManager* resourceManager) {}
@@ -34,21 +44,20 @@ private:
 };
 
 
-using XRPFNCREATERENDERER = XRRenderer * (*)();
+using XRPFN_CREATE_RENDERER = XRRenderer * (*)();
 
 struct XRRendererInfo
 {
 	char const* dso_name = nullptr;
 
-	XRPFNCREATERENDERER CreateRenderer = nullptr;
+	XRPFN_CREATE_RENDERER CreateRenderer = nullptr;
 
 	XRRenderer* renderer = nullptr;
 
+	bool isBound = false;
+
 public:
-	inline bool IsAvailable() {
-		return dso_name != nullptr
-			&& CreateRenderer != nullptr;
-	}
+	inline bool IsAvailable() { return dso_name != nullptr && CreateRenderer != nullptr; }
 
 	XRRenderer* GetRenderer()
 	{

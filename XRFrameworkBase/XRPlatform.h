@@ -1,4 +1,4 @@
-//
+﻿//
 //  XRPlatform.h
 //  Engine
 //
@@ -24,6 +24,11 @@ namespace XRPlatform
 		Count
 	};
 
+	struct SymbolOption
+	{
+		bool _demangle = false;
+	};
+
 	struct XRBaseExport XRDSO
 	{
 		XRDSO() {}
@@ -36,8 +41,13 @@ namespace XRPlatform
 	XRBaseExport XRDSO* LoadDSO(char const* dso_name);
 	XRBaseExport void UnloadDSO(XRDSO* dso);
 
-	XRBaseExport void* GetProcAddress(XRDSO* dso, char const* proc);
-	XRBaseExport void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames);
+	XRBaseExport void* GetProcAddress(XRDSO* dso, char const* proc);	
+	XRBaseExport void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames, SymbolOption& symOption);
+	inline void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames)
+	{
+		SymbolOption defaultOption { false, };
+		return ListDLLFunctions(dso, listOfFunctionNames, defaultOption);
+	}
 };
 
 ///< XR_PLATFORM.

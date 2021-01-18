@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "stdafx.h"
 
@@ -37,7 +37,7 @@ public:
 	XRResourceManager* GetResourceManager() { return &_resource_manager; }
 
 public:
-	// ¿ØÁö ÀÌ·±°Ô ÇÊ¿äÇÒ°Å°°±äÇÑµ¥...
+	// ì™ ì§€ ì´ëŸ°ê²Œ í•„ìš”í• ê±°ê°™ê¸´í•œë°...
 	XRSceneNode* GenerateNode(XRSceneNodeType type);
 
 public:
@@ -61,10 +61,7 @@ struct XRSceneInfo
 	std::vector<std::string> renderers;
 
 public:
-	inline bool IsAvailable() {
-		return dso_name != nullptr
-			&& CreateScene != nullptr;
-	}
+	inline bool IsAvailable() { return dso_name != nullptr && CreateScene != nullptr; }
 
 public:
 	XRScene* GetScene()

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XRSceneManager.h"
 
 #include <XRFrameworkBase/XRScene.h>
@@ -13,7 +13,7 @@ XRSceneManager::XRSceneManager()
 {
 	ParseManifest();
 
-#if 0 // import symbol Ȯ�ο�
+#if 0 // import symbol 확인용
 	for (auto& pair : _list_of_dsos)
 	{
 		auto dso = pair.second;
@@ -92,7 +92,7 @@ public:
 			info.dso_name = dso_name;
 			info.CreateScene = reinterpret_cast<XRPFNCREATESCENE>(XRPlatform::GetProcAddress(dso, func_name_CreateScene));
 			uint32_t numRenderers = renderers.Size();
-			info.renderers.reserve(numRenderers);
+			info.renderers.resize(numRenderers);
 			for (uint32_t i = 0; i < numRenderers; ++i)
 			{
 				info.renderers[i] = renderers[i].GetString();
@@ -135,7 +135,7 @@ public:
 
 			XRRendererInfo info{};
 			info.dso_name = dso_name;
-			info.CreateRenderer = reinterpret_cast<XRPFNCREATERENDERER>(XRPlatform::GetProcAddress(dso, func_name_CreateRenderer));
+			info.CreateRenderer = reinterpret_cast<XRPFN_CREATE_RENDERER>(XRPlatform::GetProcAddress(dso, func_name_CreateRenderer));
 
 			if (info.IsAvailable())
 			{
@@ -172,24 +172,31 @@ XRSceneManager::~XRSceneManager()
 	}
 }
 
-void XRSceneManager::QueryScenes(std::string&& query)
+void XRSceneManager::QueryScenes(std::string const& query)
 {
 
 }
 
-void XRSceneManager::BindPrimaryScene(std::string&& key)
+void XRSceneManager::BindPrimaryScene(std::string const& key)
 {
 	auto& sceneInfo = _list_of_scenes[key];
 	_primary_scene = sceneInfo.GetScene();
-	for (auto& i : sceneInfo.renderers)
-	{
-		_list_of_renderers[i].GetRenderer();
-	}
 
-	_current_renderer = _list_of_renderers[key].GetRenderer();
+	BindRenderer(sceneInfo.renderers[0]);
 }
 
-void XRSceneManager::InitializeRenderers(std::string&& sceneKey)
+void XRSceneManager::BindRenderer(std::string const& rendererKey)
+{
+	auto& rendererInfo = _list_of_renderers[rendererKey];
+	_current_renderer = rendererInfo.GetRenderer();
+
+	if (false == rendererInfo.isBound)
+	{
+		rendererInfo.isBound = _current_renderer->Bind(_list_of_dsos[rendererInfo.dso_name]);
+	}
+}
+
+void XRSceneManager::InitializeSceneRenderers(std::string const& sceneKey)
 {
 	for (auto& i : _list_of_scenes[sceneKey].renderers)
 	{

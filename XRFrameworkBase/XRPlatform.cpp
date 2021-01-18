@@ -1,4 +1,4 @@
-//
+﻿//
 //  XRPlatform.cpp
 //  Engine
 //
@@ -81,9 +81,9 @@ namespace XRPlatform
 		return platform_dso->GetProcAddress(proc);
 	}
 
-	void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames)
+	void ListDLLFunctions(XRDSO* dso, std::vector<std::string>& listOfFunctionNames, SymbolOption& symOption)
 	{
 		auto platform_dso = static_cast<XRDSOImpl<XRCurrentPlatformName>*>(dso);
-		return platform_dso->ListDllFunctions(listOfFunctionNames);
+		return platform_dso->ListDllFunctions(listOfFunctionNames, symOption);
 	}
 }

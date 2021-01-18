@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <map>
@@ -41,12 +41,13 @@ public:
 	static char const* MANIFEST_RENDERER_KEYS_NAME;
 
 public:
-	void QueryScenes(std::string&& query);
+	void QueryScenes(std::string const& query);
 
 
 public:
-	void BindPrimaryScene(std::string&& sceneKey);
-	void InitializeRenderers(std::string&& sceneKey);
+	void BindPrimaryScene(std::string const& sceneKey);
+	void BindRenderer(std::string const& rendererKey);
+	void InitializeSceneRenderers(std::string const& sceneKey);
 
 public:
 	XRScene* GetPrimaryScene() { return _primary_scene; }
