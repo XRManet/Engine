@@ -49,5 +49,11 @@
     <None Include="..\Resources\teapot.obj">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="..\Resources\resources.json">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="..\Resources\SceneKeys.json">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
