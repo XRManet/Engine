@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 #include "XRRendererTest.h"
 
@@ -42,10 +42,11 @@ struct PermutationEnum
 };
 
 #define PermutationEnumStaticEnumCtor(id, index) { {#id} }
+#define PermutationElementInfoCtor(name, count) { {#name, count} }
 
-STATIC_ENUM_BEGIN(SamplePermutation, PermutationEnum);
-	ADD_ENUM(SamplePermutation, AlphaTest);
-	ADD_ENUM(SamplePermutation, Lod);
+STATIC_ENUM_BEGIN(SamplePermutation, XRPermutationBase);
+	ADD_ENUM(SamplePermutation, AlphaTest, 2);
+	ADD_ENUM(SamplePermutation, Lod, 2);
 STATIC_ENUM_END(SamplePermutation);
 
 template<>
@@ -54,15 +55,18 @@ struct PermutationDescription<SamplePermutation>
 	using Type = std::tuple<bool, int>;
 };
 
-class XRExport XRRenderPassPresent : public XRRenderPassBase
+class RenderPass(XRRenderPassPresent)
 {
-
+private:
+	virtual void DefaultPipelineState(XRPipelineStateDescription & outDefault) override {}
 };
 
-class XRExport XRRenderPassSample : public XRRenderPassBase
+class RenderPass(XRRenderPassSample)
 {
 private: // Common-Pipeline descriptions;
 	XRInputLayout const* _inputLayout;
+
+	friend XRRendererTest;
 
 private: // Per-Pipeline descriptions;
 	XRShaderStageDescription _defaultShaderDescription;
@@ -70,8 +74,8 @@ private: // Per-Pipeline descriptions;
 	XRVertexInputStateDescription _defaultVertexInputStateDescription;
 
 public:
-	XRRenderPassSample(XRInputLayout const* inputLayout)
-		: _inputLayout(inputLayout)
+	XRRenderPassSample()
+		//: _inputLayout(inputLayout)
 	{
 		//Create RenderPass
 		//	Define Attachment Descriptions
@@ -92,30 +96,40 @@ public:
 
 			_defaultVertexInputStateDescription.init(_inputLayout, XRPrimitiveTopology::TriangleList);
 			pipelineCreateInfo._description._vertexInputStateDescription = &_defaultVertexInputStateDescription;
-			
-			static xr::IndexedString<XRPermutationElement> strAlphaTest = "AlphaTest";
-			pipelineCreateInfo._permutationElementInfos.push_back( {strAlphaTest, 2} );
-			//pipelineCreateInfo._permutationElementInfos.emplace_back( strAlphaTest, 2 );
-			pipelineCreateInfo._permute = [this](XRPipelineStateDescription& outDescription, std::vector<XRPermutationElement> const& elements)
+
+			pipelineCreateInfo._permutationLayout = SamplePermutation::GetLayout();
+			pipelineCreateInfo._permute = [this](XRPipelineStateDescription& outDescription, std::vector<XRPermutationElementArgument> const& elements)
 			{
+				for (uint32_t i = 0; i < elements.size(); ++i)
+				{
+					SamplePermutation const& sample = static_cast<SamplePermutation const&>(elements[i]._id);
+					sample->_name == "AlphaTest" || sample->_name == "Lod";
+				}
+
 				if (elements[SamplePermutation::AlphaTest]._value == 1)
 				{
 					outDescription._shaderStageDescription = &_alphaShaderDescription;
 				}
 
-				return false;
+				return true;
 			};
 		}
 	}
+
+private:
+	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) override
+	{
+
+	}
 };
 
-XRExport XRRenderPassSample* renderPassSample;
+XRRenderPassSample* renderPassSample;
 
 XRRendererTest::XRRendererTest()
 {
-	// TODO) Initialize()ÀÇ ³»¿ëÀ» glew ÃÊ±âÈ­ Æ¯Á¤µÇ´Â ¼ø°£ ÇÒ ¼ö ÀÖ´Â°Ô ÁÁÀ½.
-	// 1. Observer¸¦ µÖ¼­ ¶óÀÌºê·¯¸® ÁØºñ°¡ ³¡³ª¸é Initialize()°¡ È£ÃâµÇµµ·Ï,
-	// 2. ¾Æ´Ï¸é ¶÷´Ù¸¦ µî·ÏÇØ¼­ ¶óÀÌºê·¯¸® ÁØºñ°¡ ³¡³ª¸é ±× Áï½Ã È£ÃâµÇµµ·Ï
+	// TODO) Initialize()ì˜ ë‚´ìš©ì„ glew ì´ˆê¸°í™” íŠ¹ì •ë˜ëŠ” ìˆœê°„ í•  ìˆ˜ ìˆëŠ”ê²Œ ì¢‹ìŒ.
+	// 1. Observerë¥¼ ë‘¬ì„œ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì¤€ë¹„ê°€ ëë‚˜ë©´ Initialize()ê°€ í˜¸ì¶œë˜ë„ë¡,
+	// 2. ì•„ë‹ˆë©´ ëŒë‹¤ë¥¼ ë“±ë¡í•´ì„œ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì¤€ë¹„ê°€ ëë‚˜ë©´ ê·¸ ì¦‰ì‹œ í˜¸ì¶œë˜ë„ë¡
 }
 
 XRRendererTest::~XRRendererTest()
@@ -124,22 +138,12 @@ XRRendererTest::~XRRendererTest()
 
 void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 {
+	static xr::IndexedString<XRRenderPassBase> renderPassSampleName = "XRRenderPassSample";
+	renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
+#if 0
 	XRShaderStageDescription _defaultShaderDescription;
 	XRShaderStageDescription _alphaShaderDescription;
 	XRVertexInputStateDescription _defaultVertexInputStateDescription;
-	
-	static_assert(SamplePermutation::AlphaTest == 0, "");
-	printf("%s %d\n", SamplePermutation::AlphaTest->_id, SamplePermutation::AlphaTest);
-	printf("%d %s\n", SamplePermutation::AlphaTest, SamplePermutation::AlphaTest->_id);
-	
-	SamplePermutation a = SamplePermutation::AlphaTest;
-	printf("%d %s\n", a, a->_id);
-	
-	a = SamplePermutation::Lod;
-	printf("%d %s\n", a, a->_id);
-	
-	a = 0;
-	printf("%d %s\n", a, a->_id);
 
 	{
 		XRPipelineCreateInfo pipelineCreateInfo;
@@ -166,9 +170,9 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 
 			return true;
 		};
-
-		_pipelineManager->CreatePipeline(std::move(pipelineCreateInfo));
-	}
+#endif
+	renderPassSample->_pipelineCreateInfos;
+	_pipelineManager->CreatePipeline(renderPassSample->_pipelineCreateInfos[0]);
 }
 
 void XRRendererTest::Update()
@@ -226,6 +230,6 @@ void XRRendererTest::Render()
 	XRRenderPassBase* renderPass = renderPassSample;
 	XRFramebuffer* framebuffer;
 
-	commandBuffer->begin();
-	commandBuffer->end();
+	//commandBuffer->begin();
+	//commandBuffer->end();
 }

@@ -1,8 +1,8 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "XRPipeline.h"
 
-void XRPipelineGroup::AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElement>& permutationDefinition)
+void XRPipelineGroup::AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElementArgument>& permutationDefinition)
 {
 
 }
@@ -15,8 +15,7 @@ void XRPipelineGroup::SetCurrentPermutation(std::vector<XRPermutationElementArgu
 {
 }
 
-
-bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo&& createInfo)
+bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 {
 	_pipelineCreateInfos.emplace_back(std::move(createInfo));
 
@@ -27,13 +26,14 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo&& createInfo)
 	std::vector<uint32_t> roundSizes;
 	std::vector<XRPipelineStateDescription> pipelineDescriptions;
 
-	uint32_t const numPermutationElements = pipelineCreateInfo._permutationElementInfos.size();
+	XRPermutationBase::Layout& permutationLayout = pipelineCreateInfo._permutationLayout;
+	uint32_t const numPermutationElements = permutationLayout._numEnums;
 	roundSizes.resize(numPermutationElements + 1ull);
 	uint32_t numAllPermutations = 1;
 	{
 		for (uint32_t i = 0; i < numPermutationElements; ++i)
 		{
-			XRPermutationElementInfo& elementInfo = pipelineCreateInfo._permutationElementInfos[i];
+			XRPermutationElementInfo const& elementInfo = permutationLayout._enums[i];
 
 			numAllPermutations *= elementInfo._count;
 			roundSizes[i] = numAllPermutations;
@@ -43,14 +43,14 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo&& createInfo)
 		pipelineDescriptions.reserve(numAllPermutations);
 	}
 
-	std::vector<XRPermutationElement> permutationElements;
+	std::vector<XRPermutationElementArgument> permutationElements;
 	{
 		permutationElements.resize(numPermutationElements);
 
 		for (uint32_t i = 0; i < numPermutationElements; ++i)
 		{
-			XRPermutationElementInfo& elementInfo = pipelineCreateInfo._permutationElementInfos[i];
-			permutationElements[i]._info = &elementInfo;
+			XRPermutationElementInfo const& elementInfo = permutationLayout._enums[i];
+			permutationElements[i]._id = i;
 			permutationElements[i]._value = 0;
 		}
 	}
@@ -87,4 +87,12 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo&& createInfo)
 	}
 
 	return true;
+}
+
+bool XRRenderPassManager::RegisterRenderPassGenerator(std::string&& string, void* fpGnerator)
+{
+	auto Generate = static_cast<XRPFN_GENERATE_RENDERPASS>(fpGnerator);
+	XRRenderPassBase* renderPass = Generate();
+	auto result = _renderPasses.insert({ string, { renderPass, Generate } });
+	return result.second;
 }

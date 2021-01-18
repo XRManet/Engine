@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "stdafx.h"
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
@@ -619,38 +619,33 @@ struct SampleState
 	int32_t _testInt = 0;
 };
 
-struct XRPermutationElementInfo;
-struct XRPermutationElement
-{
-	const XRPermutationElementInfo* _info;
-	int16_t _value;
-};
-
 struct XRPermutationElementInfo
 {
-	xr::IndexedString<XRPermutationElement> _name;
+	const char* _name;
 	int16_t _count;
 };
 
+STATIC_ENUM_BASE(XRPermutationBase, uint16_t, XRPermutationElementInfo);
+
 struct XRPermutationElementArgument
 {
-	xr::IndexedString<XRPermutationElement> _name;
+	XRPermutationBase _id;
 	int16_t _value;
 };
 
 struct XRPipelineCreateInfo
 {
-	xr::IndexedString<XRPipeline>						_name;
-	XRPipelineStateDescription							_description;
-	std::vector<XRPermutationElementInfo>							_permutationElementInfos;
-	std::function<bool(XRPipelineStateDescription&, std::vector<XRPermutationElement> const&)>	_permute;
+	xr::IndexedString<XRPipeline>		_name;
+	XRPipelineStateDescription			_description;
+	XRPermutationBase::Layout			_permutationLayout;
+	std::function<bool(XRPipelineStateDescription&, std::vector<XRPermutationElementArgument> const&)>	_permute;
 };
 
 // Note(jiman): 이름 적절한 것으로 변경 필요
 class XRPipelineGroup
 {
 	std::vector<XRPipeline*> _pipelines;
-	std::vector<XRPermutationElement> _currentKey;
+	std::vector<XRPermutationElementArgument> _currentKey;
 	uint32_t _createInfoIndex;
 
 public:
@@ -659,13 +654,42 @@ public:
 	virtual ~XRPipelineGroup() {}
 
 public:
-	void AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElement>& permutationDefinition);
+	void AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElementArgument>& permutationDefinition);
 	void GetCurrentPermutation(std::vector<XRPermutationElementArgument>& elementArguments);
 	void SetCurrentPermutation(std::vector<XRPermutationElementArgument> const& elementArguments);
 	void SetCurrentPermutation(std::vector<XRPermutationElementArgument>&& elementArguments) { SetCurrentPermutation(elementArguments); }
 };
 
 class XRPipeline;
+class XRBaseExport XRPipelineManager
+{
+	std::unordered_map<xr::IndexedString<XRPipeline>, XRPipelineGroup*> _pipelines;
+	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
+
+public:
+	XRPipelineGroup* GetPipelineGroup(const char* pipelineName)
+	{
+		return nullptr;
+	}
+
+	XRPipeline* GetPipeline(char const* pipelineName)
+	{
+		return nullptr;
+	}
+
+	XRPipeline* GetPipeline(char const* pipelineName, std::vector<XRPermutationElementArgument> const& elementArguments)
+	{
+		return nullptr;
+	}
+
+	bool CreatePipeline(XRPipelineCreateInfo const& createInfo);
+};
+
+// Note(jiman): VC++에서 'RenderPassAutoGenerator<RenderPass>::generate' 형식으로 처리
+template<typename RenderPass> struct RenderPassAutoGenerator { public:	XRExport static RenderPass* generate() { return new RenderPass; } };
+// Note(jiman): #RequiredClangOption (-fdelayed-template-parsing)
+#define RenderPass(XRRenderPassName) XRRenderPassName; template struct RenderPassAutoGenerator<XRRenderPassName>; class XRRenderPassName : public XRRenderPassBase
+
 class XRBaseExport XRRenderPassBase
 {
 public:
@@ -676,7 +700,7 @@ protected: // Permutations
 	std::unordered_set<xr::IndexedString<XRPipeline>> _pipelineNames;
 	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
 
-	std::vector<XRPermutationElement> _elements;
+	std::vector<XRPermutationElementArgument> _elements;
 
 protected: // Attachments
 	/** @brief	The attachments. 이 렌더패스 내에서 사용할 모든 attachments에 대한 설명. */
@@ -716,28 +740,23 @@ private:
 	LinkUpdateFunc* _update;
 };
 
-class XRBaseExport XRPipelineManager
+using XRPFN_GENERATE_RENDERPASS = XRRenderPassBase * (*)(void);
+
+class XRBaseExport XRRenderPassManager
 {
-	std::unordered_map<xr::IndexedString<XRPipeline>, XRPipelineGroup*> _pipelines;
-	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
+private:
+	struct RenderPassInternal
+	{
+		XRRenderPassBase*			_renderPass;
+		XRPFN_GENERATE_RENDERPASS	_generate;
+	};
+
+private:
+	std::unordered_map<xr::IndexedString<XRRenderPassBase>, RenderPassInternal> _renderPasses;
 
 public:
-	XRPipelineGroup* GetPipelineGroup(const char* pipelineName)
-	{
-		return nullptr;
-	}
-	
-	XRPipeline* GetPipeline(char const* pipelineName)
-	{
-		return nullptr;
-	}
-	
-	XRPipeline* GetPipeline(char const* pipelineName, std::vector<XRPermutationElementArgument> const& elementArguments)
-	{
-		return nullptr;
-	}
-
-	bool CreatePipeline(XRPipelineCreateInfo&& createInfo);
+	bool RegisterRenderPassGenerator(std::string&& string, void* generator);
+	XRRenderPassBase* GetRenderPass(xr::IndexedString<XRRenderPassBase> const& renderPassName) const { return _renderPasses.find(renderPassName)->second._renderPass; }
 };
 
 struct CommandStep
