@@ -1,9 +1,10 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "XRIndexedString.h"
 
 #include <XRFrameworkBase/XRPlatform.h>
 
+class XRRenderPassBase;
 class XRPipeline;
 struct XRPermutationElement;
 
@@ -49,6 +50,7 @@ IndexedStringContainer<Category, Capacity> IndexedString<Category, Capacity>::sC
 //				pre-link event 내에서 가능한 방법을 모색해볼 것. (이런 용도의 심볼을 공급할 수 있는 추가 프로젝트를 생성하는 것도 고려)
 // Debugging:	XRFrameworkBase.dll!xr::IndexedString<Category,unsigned short>::sContainer
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(DefaultStringCategory);
+EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRRenderPassBase);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPipeline);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPermutationElement);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(CommandStep);
