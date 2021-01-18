@@ -1,4 +1,4 @@
-// XRFrameworkBase/stdafx.h
+﻿// XRFrameworkBase/stdafx.h
 #pragma once
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -8,6 +8,9 @@
 // Windows 헤더 파일:
 #include <windows.h>
 
+#define XRExport __declspec(dllexport)
+#define XRImport extern __declspec(dllimport)
+
 #ifdef XRFRAMEWORKBASE_EXPORTS
 #define XRBaseExport __declspec(dllexport)
 #define XRBaseSupply __declspec(dllexport)
@@ -15,13 +18,15 @@
 #define XRBaseExport __declspec(dllimport)
 #define XRBaseSupply __declspec(dllimport)
 #endif
-#define XRBaseHidden
 
 #ifndef XRRENDERENGINEGL_EXPORTS
 #define XRRenderExport extern "C" __declspec(dllimport)
 #endif
 
 #elif defined(__APPLE__)
+
+#define XRExport __attribute__((visibility("default")))
+#define XRImport extern __attribute__((visibility("default")))
 
 #define XRBaseExport __attribute__((visibility("default")))
 #define XRBaseHidden __attribute__((visibility("hidden")))
