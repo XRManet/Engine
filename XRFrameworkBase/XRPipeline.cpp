@@ -1,26 +1,43 @@
 ﻿#include "stdafx.h"
 
+#include "XRHash.h"
 #include "XRPipeline.h"
 
 void XRPipelineGroup::AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElementArgument>& permutationDefinition)
 {
+	uint32_t const permutationHash = CalcPermutationHash(permutationDefinition);
+	assert(_pipelineLookup.find(permutationHash) == _pipelineLookup.end());
 
+	_pipelineLookup[permutationHash] = pipeline;
 }
 
-void XRPipelineGroup::GetCurrentPermutation(std::vector<XRPermutationElementArgument>& elementArguments)
+void XRPipelineGroup::SetDefaultPermutation(std::vector<XRPermutationElementArgument> const& elementArguments)
 {
+	_defaultFingerprint = elementArguments;
+	_defaultHash = CalcPermutationHash(elementArguments);
 }
 
-void XRPipelineGroup::SetCurrentPermutation(std::vector<XRPermutationElementArgument> const& elementArguments)
+uint32_t XRPipelineGroup::CalcPermutationHash(std::vector<XRPermutationElementArgument> const& elementArguments)
 {
+	std::vector<uint16_t> permutationFingerprint;
+	permutationFingerprint.resize(_createInfo->_permutationLayout._numEnums, 0);
+
+	uint32_t numElementArguments = elementArguments.size();
+	for (uint32_t i = 0; i < numElementArguments; ++i)
+	{
+		XRPermutationElementArgument const& arg = elementArguments[i];
+		permutationFingerprint[arg._id] = arg._value;
+	}
+
+	return GetHash(permutationFingerprint.data(), sizeof(uint16_t) * _createInfo->_permutationLayout._numEnums);
 }
 
 bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 {
-	_pipelineCreateInfos.emplace_back(std::move(createInfo));
-
-	XRPipelineGroup* pipelineGroup = new XRPipelineGroup(_pipelineCreateInfos.size() - 1);
+	_pipelineCreateInfos.push_back(createInfo);
 	XRPipelineCreateInfo& pipelineCreateInfo = _pipelineCreateInfos.back();
+
+	XRPipelineGroup* pipelineGroup = new XRPipelineGroup(pipelineCreateInfo);
 	_pipelines.insert({ pipelineCreateInfo._name, pipelineGroup });
 
 	std::vector<uint32_t> roundSizes;

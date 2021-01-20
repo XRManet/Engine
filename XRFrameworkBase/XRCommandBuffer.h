@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "stdafx.h"
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
@@ -12,6 +12,7 @@ enum class XRBindPoint
 class XRRenderPassBase;
 class XRFramebuffer;
 class XRPipeline;
+class XRPipelineGroup;
 
 class XRModel;
 class XRBaseExport XRCommandBuffer

@@ -631,6 +631,10 @@ struct XRPermutationElementArgument
 {
 	XRPermutationBase _id;
 	int16_t _value;
+
+	XRPermutationElementArgument() = default;
+	XRPermutationElementArgument(XRPermutationBase id, int16_t value)
+		: _id(id), _value(value) {}
 };
 
 struct XRPipelineCreateInfo
@@ -642,22 +646,36 @@ struct XRPipelineCreateInfo
 };
 
 // Note(jiman): 이름 적절한 것으로 변경 필요
-class XRPipelineGroup
+class XRBaseExport XRPipelineGroup
 {
-	std::vector<XRPipeline*> _pipelines;
-	std::vector<XRPermutationElementArgument> _currentKey;
-	uint32_t _createInfoIndex;
+	XRPipelineCreateInfo const*					_createInfo;
+
+	std::unordered_map<uint32_t, XRPipeline*>	_pipelineLookup;
+	std::vector<XRPipeline*>					_pipelines;
+
+	std::vector<XRPermutationElementArgument>	_defaultFingerprint;
+	uint32_t									_defaultHash;
 
 public:
 	XRPipelineGroup() = default;
-	XRPipelineGroup(uint32_t infoIndex) : _createInfoIndex(infoIndex) {}
+	XRPipelineGroup(XRPipelineCreateInfo const& createInfo)
+		: _createInfo(&createInfo), _defaultHash(0) {}
 	virtual ~XRPipelineGroup() {}
 
 public:
 	void AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElementArgument>& permutationDefinition);
-	void GetCurrentPermutation(std::vector<XRPermutationElementArgument>& elementArguments);
-	void SetCurrentPermutation(std::vector<XRPermutationElementArgument> const& elementArguments);
-	void SetCurrentPermutation(std::vector<XRPermutationElementArgument>&& elementArguments) { SetCurrentPermutation(elementArguments); }
+
+public:
+	std::vector<XRPermutationElementArgument> const& GetDefaultPermutation() const { return _defaultFingerprint; }
+	void RetrieveDefaultPermutation(std::vector<XRPermutationElementArgument>& elementArguments) { elementArguments = _defaultFingerprint; }
+	void SetDefaultPermutation(std::vector<XRPermutationElementArgument> const& elementArguments);
+
+public:
+	uint32_t CalcPermutationHash(std::vector<XRPermutationElementArgument> const& elementArguments);
+
+public:
+	inline XRPipeline* GetPipeline() { return _pipelineLookup[_defaultHash]; }
+	inline XRPipeline* GetPipeline(uint32_t permutationHash) { return _pipelineLookup.find(permutationHash)->second; }
 };
 
 class XRPipeline;
@@ -667,19 +685,10 @@ class XRBaseExport XRPipelineManager
 	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
 
 public:
-	XRPipelineGroup* GetPipelineGroup(const char* pipelineName)
+	inline XRPipelineGroup* GetPipelineGroup(xr::IndexedString<XRPipeline> pipelineName)
 	{
-		return nullptr;
-	}
-
-	XRPipeline* GetPipeline(char const* pipelineName)
-	{
-		return nullptr;
-	}
-
-	XRPipeline* GetPipeline(char const* pipelineName, std::vector<XRPermutationElementArgument> const& elementArguments)
-	{
-		return nullptr;
+		auto found = _pipelines.find(pipelineName);
+		return (found != _pipelines.end()) ? found->second : nullptr;
 	}
 
 	bool CreatePipeline(XRPipelineCreateInfo const& createInfo);

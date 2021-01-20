@@ -216,8 +216,17 @@ void XRRendererTest::Render()
 
 		secondCommands->beginPass(renderPass, extent);
 
-		std::vector<XRPermutationElementArgument> permutation;
-		XRPipeline* pipeline = _pipelineManager->GetPipeline("samplePipelineName", permutation);
+		static xr::IndexedString<XRPipeline> samplePipelineName = "samplePipelineName";
+		XRPipelineGroup* pipelineGroup = _pipelineManager->GetPipelineGroup(samplePipelineName);
+
+		static uint32_t permutationThis = [pipelineGroup]() {
+			std::vector<XRPermutationElementArgument> permutation;
+			permutation.emplace_back(SamplePermutation::AlphaTest, 0);
+			permutation.emplace_back(SamplePermutation::Lod, 0);
+			return pipelineGroup->CalcPermutationHash(permutation);
+		} ();
+
+		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
 		secondCommands->endPass();

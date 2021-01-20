@@ -105,8 +105,8 @@ namespace ENUM_CLASS_NAME##_SPACE { \
 	template<> struct DECLARED_ENUM<__##id> { constexpr static ADD_ENUM_TYPE declared { #id, __VA_ARGS__ }; }; \
 	template<> struct ARRAY_ENUM_TYPE<__##id + 1> : public ARRAY_ENUM_TYPE<__##id> { \
 		ARRAY_ENUM_TYPE() : ARRAY_ENUM_TYPE<__##id>(), \
-							element(&DECLARED_ENUM<__##id>::declared) {} \
-		const ADD_ENUM_TYPE* element; \
+							element(DECLARED_ENUM<__##id>::declared) {} \
+		const ADD_ENUM_TYPE element; \
 	}; \
 } \
 
