@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 
 #include <XRFrameworkBase/XRRenderer.h>
-#include <XRFrameworkBase/XRRenderEngine.h>
+#include <XRFrameworkBase/XRRHI.h>
 
 class XRRendererTest : public XRRenderer
 {
-	// Todo) ÀÏ´Ü ·»´õ¸µ µÇ´ÂÁö Å×½ºÆ®ÇØº¸·Á°í ¿©±â´Ù ¼±¾ğÇØ¼­ ±×³É ½áº½.
-	// ¾Æ·¡ ¸â¹öº¯¼öµéÀº ±×·¡ÇÈ½º ÆÄÀÌÇÁ¶óÀÎ¿¡¼­³ª ¼±¾ğÇØ´Ù ¾²°í
-	// ³ªÁß¿£ Rendering stratagy¿Í pipeline °£ÀÇ °ü°è¸¦ Á¤¸³ÇÑ µÚ,
-	// ·»´õ¸µÀ¸·Î ¿¬°áµÉ ¼ö ÀÖ°Ô º¯°æÇÒ °Í.
+	// Todo) ì¼ë‹¨ ë Œë”ë§ ë˜ëŠ”ì§€ í…ŒìŠ¤íŠ¸í•´ë³´ë ¤ê³  ì—¬ê¸°ë‹¤ ì„ ì–¸í•´ì„œ ê·¸ëƒ¥ ì¨ë´„.
+	// ì•„ë˜ ë©¤ë²„ë³€ìˆ˜ë“¤ì€ ê·¸ë˜í”½ìŠ¤ íŒŒì´í”„ë¼ì¸ì—ì„œë‚˜ ì„ ì–¸í•´ë‹¤ ì“°ê³ 
+	// ë‚˜ì¤‘ì—” Rendering stratagyì™€ pipeline ê°„ì˜ ê´€ê³„ë¥¼ ì •ë¦½í•œ ë’¤,
+	// ë Œë”ë§ìœ¼ë¡œ ì—°ê²°ë  ìˆ˜ ìˆê²Œ ë³€ê²½í•  ê²ƒ.
 	XRPipeline* _pipeline = nullptr;
 
 	struct UNIFORM_BINDING_NAME

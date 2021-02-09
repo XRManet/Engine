@@ -55,7 +55,7 @@ public:
 	virtual void addBarrier() {}
 };
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 XRRenderExport XRCommandBuffer* xrCreateCommandBuffer();
 #else
 extern XRCommandBuffer* (*xrCreateCommandBuffer)();

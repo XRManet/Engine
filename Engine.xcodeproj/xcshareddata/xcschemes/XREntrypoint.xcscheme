@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E8C1BA8122B63B8A006EDA1E"
-               BuildableName = "libXRRenderEngineGL.dylib"
-               BlueprintName = "XRRenderEngineGL"
+               BuildableName = "libXRRHIOpenGL.dylib"
+               BlueprintName = "XRRHIOpenGL"
                ReferencedContainer = "container:Engine.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

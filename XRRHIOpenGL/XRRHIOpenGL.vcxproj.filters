@@ -49,7 +49,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="XRRenderEngineGL.cpp">
+    <ClCompile Include="XRRHIOpenGL.cpp">
       <Filter>소스 파일\Linker</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">

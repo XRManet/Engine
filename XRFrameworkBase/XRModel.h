@@ -225,7 +225,7 @@ public:
 	XRInputLayout const* getInputLayout() const { return _inputLayout; }
 };
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 XRRenderExport XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
 XRRenderExport XRModel* xrCreateModel(XRModelData const* loadable);
 #else

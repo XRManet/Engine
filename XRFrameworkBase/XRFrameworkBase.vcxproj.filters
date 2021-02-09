@@ -69,7 +69,7 @@
     <Filter Include="소스 파일\Engine\Render\Common">
       <UniqueIdentifier>{4aa13904-baf5-42dc-b1cd-8c1b5d93e744}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Engine\Render\Backends">
+    <Filter Include="소스 파일\Engine\Render\RHI">
       <UniqueIdentifier>{c80694cf-502d-4500-83ae-b58e4cd6c580}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -150,19 +150,16 @@
       <Filter>소스 파일\Platform</Filter>
     </ClInclude>
     <ClInclude Include="XRModel.h">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClInclude>
     <ClInclude Include="XRTexture.h">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClInclude>
     <ClInclude Include="XRPipeline.h">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClInclude>
     <ClInclude Include="XRCommandBuffer.h">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
-    </ClInclude>
-    <ClInclude Include="XRRenderGroup.h">
-      <Filter>소스 파일\Engine\Render\Common</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClInclude>
     <ClInclude Include="XRRenderCommon.h">
       <Filter>소스 파일\Engine\Render\Common</Filter>
@@ -188,11 +185,14 @@
     <ClInclude Include="XRActorNode.h">
       <Filter>소스 파일\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="XRRenderEngine.h">
+    <ClInclude Include="XRBuffer.h">
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRHI.h">
       <Filter>소스 파일\Engine\Render</Filter>
     </ClInclude>
-    <ClInclude Include="XRBuffer.h">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
+    <ClInclude Include="XRRenderGroup.h">
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,9 +222,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="XRRenderEngineLinker.cpp">
-      <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClCompile>
     <ClCompile Include="XRTextureData.cpp">
       <Filter>소스 파일\Resource\TextureData</Filter>
@@ -266,19 +263,22 @@
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
     <ClCompile Include="XRModel.cpp">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
-    </ClCompile>
-    <ClCompile Include="XRRenderGroup.cpp">
-      <Filter>소스 파일\Engine\Render\Common</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClCompile>
     <ClCompile Include="XRRenderCommon.cpp">
       <Filter>소스 파일\Engine\Render\Common</Filter>
     </ClCompile>
     <ClCompile Include="XRTexture.cpp">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClCompile>
     <ClCompile Include="XRPipeline.cpp">
-      <Filter>소스 파일\Engine\Render\Backends</Filter>
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRHILinker.cpp">
+      <Filter>소스 파일\Engine\Render\Linker</Filter>
+    </ClCompile>
+    <ClCompile Include="XRRenderGroup.cpp">
+      <Filter>소스 파일\Engine\Render\RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

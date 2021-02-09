@@ -138,7 +138,7 @@ public:
 	}
 };
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 XRRenderExport XRRenderGroup* xrCreateRenderGroup();
 #else
 extern XRRenderGroup* (*xrCreateRenderGroup)();

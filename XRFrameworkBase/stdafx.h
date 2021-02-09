@@ -19,7 +19,7 @@
 #define XRBaseSupply __declspec(dllimport)
 #endif
 
-#ifndef XRRENDERENGINEGL_EXPORTS
+#ifndef XRRHIOPENGL_EXPORTS
 #define XRRenderExport extern "C" __declspec(dllimport)
 #endif
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XRPlatform.h"
 
 #include "XRModel.h"
@@ -22,15 +22,15 @@ XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
 XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 
 #ifndef XRRENDER_ENGINE
-#define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineGL"
+#define XRRENDER_ENGINE_DEFAULT     "XRRHIOpenGL"
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
 #endif
 
-static struct XRRenderEngineLinker
+static struct XRRHILinker
 {
 	XRPlatform::XRDSO* _dso;
 
-	XRRenderEngineLinker()
+	XRRHILinker()
 	{
 		static const char* renderEngineName = XRRENDER_ENGINE;
 		_dso = XRPlatform::LoadDSO(renderEngineName);
@@ -50,7 +50,7 @@ static struct XRRenderEngineLinker
 		GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");
 	}
 
-	~XRRenderEngineLinker()
+	~XRRHILinker()
 	{
 		XRPlatform::UnloadDSO(_dso);
 	}

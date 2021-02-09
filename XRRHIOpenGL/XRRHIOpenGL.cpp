@@ -1,4 +1,4 @@
-﻿// XRRenderEngineGL.cpp : DLL 응용 프로그램을 위해 내보낸 함수를 정의합니다.
+﻿// XRRHIOpenGL.cpp : DLL 응용 프로그램을 위해 내보낸 함수를 정의합니다.
 //
 
 #include "stdafx.h"
@@ -11,9 +11,9 @@
 
 #include <assert.h>
 
-struct RenderEngineGLInitializer
+struct RHIOpenGLInitializer
 {
-  RenderEngineGLInitializer()
+	RHIOpenGLInitializer()
   {
     // glewInit() must be called after makeCurrent-like functions
     glewExperimental = GL_TRUE;
@@ -25,28 +25,28 @@ struct RenderEngineGLInitializer
     }
   }
 
-  static RenderEngineGLInitializer& GetInitializer()
+  static RHIOpenGLInitializer& GetInitializer()
   {
-    static RenderEngineGLInitializer __init;
+    static RHIOpenGLInitializer __init;
     return __init;
   }
 };
 
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	return new XRInputLayoutGL(std::move(inputLayoutDesc), preferredStrideSize);
 }
 
 XRModel* xrCreateModel(XRModelData const* loadable)
 {
-  RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
   return new XRModelGL(loadable);
 }
 
 XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	auto textureGL = new XRTextureGL;
 	auto textureHandle = new XRTexture(createInfo);
 	textureHandle->_rhi = textureGL;
@@ -55,7 +55,7 @@ XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 
 XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	auto textureGL = new XRTextureGL;
 	if (nullptr != loadable)
 		textureGL->upload(loadable);
@@ -67,7 +67,7 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 
 XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	auto bufferGL = new XRBufferGL;
 	auto bufferHandle = new XRBuffer(createInfo);
 	bufferHandle->_rhi = bufferGL;
@@ -76,18 +76,18 @@ XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 
 XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	return new XRPipelineGL(description);
 }
 
 XRCommandBuffer* xrCreateCommandBuffer()
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	return new XRCommandBufferGL;
 }
 
 XRRenderGroup* xrCreateRenderGroup()
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RHIOpenGLInitializer::GetInitializer();
 	return new XRRenderGroupGL;
 }

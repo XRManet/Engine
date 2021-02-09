@@ -96,7 +96,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XRRENDER_ENGINE="XRRenderEngineGL.dll";_DEBUG;XRFRAMEWORKBASE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XRRENDER_ENGINE="XRRHIOpenGL.dll";_DEBUG;XRFRAMEWORKBASE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -145,7 +145,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XRRENDER_ENGINE="XRRenderEngineGL.dll";NDEBUG;XRFRAMEWORKBASE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>XRRENDER_ENGINE="XRRHIOpenGL.dll";NDEBUG;XRFRAMEWORKBASE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -167,7 +167,7 @@
     <ClInclude Include="XRCommandBuffer.h" />
     <ClInclude Include="XRDXTC.h" />
     <ClInclude Include="XRFrameworkBase.h" />
-    <ClInclude Include="XRRenderEngine.h" />
+    <ClInclude Include="XRRHI.h" />
     <ClInclude Include="XRGeometry.h" />
     <ClInclude Include="XRIndexedString.h" />
     <ClInclude Include="XRLightNode.h" />
@@ -225,7 +225,7 @@
     <ClCompile Include="XRPlatform.cpp" />
     <ClCompile Include="XRRenderer.cpp" />
     <ClCompile Include="XRRenderCommon.cpp" />
-    <ClCompile Include="XRRenderEngineLinker.cpp" />
+    <ClCompile Include="XRRHILinker.cpp" />
     <ClCompile Include="XRRenderGroup.cpp" />
     <ClCompile Include="XRResourceManager.cpp" />
     <ClCompile Include="XRScene.cpp" />

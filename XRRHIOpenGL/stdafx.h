@@ -21,9 +21,9 @@
 #endif
 
 /* XRRenderExport
- * XRRENDERENGINEGL_EXPORTS is defined in settings for a project file per each platform-dependent IDE.
+ * XRRHIOPENGL_EXPORTS is defined in settings for a project file per each platform-dependent IDE.
  */
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 #if defined(_WIN32) || defined(_WIN64)
 #define XRRenderExport extern "C" __declspec(dllexport)
 #elif (__APPLE__)
