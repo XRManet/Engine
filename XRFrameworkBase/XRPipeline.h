@@ -9,7 +9,7 @@
 struct XRPipelineStateDescription;
 class XRPipeline;
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 XRRenderExport XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* createInfo);
 #else
 extern XRPipeline* (*xrCreatePipeline)(XRPipelineStateDescription const* createInfo);

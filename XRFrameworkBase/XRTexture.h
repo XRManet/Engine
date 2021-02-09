@@ -14,7 +14,7 @@ public:
 	virtual ~XRTextureRHI() {}
 };
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 XRRenderExport XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
 XRRenderExport XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);
 #else
@@ -77,7 +77,7 @@ struct XRTextureCreateInfo
  */
 class XRBaseExport XRTexture
 {
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRHIOPENGL_EXPORTS
 	/** @brief	Factory function */
 	friend XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
 	friend XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);

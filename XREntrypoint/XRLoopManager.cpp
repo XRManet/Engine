@@ -604,8 +604,8 @@ void XRRendererTest::Update()
 	}
 }
 
-#include <XRRenderEngineGL/XRModelGL.h>
-#include <XRRenderEngineGL/XRPipelineGL.h>
+#include <XRRHIOpenGL/XRModelGL.h>
+#include <XRRHIOpenGL/XRPipelineGL.h>
 
 void XRRendererTest::Render()
 {
@@ -636,7 +636,7 @@ void XRFrameWalker::Initialize()
 	auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
 
-	// Note(jiman): ÀÓ½Ã·Î ResourceManager¸¦ ¾À¿¡¼­ ¾ò°Ô ÇÔ. ³ªÁß¿¡ Àü¿ªÀ¸·Î º¯°æ
+	// Note(jiman): ï¿½Ó½Ã·ï¿½ ResourceManagerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½. ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	auto resourceManager = scene->GetResourceManager();
 	renderer->Initialize(resourceManager);
 }

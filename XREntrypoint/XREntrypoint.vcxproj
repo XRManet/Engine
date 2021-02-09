@@ -199,7 +199,7 @@
     <ProjectReference Include="..\XRFrameworkBase\XRFrameworkBase.vcxproj">
       <Project>{f8bf6cf0-a168-4ee7-a71c-9462a21b2386}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\XRRenderEngineGL\XRRenderEngineGL.vcxproj">
+    <ProjectReference Include="..\XRRHIOpenGL\XRRHIOpenGL.vcxproj">
       <Project>{66e3c0f6-f9ab-4c36-ae40-5ca2b4f18e16}</Project>
     </ProjectReference>
     <ProjectReference Include="..\XRSceneTest\XRSceneTest.vcxproj">
