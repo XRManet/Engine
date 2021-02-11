@@ -140,76 +140,22 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 {
 	static xr::IndexedString<XRRenderPassBase> renderPassSampleName = "XRRenderPassSample";
 	renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
-#if 0
-	XRShaderStageDescription _defaultShaderDescription;
-	XRShaderStageDescription _alphaShaderDescription;
-	XRVertexInputStateDescription _defaultVertexInputStateDescription;
 
-	{
-		XRPipelineCreateInfo pipelineCreateInfo;
-		pipelineCreateInfo._name = xr::IndexedString<XRPipeline>("SampleFirstPipeline");
-
-		const char* CommonVertex = "SimpleVertex.glsl";
-		_defaultShaderDescription._vertexFilename = CommonVertex;
-		_defaultShaderDescription._fragmentFilename = "SimpleFragment.glsl";
-		_alphaShaderDescription._vertexFilename = CommonVertex;
-		_alphaShaderDescription._fragmentFilename = "SimpleFragmentAlpha.glsl";
-		pipelineCreateInfo._description._shaderStageDescription = &_defaultShaderDescription;
-
-		auto testInputLayout = resourceManager->GetInputLayoutByCategory("Skeletal");
-		_defaultVertexInputStateDescription.init(testInputLayout, XRPrimitiveTopology::TriangleList);
-		pipelineCreateInfo._description._vertexInputStateDescription = &_defaultVertexInputStateDescription;
-
-		pipelineCreateInfo._permutationElementInfos.push_back({ "AlphaTest", 2 });
-		pipelineCreateInfo._permute = [&_alphaShaderDescription](XRPipelineStateDescription& outDescription, std::vector<XRPermutationElement> const& elements)
-		{
-			if (elements[SamplePermutation::AlphaTest]._value == 1)
-			{
-				outDescription._shaderStageDescription = &_alphaShaderDescription;
-			}
-
-			return true;
-		};
-#endif
-	renderPassSample->_pipelineCreateInfos;
 	_pipelineManager->CreatePipeline(renderPassSample->_pipelineCreateInfos[0]);
 }
 
-void XRRendererTest::Update()
+void XRRendererTest::OnUpdate()
 {
 }
 
-void XRRendererTest::Render()
+void XRRendererTest::OnRender()
 {
-	int frameIndex = 0;
+	int frameIndex = GetRenderCounter() % 2;
 
-	renderPassSample->Initialize([]() {
-		printf("initialize test\n");
-		});
+	XRCommandFootprint commandFootprint;
 
-	renderPassSample->Update([](SampleState& sampleState, int frameIndex) {
-		printf("update test\n");
-
-		PipelineKey<SamplePermutation>* pipelineKey = nullptr;
-		if (frameIndex % 2 == 0)
-		{
-			static PipelineKey<SamplePermutation> pipelineKeyPermuted(std::make_tuple(true, 1));
-			pipelineKey = &pipelineKeyPermuted;
-		}
-		else
-		{
-			static PipelineKey<SamplePermutation> pipelineKeyPermuted(std::make_tuple(true, 0));
-			pipelineKey = &pipelineKeyPermuted;
-		}
-
-		//
-
-		});
-
-	CommandFootprint commandFootprint;
-
-	static xr::IndexedString<CommandStep> sFistStep("firstStepAlways");
-	commandFootprint.push_back({ sFistStep, 0 }, [this](XRCommandBuffer* secondCommands) {
+	static xr::IndexedString<XRCommandStep> sFistStep("firstStepAlways");
+	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands) {
 		XRRenderPassBase* renderPass = renderPassSample;
 		XRFramebuffer* frameBuffer;
 		xr::vec3<uint32_t> extent { 1024, 768, 1 };
@@ -229,15 +175,19 @@ void XRRendererTest::Render()
 		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
+		XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapots_1");
+
 		secondCommands->endPass();
 		});
 
-	XRTextureCreateInfo textureInfo;
-	XRTexture* textureA = xrCreateTexture(&textureInfo);
+	static xr::IndexedString<XRCommandStep> sPresentStep("Present");
+	commandFootprint.AddStep({ sPresentStep, 0 }, [this](XRCommandBuffer* secondCommands) {
+		secondCommands->addBarrier();
+		});
 
-	XRCommandBuffer* commandBuffer;
-	XRRenderPassBase* renderPass = renderPassSample;
-	XRFramebuffer* framebuffer;
+	XRCommandBuffer* commandBuffer = EvaluateCommands(commandFootprint);
+
+	commandBuffer->executeCommands();
 
 	//commandBuffer->begin();
 	//commandBuffer->end();

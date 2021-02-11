@@ -52,8 +52,8 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 		{
 			XRPermutationElementInfo const& elementInfo = permutationLayout._enums[i];
 
-			numAllPermutations *= elementInfo._count;
 			roundSizes[i] = numAllPermutations;
+			numAllPermutations *= elementInfo._count;
 		}
 		roundSizes[numPermutationElements] = numAllPermutations;
 
@@ -80,7 +80,11 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 		for (uint32_t i = 0; i < numAllPermutations; ++i)
 		{
 			for (uint32_t j = 0; j < numPermutationElements; ++j)
-				permutationElements[j]._value = i % roundSizes[j];
+			{
+				XRPermutationElementInfo const& elementInfo = permutationLayout._enums[j];
+				permutationElements[j]._value = i / roundSizes[j] % elementInfo._count;
+
+			}
 
 			if (doCreatePipeline == true)
 				pipelineDescriptions.resize(numAvailablePermutations + 1ull);
@@ -112,4 +116,17 @@ bool XRRenderPassManager::RegisterRenderPassGenerator(std::string&& string, void
 	XRRenderPassBase* renderPass = Generate();
 	auto result = _renderPasses.insert({ string, { renderPass, Generate } });
 	return result.second;
+}
+
+uint32_t XRCommandFootprint::MakeHash() const
+{
+	return GetHash(_steps.data(), _steps.size() * sizeof(_steps[0]));
+}
+
+void XRCommandFootprint::Transcribe(XRCommandBuffer* commandBuffer) const
+{
+	for (uint32_t c = 0; c < _capturedCommands.size(); ++c)
+	{
+		_capturedCommands[c](commandBuffer);
+	}
 }

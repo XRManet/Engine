@@ -12,6 +12,9 @@ class XRResourceManager;
 class XRRenderPassManager;
 class XRPipelineManager;
 
+class XRCommandFootprint;
+class XRCommandBuffer;
+
 namespace XRPlatform
 {
 struct XRDSO;
@@ -19,9 +22,14 @@ struct XRDSO;
 
 class XRBaseExport XRRenderer
 {
+private:
+	uint64_t _renderCounter = 0;
+
 protected:
 	XRRenderPassManager* const _renderPassManager;
 	XRPipelineManager* const _pipelineManager;
+
+	std::unordered_map<uint32_t, XRCommandBuffer*> _bakedCommandBuffers;
 
 public:
 	XRRenderer();
@@ -31,10 +39,23 @@ public:
 	bool Bind(XRPlatform::XRDSO* dso);
 
 public:
+	uint64_t GetRenderCounter() const { return _renderCounter; }
+
+protected:
+	XRCommandBuffer* EvaluateCommands(XRCommandFootprint& commandFootprint);
+
+public:
 	virtual void Initialize(XRResourceManager* resourceManager) {}
 
-	virtual void Update();
-	virtual void Render();
+public:
+	virtual void OnUpdate() = 0;
+	virtual void OnRender() = 0;
+
+public:
+	void Update();
+	void Render();
+
+public:
 	void RegisterNode(XRSceneNode* node);
 	
 private:

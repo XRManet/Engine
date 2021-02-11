@@ -7,6 +7,7 @@
 #include "XRLightNode.h"
 #include "XRActorNode.h"
 
+#include "XRCommandBuffer.h"
 #include "XRPipeline.h"
 
 static XRPipelineManager* GetDefaultPipelineManager()
@@ -66,14 +67,42 @@ bool XRRenderer::Bind(XRPlatform::XRDSO* dso)
 	return true;
 }
 
+XRCommandBuffer* XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootprint)
+{
+	uint32_t currentFootprintHash = commandFootprint.MakeHash();
+	XRCommandBuffer* commandBuffer = nullptr;
+
+	auto found = _bakedCommandBuffers.find(currentFootprintHash);
+	if (found != _bakedCommandBuffers.end())
+	{
+		commandBuffer = found->second;
+	}
+	else
+	{
+		commandBuffer = xrCreateCommandBuffer();
+
+		commandBuffer->begin();
+		{
+			commandFootprint.Transcribe(commandBuffer);
+		}
+		commandBuffer->end();
+
+		_bakedCommandBuffers.insert({ currentFootprintHash, commandBuffer });
+	}
+
+	return commandBuffer;
+}
+
 void XRRenderer::Update()
 {
-
+	OnUpdate();
 }
 
 void XRRenderer::Render()
 {
+	OnRender();
 
+	++_renderCounter;
 }
 
 void XRRenderer::RegisterNode(XRSceneNode* node)

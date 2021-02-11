@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
+#include <XRFrameworkBase/XRRenderCommon.h>
 
 enum class XRBindPoint
 {

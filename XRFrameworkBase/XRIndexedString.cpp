@@ -8,7 +8,7 @@ class XRRenderPassBase;
 class XRPipeline;
 struct XRPermutationElement;
 
-struct CommandStep;
+struct XRCommandStep;
 
 namespace xr
 {
@@ -53,5 +53,5 @@ EXPLICIT_GEN_INDEXED_STRING_SYMBOL(DefaultStringCategory);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRRenderPassBase);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPipeline);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPermutationElement);
-EXPLICIT_GEN_INDEXED_STRING_SYMBOL(CommandStep);
+EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRCommandStep);
 }

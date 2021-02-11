@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "stdafx.h"
 #include <stdint.h>
@@ -418,5 +418,10 @@ public:
 		}
 		return 0;
 	}
+
+};
+
+struct XRBarrierDescription
+{
 
 };

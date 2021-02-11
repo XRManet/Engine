@@ -768,22 +768,26 @@ public:
 	XRRenderPassBase* GetRenderPass(xr::IndexedString<XRRenderPassBase> const& renderPassName) const { return _renderPasses.find(renderPassName)->second._renderPass; }
 };
 
-struct CommandStep
+struct XRCommandStep
 {
-	xr::IndexedString<CommandStep>	_name;
-	uint16_t						_step;
+	xr::IndexedString<XRCommandStep>	_name;
+	uint16_t							_step;
 };
 
 class XRCommandBuffer;
-class CommandFootprint
+class XRCommandFootprint
 {
-	std::vector<CommandStep> _steps;
-	std::vector<std::function<void(XRCommandBuffer*)>> _capturedCcommands;
+	std::vector<XRCommandStep> _steps;
+	std::vector<std::function<void(XRCommandBuffer*)>> _capturedCommands;
 
 public:
-	void push_back(CommandStep&& step, std::function<void(XRCommandBuffer*)>&& capturedCommand)
+	void AddStep(XRCommandStep&& step, std::function<void(XRCommandBuffer*)>&& capturedCommand)
 	{
 		_steps.push_back(std::move(step));
-		_capturedCcommands.push_back(std::move(capturedCommand));
+		_capturedCommands.push_back(std::move(capturedCommand));
 	}
+
+public:
+	uint32_t MakeHash() const;
+	void Transcribe(XRCommandBuffer* commandBuffer) const;
 };

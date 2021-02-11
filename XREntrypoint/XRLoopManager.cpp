@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "XRLoopManager.h"
 
 #include <XRFrameworkBase/XRObject.h>
@@ -636,7 +636,7 @@ void XRFrameWalker::Initialize()
 	auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
 
-	// Note(jiman): ÀÓ½Ã·Î ResourceManager¸¦ ¾À¿¡¼­ ¾ò°Ô ÇÔ. ³ªÁß¿¡ Àü¿ªÀ¸·Î º¯°æ
+	// Note(jiman): ìž„ì‹œë¡œ ResourceManagerë¥¼ ì”¬ì—ì„œ ì–»ê²Œ í•¨. ë‚˜ì¤‘ì— ì „ì—­ìœ¼ë¡œ ë³€ê²½
 	auto resourceManager = scene->GetResourceManager();
 	renderer->Initialize(resourceManager);
 }
