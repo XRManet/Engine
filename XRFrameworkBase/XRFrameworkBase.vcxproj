@@ -167,6 +167,7 @@
     <ClInclude Include="XRCommandBuffer.h" />
     <ClInclude Include="XRDXTC.h" />
     <ClInclude Include="XRFrameworkBase.h" />
+    <ClInclude Include="XRReference.h" />
     <ClInclude Include="XRRenderEngine.h" />
     <ClInclude Include="XRGeometry.h" />
     <ClInclude Include="XRIndexedString.h" />
@@ -190,7 +191,7 @@
     <ClInclude Include="XRRenderGroup.h" />
     <ClInclude Include="XRResourceManager.h" />
     <ClInclude Include="XRRigidBody.h" />
-    <ClInclude Include="XRSavable.h" />
+    <ClInclude Include="XRSerializable.h" />
     <ClInclude Include="XRScene.h" />
     <ClInclude Include="XRSceneNode.h" />
     <ClInclude Include="XRTexture.h" />

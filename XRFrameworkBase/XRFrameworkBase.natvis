@@ -29,6 +29,33 @@ https://docs.microsoft.com/ko-kr/visualstudio/debugger/create-custom-views-of-na
     </Expand>
   </Type>
 
+  <Type Name="xr::vec1&lt;*&gt;">
+    <DisplayString>{{ _x={_x} }}</DisplayString>
+  </Type>
+
+  <Type Name="xr::vec2&lt;*&gt;">
+    <DisplayString>{{ _x={_x}, _y={_y} }}</DisplayString>
+  </Type>
+
+  <Type Name="xr::vec3&lt;*&gt;">
+    <DisplayString>{{ _x={_x}, _y={_y}, _z={_z} }}</DisplayString>
+  </Type>
+
+  <Type Name="xr::vec4&lt;*&gt;">
+    <DisplayString>{{ _x={_x}, _y={_y}, _z={_z}, _w={_w} }}</DisplayString>
+  </Type>
+  
+  <Type Name="xr::ContiguousReference&lt;*&gt;">
+    <DisplayString>{{ size={_size} }}</DisplayString>
+    <Expand>
+      <Item Name="_size">_size</Item>
+      <ArrayItems>
+        <Size>_size</Size>
+        <ValuePointer>_data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
   <Type Name="xr::IndexedString&lt;*&gt;">
     <DisplayString>{{ [{_index}] {*sContainer_PS._allAccessors._Mypair._Myval2._Myfirst[_index]} }}</DisplayString>
     <Expand>

@@ -116,9 +116,6 @@
     <ClInclude Include="XRPrimitiveTypes.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="XRSavable.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="XRScene.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
@@ -193,6 +190,12 @@
     </ClInclude>
     <ClInclude Include="XRBuffer.h">
       <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="XRSerializable.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="XRReference.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
