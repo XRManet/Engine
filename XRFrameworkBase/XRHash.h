@@ -1,4 +1,4 @@
-//
+﻿//
 //  XRHash.h
 //  XRFrameworkBase
 //
@@ -44,7 +44,7 @@ static uint32_t __Internal_GetHash<HashType::Ver1>(void const* data, size_t size
 	uint8_t const* dataInByte = static_cast<uint8_t const*>(data);
 	uint32_t hash = static_cast<uint32_t>(size);
 	
-	for (uint32_t i = 0; i != static_cast<uint32_t>(size); i++, dataInByte++)
+	for (uint32_t i = 0; i != static_cast<uint32_t>(size); i++)
 	{
 		hash ^= sTable[dataInByte[i] & 255];
 		hash = hash * PRIME_MULT;
