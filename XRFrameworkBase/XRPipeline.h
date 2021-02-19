@@ -546,6 +546,7 @@ class XRFramebuffer
 {
 private:
 	XRFramebufferLayout _layout;
+
 public:
 	XRFramebuffer(const XRFramebufferLayout& layout)
 	{

@@ -33,8 +33,6 @@ XRSceneTest::XRSceneTest()
 	actor->SetPosition(position);
 
 	_root->AddChild(actor);
-
-	//_object_groups["teapots_1"] = { commandBuffer.get(), model, std::vector<XRObject const*>(objects.begin(), objects.end()) };
 }
 
 XRSceneTest::~XRSceneTest()

@@ -2,6 +2,8 @@
 #include "XRPlatform.h"
 
 #include "XRRenderer.h"
+#include "XRObjectManager.h"
+
 #include "XRSceneNode.h"
 #include "XRTransformNode.h"
 #include "XRLightNode.h"
@@ -22,16 +24,21 @@ static XRRenderPassManager* GetDefaultRenderPassManager()
 	return &_default;
 }
 
+static std::string sampleName = "teapot_1";
+
 XRRenderer::XRRenderer()
 	: _pipelineManager(GetDefaultPipelineManager())
 	, _renderPassManager(GetDefaultRenderPassManager())
 {
-
+	_objectGroups[ sampleName ] = new XRObjectGroup;
 }
 
 XRRenderer::~XRRenderer()
 {
-
+	for (auto i : _objectGroups)
+	{
+		delete i.second;
+	}
 }
 
 bool XRRenderer::Bind(XRPlatform::XRDSO* dso)
@@ -105,6 +112,13 @@ void XRRenderer::Render()
 	++_renderCounter;
 }
 
+void XRRenderer::Reset()
+{
+	XRObjectGroup* objectGroup = _objectGroups[ sampleName ];
+	
+	objectGroup->_objects.clear();
+}
+
 void XRRenderer::RegisterNode(XRSceneNode* node)
 {
 	XRSceneNodeType type = node->GetType();
@@ -134,5 +148,7 @@ void XRRenderer::RegisterLightNode(XRLightNode* node)
 
 void XRRenderer::RegisterActorNode(XRActorNode* node)
 {
+	XRObjectGroup* objectGroup = _objectGroups[ sampleName ];
 
+	objectGroup->_objects.push_back(node);
 }

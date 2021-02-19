@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
+#include <XRFrameworkBase/XRReference.h>
 #include <XRFrameworkBase/XRRenderCommon.h>
 
 enum class XRBindPoint
@@ -15,9 +16,39 @@ class XRFramebuffer;
 class XRPipeline;
 class XRPipelineGroup;
 
+struct XRBeginPassInfo
+{
+	xr::vec3<uint32_t> _extent;
+	xr::ContiguousReference<XRClearValue const> _clearValues;
+};
+
 class XRModel;
 class XRBaseExport XRCommandBuffer
 {
+public:
+	enum CommandName
+	{
+		// RenderPass 관련
+		BeginPass,
+		EndPass,
+
+		BindPipeline,
+
+		// Barrier 관련
+		AddBarrier,
+
+		// Draw/Dispatch
+		Draw,
+		DrawIndexed,
+		DrawModel,
+		DrawInstanced,
+		DrawIndexedInstanced,
+		DrawIndirect,
+		Dispatch,
+
+		NumAllCommands,
+	};
+
 public:
 	XRCommandBuffer() {}
 	virtual ~XRCommandBuffer() {}
@@ -26,7 +57,7 @@ public:
 	virtual void begin() {}
 	virtual void end() {}
 
-	virtual void beginPass(XRRenderPassBase* renderPass, xr::vec3<uint32_t>& extent) {}
+	virtual void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) {}
 	virtual void endPass() {}
 
 	/**
@@ -41,6 +72,8 @@ public:
 	 */
 	virtual void bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline) {}
 
+	virtual void addBarrier() {}
+
 	virtual void draw(XRPrimitiveTopology topology, uint32_t vertexStart, uint32_t vertexCount) {}
 	virtual void drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t indexStart, uint32_t indexCount) {}
 	virtual void drawModel(XRPrimitiveTopology topology, XRModel const* model) {}
@@ -52,8 +85,6 @@ public:
 
 	// Note: non that state bleeds back of toward the primary command buffer
 	virtual void executeCommands() {}
-	
-	virtual void addBarrier() {}
 };
 
 #ifdef XRRENDERENGINEGL_EXPORTS

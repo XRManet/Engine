@@ -5,6 +5,7 @@
 #include <XRFrameworkBase/XRUtility.h>
 
 #include <XRFrameworkBase/XRResourceManager.h>
+#include <XRFrameworkBase/XRObjectManager.h>
 #include <XRFrameworkBase/XRModel.h>
 
 #include <XRFrameworkBase/XRIndexedString.h>
@@ -150,19 +151,25 @@ void XRRendererTest::OnUpdate()
 
 void XRRendererTest::OnRender()
 {
-	int frameIndex = GetRenderCounter() % 2;
+	uint16_t frameIndex = GetRenderCounter() % 2;
 
 	XRCommandFootprint commandFootprint;
 
 	static xr::IndexedString<XRCommandStep> sFistStep("firstStepAlways");
 	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands) {
+
 		XRRenderPassBase* renderPass = renderPassSample;
-		XRFramebuffer* frameBuffer;
-		xr::vec3<uint32_t> extent { 1024, 768, 1 };
+		XRBeginPassInfo beginPassInfo{
+			._extent = { 1024, 768, 1 },
+			._clearValues = {
+				XRClearValue(1.f),
+				xr::vec4<float_t>{1.f, 0.f, 0.f, 1.f},
+				uint32_t(0u) },
+		};
 
-		secondCommands->beginPass(renderPass, extent);
+		secondCommands->beginPass(renderPass, beginPassInfo);
 
-		static xr::IndexedString<XRPipeline> samplePipelineName = "samplePipelineName";
+		static xr::IndexedString<XRPipeline> samplePipelineName = "SampleFirstPipeline";
 		XRPipelineGroup* pipelineGroup = _pipelineManager->GetPipelineGroup(samplePipelineName);
 
 		static uint32_t permutationThis = [pipelineGroup]() {
@@ -175,7 +182,8 @@ void XRRendererTest::OnRender()
 		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
-		XRObjectGroup const* teapotGroup = scene->getObjectGroup("teapots_1");
+		XRObjectGroup const* teapotGroup = GetObjectGroup("teapots_1");
+		teapotGroup->draw(secondCommands);
 
 		secondCommands->endPass();
 		});

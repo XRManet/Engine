@@ -15,6 +15,8 @@ class XRPipelineManager;
 class XRCommandFootprint;
 class XRCommandBuffer;
 
+class XRObjectGroup;
+
 namespace XRPlatform
 {
 struct XRDSO;
@@ -31,6 +33,8 @@ protected:
 
 	std::unordered_map<uint32_t, XRCommandBuffer*> _bakedCommandBuffers;
 
+	std::unordered_map<std::string, XRObjectGroup*> _objectGroups;
+
 public:
 	XRRenderer();
 	~XRRenderer();
@@ -40,6 +44,13 @@ public:
 
 public:
 	uint64_t GetRenderCounter() const { return _renderCounter; }
+
+	XRObjectGroup const* GetObjectGroup(std::string groupName) const
+	{
+		auto it = _objectGroups.find(groupName);
+		assert(it != _objectGroups.end());
+		return it->second;
+	}
 
 protected:
 	XRCommandBuffer* EvaluateCommands(XRCommandFootprint& commandFootprint);
@@ -56,6 +67,17 @@ public:
 	void Render();
 
 public:
+
+	/**
+	 * @fn	void Reset();
+	 *
+	 * @brief	우선은 object group 매프레임 정리하는데 씁니다.
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2021-02-19
+	 */
+
+	void Reset();
 	void RegisterNode(XRSceneNode* node);
 	
 private:

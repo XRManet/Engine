@@ -646,8 +646,15 @@ void XRFrameWalker::UpdateFrame()
     auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
     
-    scene->Update(0);
+	// scene에서 renderer에다가 register하는 걸 매 프레임 처리하기 때문에 매번 Reset해주어야 하는데,
+	// 역시 graph 객체를 별도로 관리하고, XRRenderer::Reset()는 아예 없애버리는 게 나을 것 같네요.
+	// scene->Render(out_graph);
+	// renderer->Update(in_graph);
+	renderer->Reset();
+
+	scene->Update(0);
 	scene->Render(renderer);
+
 	renderer->Update();
 	renderer->Render();
 }

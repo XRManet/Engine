@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "stdafx.h"
 
@@ -23,15 +23,14 @@ class XRBaseExport XRObjectGroup
 public:
 	XRModel const* _model = nullptr;
 	std::vector<XRObject const*> _objects;
-	XRCommandBuffer* _commandBuffer;
 
 	XRObjectGroup() = default;
-	XRObjectGroup(XRCommandBuffer* commandBuffer, XRModel const* model, std::vector<XRObject const*>&& objects) : _commandBuffer(commandBuffer), _model(model), _objects(std::move(objects)) {}
+	XRObjectGroup(XRModel const* model, std::vector<XRObject const*>&& objects) : _model(model), _objects(std::move(objects)) {}
 
 	XRObjectGroup& operator = (const XRObjectGroup& rhs) = default;
 
 public:
-	void draw() const;
+	void draw(XRCommandBuffer* commandBuffer) const;
 };
 
 /******************************************************************************

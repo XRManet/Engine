@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XRCommandBufferGL.h"
 #include "XRModelGL.h"
 
@@ -14,34 +14,89 @@ static GLenum ConvertIndexType(XRIndexType indexType);
 }
 
 XRCommandBufferGL::XRCommandBufferGL()
+	: _commandMemoryPool(nullptr)
 {
 
 }
 
 XRCommandBufferGL::~XRCommandBufferGL()
 {
+	if (nullptr != _commandMemoryPool)
+		delete _commandMemoryPool;
+}
+
+void XRCommandBufferGL::begin()
+{
+	if (nullptr == _commandMemoryPool)
+		_commandMemoryPool = new XRCommandMemoryPoolGL;
+
+	_commandMemoryPool->ready(1 << 12);
+}
+
+void XRCommandBufferGL::end()
+{
+	_commandMemoryPool->validateCommands();
+}
+
+void XRCommandBufferGL::executeCommands()
+{
+	uint32_t numCommands = _commandMemoryPool->getCommandList().size();
+	for (uint32_t i = 0; i < numCommands; ++i)
+	{
+		XRCommandGL* const commandGL = _commandMemoryPool->getCommandList()[i];
+		commandGL->execute();
+	}
+}
+
+void XRCommandBufferGL::beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo)
+{
+
+}
+
+void XRCommandBufferGL::endPass()
+{
+
+}
+
+void XRCommandBufferGL::bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline)
+{
 
 }
 
 void XRCommandBufferGL::draw(XRPrimitiveTopology topology, uint32_t start, uint32_t count)
 {
-	GLenum topologyGL = ConvertPrimitiveTopology(topology);
-	glDrawArrays(topologyGL, start, count);
+	_commandMemoryPool->emplaceCommand<XRCommandGL_Draw>(topology, start, count);
 }
 
 void XRCommandBufferGL::drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t indexStart, uint32_t indexCount)
 {
-	GLenum topologyGL = ConvertPrimitiveTopology(topology);
-	GLenum indexTypeGL = ConvertIndexType(indexType);
-
-	GL_CALL(glDrawElementsBaseVertex(topologyGL, indexCount, indexTypeGL, (void*)indexStart, 0));
+	_commandMemoryPool->emplaceCommand<XRCommandGL_DrawIndexed>(topology, indexType, indexStart, indexCount);
 }
 
 void XRCommandBufferGL::drawModel(XRPrimitiveTopology topology, XRModel const* model)
 {
-	XRModelGL const* modelGL = static_cast<XRModelGL const*>(model);
+	_commandMemoryPool->emplaceCommand<XRCommandGL_DrawModel>(topology, model);
+}
 
-	GLenum topologyGL = ConvertPrimitiveTopology(topology);
+void XRCommandGL_Draw::execute()
+{
+	GLenum topologyGL = ConvertPrimitiveTopology(_topology);
+	glDrawArrays(topologyGL, _start, _count);
+}
+
+void XRCommandGL_DrawIndexed::execute()
+{
+	GLenum topologyGL = ConvertPrimitiveTopology(_topology);
+	GLenum indexTypeGL = ConvertIndexType(_indexType);
+
+	GL_CALL(glDrawElementsBaseVertex(topologyGL, _indexCount, indexTypeGL, (void*)_indexStart, 0));
+}
+
+void XRCommandGL_DrawModel::execute()
+{
+	XRModelGL const* modelGL = static_cast<XRModelGL const*>(_model);
+
+	GLenum topologyGL = ConvertPrimitiveTopology(_topology);
 	GLenum indexTypeGL = modelGL->getIndexType(0);
 
 	MultiDrawElementsBaseVertexInfo info{};
@@ -132,4 +187,40 @@ GLenum ConvertIndexType(XRIndexType indexType)
 	return GL_NONE;
 }
 
+}
+
+void XRCommandMemoryPoolGL::ready(uint32_t reserveMemorySize)
+{
+	_commands.reserve(32);
+	_commandLocations.reserve(32);
+	_commandLocations.clear();
+	_commandLocations.push_back(0);
+
+	if (_commandMemory.size() < reserveMemorySize)
+		_commandMemory.resize(reserveMemorySize);
+}
+
+void XRCommandMemoryPoolGL::validateCommands()
+{
+	_commands.resize(_commandLocations.size() - 1);
+
+	for (uint32_t i = 0; i < _commands.size(); ++i)
+		_commands[i] = reinterpret_cast<XRCommandGL*>(&_commandMemory[_commandLocations[i]]);
+}
+
+template<typename CommandGL, typename ...Args>
+void XRCommandMemoryPoolGL::emplaceCommand(Args&&... args)
+{
+	uint64_t const& current = _commandLocations.back();
+	uint64_t required = current + sizeof(CommandGL);
+
+	if (required > _commandMemory.size())
+	{
+		size_t const APPROX_ONE_HALF = _commandMemory.size() * 3 / 2;
+		_commandMemory.resize(APPROX_ONE_HALF);
+	}
+
+	new (&_commandMemory[current]) CommandGL( args... );
+
+	_commandLocations.push_back(required);
 }
