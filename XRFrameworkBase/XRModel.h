@@ -1,7 +1,16 @@
-#pragma once
+﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 #include "XRRenderCommon.h"
+
+class XRModel;
+class XRModelData;
+
+class XRInputLayout;
+class XRInputLayoutDesc;
+
+XRRenderAPI(XRInputLayout*, xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
+XRRenderAPI(XRModel*, xrCreateModel)(XRModelData const* loadable);
 
 struct XRMaterialParameter
 {
@@ -16,12 +25,8 @@ class XRMaterial
 	std::vector<XRMaterialParameter> _materialParameters;
 };
 
-class XRModelData;
 // #include "ModelDataRepresentation.h"
 
-class XRModel;
-
-class XRInputLayoutDesc;
 struct XRVertexAttributeDesc
 {
 	friend XRInputLayoutDesc;
@@ -224,11 +229,3 @@ public:
 public:
 	XRInputLayout const* getInputLayout() const { return _inputLayout; }
 };
-
-#ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
-XRRenderExport XRModel* xrCreateModel(XRModelData const* loadable);
-#else
-extern XRModel* (*xrCreateModel)(XRModelData const* loadable);
-extern XRInputLayout* (*xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
-#endif

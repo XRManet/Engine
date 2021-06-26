@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <XRFrameworkBase/XRBuffer.h>
 
@@ -10,4 +10,7 @@ private:
 public:
 	XRBufferGL() {}
 	virtual ~XRBufferGL() {};
+
+public:
+	void Initialize();
 };

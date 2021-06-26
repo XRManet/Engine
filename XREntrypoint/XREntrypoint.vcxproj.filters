@@ -75,5 +75,14 @@
     <None Include="..\Resources\Shaders\OpenGL\SimpleFragment.glsl">
       <Filter>Resource files\Shaders\OpenGL</Filter>
     </None>
+    <None Include="..\Resources\Shaders\OpenGL\XRResFrame.glsl">
+      <Filter>Resource files\Shaders\OpenGL</Filter>
+    </None>
+    <None Include="..\Resources\Shaders\OpenGL\XRCommon.glsl">
+      <Filter>Resource files\Shaders\OpenGL</Filter>
+    </None>
+    <None Include="..\Resources\Shaders\OpenGL\XRResObject1.glsl">
+      <Filter>Resource files\Shaders\OpenGL</Filter>
+    </None>
   </ItemGroup>
 </Project>

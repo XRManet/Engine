@@ -23,6 +23,8 @@ public:
 
 	void bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline) override;
 
+	void bindResource(const std::string& bindingName, XRResource<XRBuffer>* buffer) override;
+
 	//void addBarrier() override;
 
 	void draw(XRPrimitiveTopology topology, uint32_t start, uint32_t count) override;

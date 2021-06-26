@@ -1,9 +1,13 @@
 ﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
 #include <XRFrameworkBase/XRReference.h>
 #include <XRFrameworkBase/XRRenderCommon.h>
+
+class XRCommandBuffer;
+
+XRRenderAPI(XRCommandBuffer*, xrCreateCommandBuffer)();
 
 enum class XRBindPoint
 {
@@ -15,6 +19,10 @@ class XRRenderPassBase;
 class XRFramebuffer;
 class XRPipeline;
 class XRPipelineGroup;
+
+template<typename ResourceType>
+class XRResource;
+class XRBuffer;
 
 struct XRBeginPassInfo
 {
@@ -74,6 +82,8 @@ public:
 
 	virtual void addBarrier() {}
 
+	virtual void bindResource(const std::string& bindingName, XRResource<XRBuffer>* buffer) {}
+
 	virtual void draw(XRPrimitiveTopology topology, uint32_t vertexStart, uint32_t vertexCount) {}
 	virtual void drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t indexStart, uint32_t indexCount) {}
 	virtual void drawModel(XRPrimitiveTopology topology, XRModel const* model) {}
@@ -86,9 +96,3 @@ public:
 	// Note: non that state bleeds back of toward the primary command buffer
 	virtual void executeCommands() {}
 };
-
-#ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRCommandBuffer* xrCreateCommandBuffer();
-#else
-extern XRCommandBuffer* (*xrCreateCommandBuffer)();
-#endif

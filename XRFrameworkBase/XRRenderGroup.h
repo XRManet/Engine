@@ -1,10 +1,12 @@
-#pragma once
+﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 
 // Declared from here
 class XRRenderGroup;
 class XRRenderGroupManager;
+
+XRRenderAPI(XRRenderGroup*, xrCreateRenderGroup)();
 
 // Referenced by here
 class XRInputLayout;
@@ -137,9 +139,3 @@ public:
 		return result.second;
 	}
 };
-
-#ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRRenderGroup* xrCreateRenderGroup();
-#else
-extern XRRenderGroup* (*xrCreateRenderGroup)();
-#endif

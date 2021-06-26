@@ -7,6 +7,7 @@
 
 //////////////////////////// Platform-independent headers
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <vector>
 #include <string>
@@ -59,8 +60,39 @@
 
 #include <XRFrameworkBase/XRUtility.h>
 
+char const* GetGlErrorString(GLenum errorCode);
+
 #if defined(_DEBUG) || defined(DEBUG)
-#define GL_CALL(glCall) { glCall; GLenum error = glGetError(); if(error != GL_NO_ERROR) { printf("GL Error %x\n", error); assert(error == GL_NO_ERROR); } }
+
+#if TEST_BLOCK_JIMAN_1
+template<typename glCall>
+auto GL_CALL_AUTO(glCall glFunc) -> decltype(glFunc())
+{
+	auto res = glFunc();
+	GLenum error = glGetError();
+	assert(error == GL_NO_ERROR);
+	return res;
+}
+
+template<typename glVoidCall>
+void GL_CALL_VOID(glVoidCall glFunc)
+{
+	glFunc();
+	GLenum error = glGetError();
+	assert(error == GL_NO_ERROR);
+}
+
+#define GL_CALL_(glCall) [&] () -> decltype(glCall) { \
+  auto res = glCall; \
+  GLenum error = glGetError(); \
+  assert(error == GL_NO_ERROR); \
+  return res; \
+}()
+#endif
+
+#define GL_CALL(glCall) { glCall; GLenum error; while(error = glGetError(), error != GL_NO_ERROR) { printf("\n<OpenGL Error: %s>\n", GetGlErrorString(error)); assert(error == GL_NO_ERROR); } }
+#define GL_CALL_WARN(glCall) { glCall; GLenum error; while(error = glGetError(), error != GL_NO_ERROR) { printf("\n<OpenGL Warning: %s>\n", GetGlErrorString(error)); } }
 #else
 #define GL_CALL(x) x
+#define GL_CALL_WARN(x) x
 #endif

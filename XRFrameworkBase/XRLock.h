@@ -1,4 +1,6 @@
-#pragma once
+﻿#pragma once
+
+#include <XRFrameworkBase/XRDefault.h>
 
 namespace xr
 {

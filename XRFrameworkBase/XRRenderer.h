@@ -1,7 +1,6 @@
-﻿
-#pragma once
+﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 
 class XRSceneNode;
 class XRTransformNode;

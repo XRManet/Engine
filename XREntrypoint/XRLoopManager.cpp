@@ -68,257 +68,10 @@ void XRRenderingInfra<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, dou
 		cameraStep = .1f;
 }
 
-namespace
-{
-	// Move to XRPipelineGL
-#define DEFAULT_RESOURCE_PATH "Resources/Shaders/OpenGL/"
-    constexpr size_t RESOURCE_PATH_END = sizeof(DEFAULT_RESOURCE_PATH) - 1;
-    
-    void CompileShader(GLuint shader, GLsizei fileCount, const char** filename)
-    {
-        char RESOURCE_PATH[256] = DEFAULT_RESOURCE_PATH;
-        char** shaderSources = new char*[fileCount]();
-        int* sizes = new int[fileCount]();
-        
-        for (GLsizei i = 0; i < fileCount; ++i)
-        {
-            strcpy(RESOURCE_PATH + RESOURCE_PATH_END, filename[i]);
-			FILE *fp = nullptr;
-			errno_t error = xr::fopen(&fp, RESOURCE_PATH, "r");
-            
-            assert(fp != nullptr);
-            if (error != 0 || fp == nullptr) continue;
-            
-            bool result = (fseek(fp, 0, SEEK_END) == 0);
-            if (result == true)
-            {
-                long size = ftell(fp);
-                rewind(fp);
-                
-                char* buffer = new char[size + 1]();
-                
-                fread(buffer, sizeof(char), size, fp);
-                
-                shaderSources[i] = buffer;
-                sizes[i] = static_cast<int>(size);
-            }
-            
-            fclose(fp);
-        }
-        
-        GL_CALL(glShaderSource(shader, fileCount, shaderSources, sizes));
-        GL_CALL(glCompileShader(shader));
-        
-        GLint result = GL_FALSE;
-        GL_CALL(glGetShaderiv(shader, GL_COMPILE_STATUS, &result));
-        if (result == GL_FALSE)
-        {
-            GLint logLength = 0;
-            GL_CALL(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength));
-            
-            if (logLength > 0)
-            {
-                GLchar* failedLog = new GLchar[logLength]();
-                GL_CALL(glGetShaderInfoLog(shader, logLength, &logLength, failedLog));
-                
-                printf("%s", failedLog);
-            }
-        }
-        
-        for (GLsizei i = 0; i < fileCount; ++i)
-        {
-            delete shaderSources[i];
-        }
-        delete[] shaderSources;
-        delete[] sizes;
-    }
-    
-    void BuildProgram(GLuint glProgram, GLuint glShaders[], GLuint counts)
-    {
-        for (GLuint i = 0; i < counts; ++i)
-        {
-            GL_CALL(glAttachShader(glProgram, glShaders[i]));
-        }
-        
-        GL_CALL(glLinkProgram(glProgram));
-        
-        GLint result = GL_FALSE;
-        GL_CALL(glGetProgramiv(glProgram, GL_LINK_STATUS, &result));
-        if (result == GL_FALSE)
-        {
-            GLint logLength = 0;
-            GL_CALL(glGetProgramiv(glProgram, GL_INFO_LOG_LENGTH, &logLength));
-            
-            if (logLength > 0)
-            {
-                GLchar* failedLog = new GLchar[logLength]();
-                GL_CALL(glGetProgramInfoLog(glProgram, logLength, &logLength, failedLog));
-                
-                printf("%s", failedLog);
-            }
-        }
-        
-        for (GLuint i = 0; i < counts; ++i)
-        {
-            GL_CALL(glDetachShader(glProgram, glShaders[i]));
-        }
-    }
-}
-
-const char* GetGlMeaningDebugType(GLenum debugType)
-{
-#if defined(GL_KHR_debug)
-    switch (debugType)
-    {
-        case GL_DEBUG_TYPE_ERROR:               return "Error";
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Deprecated behavior";
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  return "Undefined behavior";
-        case GL_DEBUG_TYPE_PORTABILITY:         return "Portability";
-        case GL_DEBUG_TYPE_PERFORMANCE:         return "Performance";
-        case GL_DEBUG_TYPE_OTHER:               return "Other";
-        case GL_DEBUG_TYPE_MARKER:              return "Marker";
-        case GL_DEBUG_TYPE_PUSH_GROUP:          return "Push group";
-        case GL_DEBUG_TYPE_POP_GROUP:           return "Pop group";
-    }
-#endif
-    return "<ERROR>";
-}
-
-const char* GetGlMeaningSeverity(GLenum severity)
-{
-#if defined(GL_KHR_debug)
-    switch (severity)
-    {
-        case GL_DEBUG_SEVERITY_NOTIFICATION:    return "NOTIFICATION";
-        case GL_DEBUG_SEVERITY_HIGH:            return "HIGH";
-        case GL_DEBUG_SEVERITY_MEDIUM:          return "MEDIUM";
-        case GL_DEBUG_SEVERITY_LOW:             return "LOW";
-    }
-#endif
-    return "<ERROR>";
-}
-
-void GLAPIENTRY MessageCallback(
-                                GLenum source,
-                                GLenum type,
-                                GLuint id,
-                                GLenum severity,
-                                GLsizei length,
-                                const GLchar* message,
-                                const void* userParam)
-{
-    fprintf(stderr, "GL CALLBACK: %s type = %s, severity = %s, message = %s\n",
-            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-            GetGlMeaningDebugType(type), GetGlMeaningSeverity(severity), message);
-	assert(type != GL_DEBUG_TYPE_ERROR);
-}
-
-static GLint MAX_UNIFORM_BUFFER_BINDINGS = 0;
-static GLint MAX_UNIFORM_LOCATIONS = 0;
-static GLint UNIFORM_BUFFER_OFFSET_ALIGNMENT = 0;
-static GLint MAX_UNIFORM_BLOCK_SIZE = 0;
-
-static GLint MAX_VARYING_COMPONENTS = 0;
-
-static GLint MAX_TEXTURE_IMAGE_UNITS = 0;
-static GLint MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0;
-static GLint MAX_COMPUTE_TEXTURE_IMAGE_UNITS = 0;
-
-struct UniformBlock
-{
-	uint32_t _uniformBlockIndex;
-	int32_t _uniformBlockSize;
-	std::unordered_map<std::string, uint32_t> _uniformIndices;
-};
-
-struct ProgramResources
-{
-	GLint _maxNumVariablesInActiveUniformBlock = 16;
-	GLint _numActiveUniformBlocks = 0;
-	std::unordered_map<std::string, UniformBlock> _activeUniformBlocks;
-
-	struct UniformBlockBindingInfo
-	{
-		uint32_t			_binding = 0;
-		uint32_t			_offset = 0;
-		const UniformBlock*	_uniformBlock = nullptr;
-
-		bool isBound() { return _uniformBlock != nullptr; }
-	};
-	std::vector<std::string> _indexedActiveUniformBlocks;
-	std::vector<UniformBlockBindingInfo> _indexedUniformBlockBindingInfo;
-
-public:
-	size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
-};
-ProgramResources programResources;
-
 #if TEST_CODE// TEST_CODE
 
 void XRRendererTest::Initialize()
 {
-    assert(glGetError() == GL_NO_ERROR);
-    
-    if(glfwExtensionSupported("GL_KHR_debug") == GLFW_TRUE)
-    {
-        GL_CALL(glEnable(GL_DEBUG_OUTPUT));
-        
-        if(glfwGetProcAddress("glDebugMessageCallback"))
-            glDebugMessageCallback(MessageCallback, 0);
-    }
-	
-	if (glfwExtensionSupported("GL_ARB_vertex_attrib_binding") == GLFW_TRUE)
-	{
-	}
-
-	printf("\n=============================================\n");
-	printf("Query OpenGL System Informations\n\n");
-
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &MAX_UNIFORM_BUFFER_BINDINGS));
-	printf("Max uniform block bindings: %d\n", MAX_UNIFORM_BUFFER_BINDINGS);
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &MAX_UNIFORM_LOCATIONS));
-	printf("Max uniform locations: %d\n", MAX_UNIFORM_LOCATIONS);
-	GL_CALL_WARN(glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &UNIFORM_BUFFER_OFFSET_ALIGNMENT));
-	printf("Uniform buffer offset alignment: %d\n", UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &MAX_UNIFORM_BLOCK_SIZE));
-	printf("Max size of an uniform block: %d\n", MAX_UNIFORM_BLOCK_SIZE);
-
-	printf("\n");
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_VARYING_COMPONENTS, &MAX_VARYING_COMPONENTS));
-	printf("Max varying components: %d\n", MAX_VARYING_COMPONENTS);
-
-	printf("\n");
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MAX_TEXTURE_IMAGE_UNITS));
-	printf("Max texture image units: %d\n", MAX_TEXTURE_IMAGE_UNITS);
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &MAX_COMBINED_TEXTURE_IMAGE_UNITS));
-	printf("Max combined texture image units: %d\n", MAX_COMBINED_TEXTURE_IMAGE_UNITS);
-	GL_CALL_WARN(glGetIntegerv(GL_MAX_COMPUTE_TEXTURE_IMAGE_UNITS, &MAX_COMPUTE_TEXTURE_IMAGE_UNITS));
-	printf("Max compute texture image units: %d\n", MAX_COMPUTE_TEXTURE_IMAGE_UNITS);
-    
-	printf("\n=============================================\n");
-	printf("Create programs\n\n");
-
-    // TODO) separate
-    GL_CALL(_glProgram = glCreateProgram());
-    
-    GL_CALL(_glVertexShader = glCreateShader(GL_VERTEX_SHADER));
-    GL_CALL(_glFragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
-    
-    const char* vertexShaders[]{ "SimpleVertex.glsl" };
-    CompileShader(_glVertexShader, std::size(vertexShaders), vertexShaders);
-    
-    const char* fragmentShaders[]{ "SimpleFragment.glsl" };
-    CompileShader(_glFragmentShader, std::size(fragmentShaders), fragmentShaders);
-    
-    GLuint shaders[] = {
-        _glVertexShader,
-        _glFragmentShader
-    };
-    BuildProgram(_glProgram, shaders, std::size(shaders));
-    
-    GL_CALL(glDeleteShader(_glVertexShader));
-    GL_CALL(glDeleteShader(_glFragmentShader));
-
     static int isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");
 	static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GLFW_TRUE)
                                 || (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
@@ -344,6 +97,7 @@ void XRRendererTest::Initialize()
     }
     else
     {
+		// Directly set
         programResources._activeUniformBlocks["Materials"] = {};
         programResources._activeUniformBlocks["LightBlock"] = {};
         programResources._activeUniformBlocks["MatrixBlock"] = {};
@@ -399,9 +153,9 @@ void XRRendererTest::Initialize()
 			programResources._indexedActiveUniformBlocks.push_back(blockName);
             
             auto& uniformBlock = programResources._activeUniformBlocks[blockName];
-            uniformBlock._uniformBlockIndex = i;
+            uniformBlock._activeBlockIndex = i;
 
-			GL_CALL(glGetActiveUniformBlockiv(_glProgram, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock._uniformBlockSize));
+			GL_CALL(glGetActiveUniformBlockiv(_glProgram, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock._blockSize));
 
 			auto& blockRange = reinterpret_cast<ActiveUniformBlockRange&>(resultParams);
 			//glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, maxResultSize, &length, resultParams);
@@ -465,7 +219,7 @@ void XRRendererTest::Initialize()
 		glGenBuffers(static_cast<GLint>(programResources.GetActiveUniformBlocks()), _uniformBuffers.data());
 
 		auto& ubMatrixBlock = programResources._activeUniformBlocks["MatrixBlock"];
-		GL_CALL(glUniformBlockBinding(_glProgram, ubMatrixBlock._uniformBlockIndex, UNIFORM_BINDING_NAME::Matrix));
+		GL_CALL(glUniformBlockBinding(_glProgram, ubMatrixBlock._activeBlockIndex, UNIFORM_BINDING_NAME::Matrix));
 		if (0) // After bind uniform block with buffer, we can get the binding buffer name by following below.
 		{
 			GLint currentBindingPoint = -1;
@@ -473,13 +227,13 @@ void XRRendererTest::Initialize()
 		}
 
 		auto& ubLightBlock = programResources._activeUniformBlocks["LightBlock"];
-		GL_CALL(glUniformBlockBinding(_glProgram, ubLightBlock._uniformBlockIndex, UNIFORM_BINDING_NAME::Light));
+		GL_CALL(glUniformBlockBinding(_glProgram, ubLightBlock._activeBlockIndex, UNIFORM_BINDING_NAME::Light));
 
 		programResources._indexedUniformBlockBindingInfo.resize(UNIFORM_BINDING_NAME::Count);
 
 		GLsizeiptr offset = 0;
-        offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
-        offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        offset = NEXT_ALIGN_2(offset + ubMatrixBlock._blockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        offset = NEXT_ALIGN_2(offset + ubLightBlock._blockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
         
         GLsizeiptr uniformBufferSize = offset;
         GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, _uniformBuffers[0]));
@@ -497,13 +251,13 @@ void XRRendererTest::Initialize()
         offset = 0;
         programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix] = {
             UNIFORM_BINDING_NAME::Matrix, static_cast<GLuint>(offset), &ubMatrixBlock };
-        GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._uniformBlockSize));
-        offset = NEXT_ALIGN_2(offset + ubMatrixBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+        GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Matrix, _uniformBuffers[0], offset, ubMatrixBlock._blockSize));
+        offset = NEXT_ALIGN_2(offset + ubMatrixBlock._blockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
 		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Light] = {
             UNIFORM_BINDING_NAME::Light, static_cast<GLuint>(offset), &ubLightBlock };
-		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Light, _uniformBuffers[0], offset, ubLightBlock._uniformBlockSize));
-        offset = NEXT_ALIGN_2(offset + ubLightBlock._uniformBlockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING_NAME::Light, _uniformBuffers[0], offset, ubLightBlock._blockSize));
+        offset = NEXT_ALIGN_2(offset + ubLightBlock._blockSize, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
         struct BufferRange
         {
@@ -596,7 +350,7 @@ void XRRendererTest::Update()
 		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
 		{
 			if (ii->isBound() == false) continue;
-			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_uniformBlockSize, dataAddress[i]));
+			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_blockSize, dataAddress[i]));
 		}
 #elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
 		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data() ));
@@ -629,6 +383,7 @@ XRFrameWalker::XRFrameWalker()
 {
     // TODO) select a strategy by reading from manifest.
     //_renderer = new XRRenderer();
+	GL_SHADER_BINARY_FORMAT_SPIR_V;
 }
 
 void XRFrameWalker::Initialize()

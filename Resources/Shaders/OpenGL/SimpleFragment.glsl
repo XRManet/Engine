@@ -1,12 +1,23 @@
 #version 330 core
 
-in vec3 frag_position;
-in vec3 frag_normal;
+#include "XRCommon.glsl"
 
-out vec3 color;
+#include "XRResFrame.glsl"
+#include "XRResObject1.glsl"
+
+layout(location = 0) in Fragment
+{
+	vec3 _position;
+	vec3 _normal;
+} _fragmentIn;
+
+layout(location = 0) out Framebuffer
+{
+	vec3 _color0;
+} _framebuffer;
 
 void main()
 {
-	color = frag_position;
-	//color = frag_position * frag_normal;
+	_framebuffer._color0 = _fragmentIn._position;
+	//_framebuffer._color0 = _fragmentIn._position * _fragmentIn._normal;
 }

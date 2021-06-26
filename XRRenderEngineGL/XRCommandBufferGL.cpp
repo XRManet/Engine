@@ -1,5 +1,14 @@
-﻿#include "stdafx.h"
+﻿/**
+ * @file	XRRenderEngineGL\XRCommandBufferGL.cpp.
+ *
+ * @brief	XRCommandBufferGL class를 구현합니다.
+ * @todo	NV_command_list 확장을 사용할 수 있는 경우와 아닌 경우를 분리해서 구현 해야함
+ * 			우선은 해당 확장 사용하지 않고 단순 gl call capture로 구현
+ */
+
+#include "stdafx.h"
 #include "XRCommandBufferGL.h"
+#include "XRBufferGL.h"
 #include "XRModelGL.h"
 
 #include <GL/glew.h>
@@ -61,6 +70,24 @@ void XRCommandBufferGL::endPass()
 void XRCommandBufferGL::bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline)
 {
 
+}
+
+void XRCommandBufferGL::bindResource(const std::string& bindingName, XRResource<XRBuffer>* buffer)
+{
+	const GLintptr offset = 0;
+	const GLuint resourceUniformBuffer = 0; 
+
+	auto found = _programResources._activeUniformBlocks.find(bindingName);
+	if (found != _programResources._activeUniformBlocks.end())
+	{
+		UniformBlockInfo const& uniformBlockInfo = found->second;
+		const GLuint binding = _programResources._indexedUniformBlockBindingInfo[uniformBlockInfo._activeBlockIndex]._binding;
+		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, binding, resourceUniformBuffer, offset, uniformBlockInfo._blockSize));
+	}
+	else
+	{
+		// failed to bind
+	}
 }
 
 void XRCommandBufferGL::draw(XRPrimitiveTopology topology, uint32_t start, uint32_t count)

@@ -193,8 +193,11 @@
     <ResourceCompile Include="XREntrypoint.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Resources\Shaders\OpenGL\XRResFrame.glsl" />
     <None Include="..\Resources\Shaders\OpenGL\SimpleFragment.glsl" />
     <None Include="..\Resources\Shaders\OpenGL\SimpleVertex.glsl" />
+    <None Include="..\Resources\Shaders\OpenGL\XRCommon.glsl" />
+    <None Include="..\Resources\Shaders\OpenGL\XRResObject1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XRFrameworkBase\XRFrameworkBase.vcxproj">
@@ -205,6 +208,9 @@
     </ProjectReference>
     <ProjectReference Include="..\XRSceneTest\XRSceneTest.vcxproj">
       <Project>{97949d4a-fd50-45b9-b0eb-6f231564ea3e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\XRSourceBuildSystemGLSL\XRSourceBuildSystemGLSL.vcxproj">
+      <Project>{2eb83842-9500-4a0e-84fe-7b794c6162ca}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

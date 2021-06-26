@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 
-#include "XRGeometry.h"
-#include "XRType.h"
+#include <XRFrameworkBase/XRGeometry.h>
+#include <XRFrameworkBase/XRType.h>
 
 // Declared from here
 class XRInteractive;

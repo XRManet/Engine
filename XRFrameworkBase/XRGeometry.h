@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>

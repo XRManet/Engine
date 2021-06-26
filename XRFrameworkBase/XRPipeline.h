@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "stdafx.h"
+#include <XRFrameworkBase/XRDefault.h>
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
 #include <XRFrameworkBase/XRGeometry.h>
 #include <XRFrameworkBase/XRRenderCommon.h>
@@ -9,12 +9,7 @@
 struct XRPipelineStateDescription;
 class XRPipeline;
 
-#ifdef XRRENDERENGINEGL_EXPORTS
-XRRenderExport XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* createInfo);
-#else
-extern XRPipeline* (*xrCreatePipeline)(XRPipelineStateDescription const* createInfo);
-#endif
-
+XRRenderAPI(XRPipeline*, xrCreatePipeline)(XRPipelineStateDescription const* createInfo);
 
 /******************************************************************************
   GL State to Vulkan State Mapping
@@ -474,12 +469,50 @@ enum class XRDynamicState
 	LINE_STIPPLE_EXT = 1000259000,
 };
 
+/******************************************************************************
+ * Program binding resource
+ */
+
+struct UniformBlockInfo
+{
+	uint32_t _activeBlockIndex;	// reflection으로부터 획득한 가용 uniform block 중 몇 번째인지. 바인딩 정보는 아님.
+	int32_t _blockSize;			// uniform block의 크기
+	std::unordered_map<std::string, uint32_t> _uniformIndices;
+};
+
+struct ProgramResources
+{
+	int32_t _maxNumVariablesInActiveUniformBlock = 16;
+	int32_t _numActiveUniformBlocks = 0;
+	std::unordered_map<std::string, UniformBlockInfo> _activeUniformBlocks;
+
+	// Upload 주기가 동일한 uniform들끼리 묶어서 offset을 변경해가며 uniform을 사용할 수 있다.
+	// 일반적인 버퍼의 생성은 최소 생성 크기가 있으므로, 그보다 작은 크기의 여러 블록을 하나의 버퍼에 모음으로써
+	// 불필요한 공간 낭비를 최소화한다.
+	// Todo: 어떤 기준으로 Uniform block들을 묶을지 결정 필요.
+	struct UniformBlockBindingInfo
+	{
+		int32_t					_binding = 0;
+		uint32_t				_bufferId = 0;
+		uint32_t				_offset = 0;
+		const UniformBlockInfo*	_uniformBlock = nullptr;
+
+		bool isBound() { return _uniformBlock != nullptr; }
+	};
+	std::vector<UniformBlockBindingInfo>	_indexedUniformBlockBindingInfo;
+	std::vector<std::string>				_indexedActiveUniformBlocks; // for debugging
+
+public:
+	size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
+};
+
 class XRBaseExport XRPipeline
 {
 public:
 	XRPipeline(XRPipelineStateDescription const* description) {}
 	virtual ~XRPipeline() {}
 
+	ProgramResources _programResources;
 
 public:
 	virtual void bind() {}

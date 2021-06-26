@@ -72,6 +72,12 @@
     <Filter Include="소스 파일\Engine\Render\Backends">
       <UniqueIdentifier>{c80694cf-502d-4500-83ae-b58e4cd6c580}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Heterogeneous\SourceBuildSystem">
+      <UniqueIdentifier>{268da5eb-40a9-47e7-a9ad-94f23d359b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Heterogeneous\DeviceSystem">
+      <UniqueIdentifier>{1dc3e832-9dfd-430b-afce-5f210d0a38ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XRWavefrontMaterial.h">
@@ -197,6 +203,16 @@
     <ClInclude Include="XRReference.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="XRSourceBuildSystem.h">
+      <Filter>소스 파일\Heterogeneous\SourceBuildSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="XRDeviceSystem.h">
+      <Filter>소스 파일\Heterogeneous\DeviceSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="XRRenderEngineLinker.hpp">
+      <Filter>소스 파일\Engine\Render\Linker</Filter>
+    </ClInclude>
+    <ClInclude Include="XRDefault.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -225,9 +241,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="XRRenderEngineLinker.cpp">
-      <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClCompile>
     <ClCompile Include="XRTextureData.cpp">
       <Filter>소스 파일\Resource\TextureData</Filter>
@@ -282,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="XRPipeline.cpp">
       <Filter>소스 파일\Engine\Render\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="XRSourceBuildSystem.cpp">
+      <Filter>소스 파일\Heterogeneous\SourceBuildSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

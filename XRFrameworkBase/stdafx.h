@@ -8,36 +8,7 @@
 // Windows 헤더 파일:
 #include <windows.h>
 
-#define XRExport __declspec(dllexport)
-#define XRImport extern __declspec(dllimport)
-
-#ifdef XRFRAMEWORKBASE_EXPORTS
-#define XRBaseExport __declspec(dllexport)
-#define XRBaseSupply __declspec(dllexport)
-#else
-#define XRBaseExport __declspec(dllimport)
-#define XRBaseSupply __declspec(dllimport)
-#endif
-
-#ifndef XRRENDERENGINEGL_EXPORTS
-#define XRRenderExport extern "C" __declspec(dllimport)
-#endif
-
 #elif defined(__APPLE__)
-
-#define XRExport __attribute__((visibility("default")))
-#define XRImport extern __attribute__((visibility("default")))
-
-#define XRBaseExport __attribute__((visibility("default")))
-#define XRBaseHidden __attribute__((visibility("hidden")))
-
-#ifdef XRFRAMEWORKBASE_EXPORTS
-#define XRBaseSupply __attribute__((visibility("default")))
-#else // #ifdef XRFRAMEWORKBASE_EXPORTS
-#define XRBaseSupply extern __attribute__((visibility("default")))
-#endif // #ifdef XRFRAMEWORKBASE_EXPORTS
-
-#define XRRenderExport extern "C" __attribute__((visibility("default")))
 
 #else
 #error "Not considered yet"
@@ -85,5 +56,3 @@ namespace xr
 	}
 #endif
 }
-
-int const PAGE_SIZE = 4'096;

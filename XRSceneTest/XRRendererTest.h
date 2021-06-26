@@ -22,7 +22,8 @@ class XRRendererTest : public XRRenderer
 		};
 	};
 
-	std::vector<XRBuffer*> _uniformBuffers;
+	XRBuffer* _matrixBuffer;
+	XRBuffer* _lightBuffer;
 
 	struct Light
 	{

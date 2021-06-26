@@ -77,6 +77,8 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 		uint32_t numAvailablePermutations = 0;
 		bool doCreatePipeline = true;
 
+		pipelineDescriptions.reserve(numAllPermutations);
+
 		for (uint32_t i = 0; i < numAllPermutations; ++i)
 		{
 			for (uint32_t j = 0; j < numPermutationElements; ++j)
@@ -105,6 +107,8 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 				++numAvailablePermutations;
 			}
 		}
+
+		pipelineDescriptions.shrink_to_fit();
 	}
 
 	return true;

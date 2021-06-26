@@ -124,7 +124,19 @@ private:
 	}
 };
 
-XRRenderPassSample* renderPassSample;
+struct MatrixBlock
+{
+	glm::mat4 view;
+	glm::mat4 proj;
+	glm::mat4 viewProj;
+};
+
+struct LightBlock
+{
+	glm::vec4 position;
+	glm::vec3 intensity;
+	float attenuation;
+};
 
 XRRendererTest::XRRendererTest()
 {
@@ -140,13 +152,92 @@ XRRendererTest::~XRRendererTest()
 void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 {
 	static xr::IndexedString<XRRenderPassBase> renderPassSampleName = "XRRenderPassSample";
-	renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
+	XRRenderPassSample* renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
 
 	_pipelineManager->CreatePipeline(renderPassSample->_pipelineCreateInfos[0]);
+
+	XRBufferCreateInfo matrixBufferCreateInfo = {
+		._size = sizeof(MatrixBlock)
+	};
+	_matrixBuffer = xrCreateBuffer(&matrixBufferCreateInfo);
+
+	XRBufferCreateInfo lightBufferCreateInfo = {
+		._size = sizeof(LightBlock)
+	};
+	_lightBuffer = xrCreateBuffer(&lightBufferCreateInfo);
 }
 
 void XRRendererTest::OnUpdate()
 {
+#if 0
+	std::vector<unsigned char> uniformBufferData;
+	{
+
+		const size_t offsetMatrixBlock = 0;
+		const size_t sizeMatrixBlock = (sizeof(MatrixBlock) * 1);
+		const size_t offsetLightBlock = offsetMatrixBlock + sizeMatrixBlock;
+		const size_t sizeLightBlock = (sizeof(LightBlock) * 1);
+		uniformBufferData.resize(sizeMatrixBlock + sizeLightBlock);
+
+		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix];
+		MatrixBlock& matrixBlock = reinterpret_cast<MatrixBlock&>(uniformBufferData[offsetMatrixBlock]);
+		LightBlock& lightBlock = reinterpret_cast<LightBlock&>(uniformBufferData[offsetLightBlock]);
+
+		glm::vec3 cameraMove{
+			(g_keyboardPressed['D'] - g_keyboardPressed['A']),
+			(g_keyboardPressed['E'] - g_keyboardPressed['Q']),
+			(g_keyboardPressed['S'] - g_keyboardPressed['W'])
+		};
+		glm::vec3 alignedMove = glm::mat3_cast(scene->getCameras()[0].GetQuaternion()) * cameraMove * cameraStep;
+		scene->getCameras()[0].Move(alignedMove);
+
+		static bool anchorOrientation = false;
+		static glm::quat orientation;
+		if (true == anchored)
+		{
+			static const auto up = glm::vec3(0, 1, 0);
+			static const auto right = glm::vec3(1, 0, 0);
+
+			if (false == anchorOrientation)
+			{
+				orientation = scene->getCameras()[0].GetQuaternion();
+				anchorOrientation = true;
+			}
+			auto axisXangle = glm::radians(-float(curX - anchorX)) * cameraStep;
+			auto axisYangle = glm::radians(float(curY - anchorY)) * cameraStep;
+
+			auto rotation = glm::rotate(glm::rotate(orientation, axisXangle, up), axisYangle, right);
+			scene->getCameras()[0].SetQuaternion(rotation);
+		}
+		else anchorOrientation = false;
+
+		matrixBlock.view = scene->getCameras()[0].GetInvTransform();
+		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();
+		matrixBlock.viewProj = matrixBlock.proj * matrixBlock.view;
+	}
+
+	{
+#define UPLOAD_METHOD_PER_DATA	0
+#define UPLOAD_METHOD_ALL_ONCE	1
+#define UPLOAD_METHOD			UPLOAD_METHOD_ALL_ONCE
+
+#if UPLOAD_METHOD == UPLOAD_METHOD_PER_DATA
+		std::vector<void*> dataAddress;
+		dataAddress.resize(programResources._indexedUniformBlockBindingInfo.size());
+		dataAddress[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
+		dataAddress[UNIFORM_BINDING_NAME::Light] = &lightBlock;
+
+		uint32_t i = 0;
+		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
+		{
+			if (ii->isBound() == false) continue;
+			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_blockSize, dataAddress[i]));
+		}
+#elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
+		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data()));
+#endif
+	}
+#endif
 }
 
 void XRRendererTest::OnRender()
@@ -157,6 +248,8 @@ void XRRendererTest::OnRender()
 
 	static xr::IndexedString<XRCommandStep> sFistStep("firstStepAlways");
 	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands) {
+		static xr::IndexedString<XRRenderPassBase> renderPassSampleName = "XRRenderPassSample";
+		static XRRenderPassSample* renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
 
 		XRRenderPassBase* renderPass = renderPassSample;
 		XRBeginPassInfo beginPassInfo{
@@ -181,6 +274,8 @@ void XRRendererTest::OnRender()
 
 		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
+
+		secondCommands->bindResource();
 
 		XRObjectGroup const* teapotGroup = GetObjectGroup("teapots_1");
 		teapotGroup->draw(secondCommands);

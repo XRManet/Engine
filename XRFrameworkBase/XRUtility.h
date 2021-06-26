@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <XRFrameworkBase/XRDefault.h>
+
 namespace XR { namespace util
 {
 

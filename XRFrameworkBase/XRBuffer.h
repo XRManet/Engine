@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "stdafx.h"
 
@@ -14,10 +14,35 @@ extern XRBuffer* (*xrCreateBuffer)(XRBufferCreateInfo const* createInfo);
 
 struct XRBufferCreateInfo
 {
+	size_t _size;
+};
+
+using AccessMask = uint32_t;
+template<typename ResourceType>
+class XRResource
+{
+	using ViewType = typename XRResourceType::ViewType;
+
+	ResourceType* _resource;
+	ViewType* _view;
+	AccessMask _lastAccessMask;
+
+public:
+	XRResource(ResourceType* resource)
+		: _resource(resource), _view()
+	{
+	}
+
+	XRResource(ResourceType* resource, ViewType* view)
+	{
+	}
 };
 
 class XRBufferRHI
 {
+protected:
+	XRBuffer* _handle;
+
 public:
 	virtual ~XRBufferRHI() {}
 };
@@ -30,9 +55,15 @@ class XRBaseExport XRBuffer
 #endif
 
 protected:
-	XRBufferRHI* _rhi;
+	XRBufferRHI*			_rhi;
+	XRBufferCreateInfo		_bufferCreateInfo;
 
 public:
-	XRBuffer(XRBufferCreateInfo const* bufferCreateInfo) {}
+	XRBuffer(XRBufferCreateInfo const* bufferCreateInfo)
+		: _rhi(nullptr), _bufferCreateInfo(*bufferCreateInfo)
+	{}
 	virtual ~XRBuffer() {}
+
+public:
+	XRBufferCreateInfo const* GetBufferCreateInfo() const { return &_bufferCreateInfo; }
 };

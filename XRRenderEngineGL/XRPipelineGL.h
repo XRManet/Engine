@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <XRFrameworkBase/XRPipeline.h>
 
@@ -12,9 +12,18 @@ public:
 public:
 	void bind() override;
 
+public:
+	bool buildProgram(XRShaderStageDescription const* shaderStageDescription);
 
 private:
+	bool createBindingInformation();
+
+
+private:
+	GLuint _glPipeline;
 	GLuint _glProgram;
 	GLuint _glVertexShader;
 	GLuint _glFragmentShader;
+
+	bool _needUpdate = true;
 };

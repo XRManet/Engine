@@ -166,6 +166,8 @@
     <ClInclude Include="XRBodyData.h" />
     <ClInclude Include="XRBuffer.h" />
     <ClInclude Include="XRCommandBuffer.h" />
+    <ClInclude Include="XRDefault.h" />
+    <ClInclude Include="XRDeviceSystem.h" />
     <ClInclude Include="XRDXTC.h" />
     <ClInclude Include="XRFrameworkBase.h" />
     <ClInclude Include="XRReference.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="XRSerializable.h" />
     <ClInclude Include="XRScene.h" />
     <ClInclude Include="XRSceneNode.h" />
+    <ClInclude Include="XRSourceBuildSystem.h" />
     <ClInclude Include="XRTexture.h" />
     <ClInclude Include="XRTextureData.h" />
     <ClInclude Include="XRTransformNode.h" />
@@ -227,13 +230,14 @@
     <ClCompile Include="XRPlatform.cpp" />
     <ClCompile Include="XRRenderer.cpp" />
     <ClCompile Include="XRRenderCommon.cpp" />
-    <ClCompile Include="XRRenderEngineLinker.cpp" />
+    <ClInclude Include="XRRenderEngineLinker.hpp" />
     <ClCompile Include="XRRenderGroup.cpp" />
     <ClCompile Include="XRResourceManager.cpp" />
     <ClCompile Include="XRScene.cpp" />
     <ClCompile Include="XRSceneNode.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="XRSourceBuildSystem.cpp" />
     <ClCompile Include="XRTexture.cpp" />
     <ClCompile Include="XRTextureData.cpp" />
     <ClCompile Include="XRTransformNode.cpp" />

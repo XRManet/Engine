@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿//#include "stdafx.h"
 #include "XRPlatform.h"
 
 #include "XRModel.h"
@@ -21,8 +21,9 @@ XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
 #include "XRRenderGroup.h"
 XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 
-#ifndef XRRENDER_ENGINE
 #define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineGL"
+
+#ifndef XRRENDER_ENGINE
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
 #endif
 
