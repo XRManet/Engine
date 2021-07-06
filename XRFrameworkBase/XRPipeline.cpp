@@ -3,6 +3,52 @@
 #include "XRHash.h"
 #include "XRPipeline.h"
 
+#pragma region XRResourceLayout
+
+UniformBindingInfo const* XRResourceLayout::bindingUniform(std::string uniformName, XRView<XRBuffer>* bufferView)
+{
+	auto found = _currentResourceBinder->_uniformList.find(uniformName);
+	if (found == _currentResourceBinder->_uniformList.end())
+		return nullptr;
+
+	found->second->_bufferView = bufferView;
+	return found->second;
+}
+
+UniformBindingInfo const* XRResourceLayout::bindingUniform(std::string uniformName, XRView<XRTexture>* textureView)
+{
+	auto found = _currentResourceBinder->_uniformList.find(uniformName);
+	if (found == _currentResourceBinder->_uniformList.end())
+		return nullptr;
+
+	found->second->_textureView = textureView;
+	return found->second;
+}
+
+StorageBindingInfo const* XRResourceLayout::bindingStorage(std::string storageName, XRView<XRBuffer>* bufferView)
+{
+	auto found = _currentResourceBinder->_storageList.find(storageName);
+	if (found == _currentResourceBinder->_storageList.end())
+		return nullptr;
+
+	found->second->_bufferView = bufferView;
+	return found->second;
+}
+
+StorageBindingInfo const* XRResourceLayout::bindingStorage(std::string storageName, XRView<XRTexture>* textureView)
+{
+	auto found = _currentResourceBinder->_storageList.find(storageName);
+	if (found == _currentResourceBinder->_storageList.end())
+		return nullptr;
+
+	found->second->_textureView = textureView;
+	return found->second;
+}
+
+#pragma endregion XRResourceLayout
+
+#pragma region XRPipelineGroup
+
 void XRPipelineGroup::AddPipelineWithPermutation(XRPipeline* pipeline, std::vector<XRPermutationElementArgument>& permutationDefinition)
 {
 	uint32_t const permutationHash = CalcPermutationHash(permutationDefinition);
@@ -31,6 +77,10 @@ uint32_t XRPipelineGroup::CalcPermutationHash(std::vector<XRPermutationElementAr
 
 	return GetHash(permutationFingerprint.data(), sizeof(uint16_t) * _createInfo->_permutationLayout._numEnums);
 }
+
+#pragma endregion XRPipelineGroup
+
+#pragma region XRPipelineManager
 
 bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 {
@@ -114,6 +164,10 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 	return true;
 }
 
+#pragma endregion XRPipelineManager
+
+#pragma region XRRenderPassManager
+
 bool XRRenderPassManager::RegisterRenderPassGenerator(std::string&& string, void* fpGnerator)
 {
 	auto Generate = static_cast<XRPFN_GENERATE_RENDERPASS>(fpGnerator);
@@ -121,6 +175,10 @@ bool XRRenderPassManager::RegisterRenderPassGenerator(std::string&& string, void
 	auto result = _renderPasses.insert({ string, { renderPass, Generate } });
 	return result.second;
 }
+
+#pragma endregion XRRenderPassManager
+
+#pragma region XRCommandFootprint
 
 uint32_t XRCommandFootprint::MakeHash() const
 {
@@ -134,3 +192,5 @@ void XRCommandFootprint::Transcribe(XRCommandBuffer* commandBuffer) const
 		_capturedCommands[c](commandBuffer);
 	}
 }
+
+#pragma endregion XRCommandFootprint

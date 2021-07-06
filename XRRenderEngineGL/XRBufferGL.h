@@ -4,13 +4,16 @@
 
 class XRBufferGL : public XRBufferRHI
 {
-private:
-	GLuint _buffer;
-
 public:
 	XRBufferGL() {}
 	virtual ~XRBufferGL() {};
 
 public:
+	GLuint getBufferId() const { return _buffer; }
+
+public:
 	void Initialize();
+
+private:
+	GLuint _buffer;
 };

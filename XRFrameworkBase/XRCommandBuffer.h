@@ -15,13 +15,14 @@ enum class XRBindPoint
 	Compute,
 };
 
+class XRResourceLayout;
 class XRRenderPassBase;
 class XRFramebuffer;
 class XRPipeline;
 class XRPipelineGroup;
 
 template<typename ResourceType>
-class XRResource;
+class XRView;
 class XRBuffer;
 
 struct XRBeginPassInfo
@@ -65,6 +66,8 @@ public:
 	virtual void begin() {}
 	virtual void end() {}
 
+	virtual void setResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) {}
+
 	virtual void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) {}
 	virtual void endPass() {}
 
@@ -82,7 +85,19 @@ public:
 
 	virtual void addBarrier() {}
 
-	virtual void bindResource(const std::string& bindingName, XRResource<XRBuffer>* buffer) {}
+	/**
+	 * @fn	void XRCommandBufferGL::bindResource(const std::string& bindingName, XRView<XRBuffer>* buffer)
+	 *
+	 * @brief	Bind resource
+	 * 			View<Buffer>를 현재 CommandBuffer에 설정된 ResourceLayout에 bind한다. BindPoint에 상관 없이 마지막으로 설정한 ResourceLayout에 bind한다.
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2021-07-03
+	 *
+	 * @param 		  	bindingName	Name of the binding.
+	 * @param [in,out]	buffer	   	If non-null, the buffer.
+	 */
+	virtual void bindResource(const std::string& bindingName, XRView<XRBuffer>* buffer) {}
 
 	virtual void draw(XRPrimitiveTopology topology, uint32_t vertexStart, uint32_t vertexCount) {}
 	virtual void drawIndexed(XRPrimitiveTopology topology, XRIndexType indexType, uint32_t indexStart, uint32_t indexCount) {}
@@ -95,4 +110,13 @@ public:
 
 	// Note: non that state bleeds back of toward the primary command buffer
 	virtual void executeCommands() {}
+
+protected:
+	XRResourceLayout*	_lastGraphicsResourceLayout;
+	XRResourceLayout*	_lastComputeResourceLayout;
+
+	XRResourceLayout*	_currentResourceLayout;
+	XRRenderPassBase*	_currentRenderPass;
+	XRPipelineGroup*	_currentPipelineGroup;
+	XRPipeline*			_currentPipeline;
 };

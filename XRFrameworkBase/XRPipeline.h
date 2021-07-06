@@ -429,9 +429,60 @@ struct XRViewportStateDescription
 	const XRScissorRect*			_scissorRects;
 };
 
-struct XRResourceLayout
-{
+struct UniformInfo;
+struct StorageInfo;
+struct SamplerInfo;
 
+template<typename ResourceType>
+class XRView;
+class XRBuffer;
+class XRTexture;
+
+struct UniformBindingInfo
+{
+	int32_t							_binding = -1;
+	const UniformInfo*				_uniformBlock = nullptr;
+	union {
+		XRView<XRTexture>*			_textureView;
+		XRView<XRBuffer>*			_bufferView;
+		void*						_view = nullptr;
+	};
+
+	bool isBound() { return _view != nullptr; }
+};
+
+struct StorageBindingInfo
+{
+	int32_t							_binding = -1;
+	const StorageInfo*				_storageInfo = nullptr;
+	union {
+		XRView<XRTexture>*			_textureView;
+		XRView<XRBuffer>*			_bufferView;
+		void*						_view = nullptr;
+	};
+
+	bool isBound() { return _view != nullptr; }
+};
+
+struct XRResourceBinder
+{
+	std::unordered_map<std::string, UniformBindingInfo*>	_uniformList;
+	std::unordered_map<std::string, StorageBindingInfo*>	_storageList;
+};
+
+class XRResourceLayout
+{
+	std::vector<XRResourceBinder*>			_resourceBinderStack;
+	XRResourceBinder*						_currentResourceBinder;
+
+	std::vector<UniformBindingInfo>			_uniformBindingInfos;
+	std::vector<StorageBindingInfo>			_storageBindingInfo;
+
+public:
+	UniformBindingInfo const* bindingUniform(std::string uniformName, XRView<XRBuffer>* bufferView);
+	UniformBindingInfo const* bindingUniform(std::string uniformName, XRView<XRTexture>* textureView);
+	StorageBindingInfo const* bindingStorage(std::string storageName, XRView<XRBuffer>* bufferView);
+	StorageBindingInfo const* bindingStorage(std::string storageName, XRView<XRTexture>* textureView);
 };
 
 struct XRPipelineStateDescription
@@ -473,34 +524,26 @@ enum class XRDynamicState
  * Program binding resource
  */
 
-struct UniformBlockInfo
+struct UniformInfo
 {
-	uint32_t _activeBlockIndex;	// reflection으로부터 획득한 가용 uniform block 중 몇 번째인지. 바인딩 정보는 아님.
 	int32_t _blockSize;			// uniform block의 크기
 	std::unordered_map<std::string, uint32_t> _uniformIndices;
+};
+
+struct StorageInfo
+{
+	uint32_t _blockSize;
+	std::unordered_map<std::string, uint32_t> _shaderStorageIndices;
 };
 
 struct ProgramResources
 {
 	int32_t _maxNumVariablesInActiveUniformBlock = 16;
 	int32_t _numActiveUniformBlocks = 0;
-	std::unordered_map<std::string, UniformBlockInfo> _activeUniformBlocks;
+	std::unordered_map<std::string, UniformInfo> _activeUniformBlocks;
 
-	// Upload 주기가 동일한 uniform들끼리 묶어서 offset을 변경해가며 uniform을 사용할 수 있다.
-	// 일반적인 버퍼의 생성은 최소 생성 크기가 있으므로, 그보다 작은 크기의 여러 블록을 하나의 버퍼에 모음으로써
-	// 불필요한 공간 낭비를 최소화한다.
-	// Todo: 어떤 기준으로 Uniform block들을 묶을지 결정 필요.
-	struct UniformBlockBindingInfo
-	{
-		int32_t					_binding = 0;
-		uint32_t				_bufferId = 0;
-		uint32_t				_offset = 0;
-		const UniformBlockInfo*	_uniformBlock = nullptr;
-
-		bool isBound() { return _uniformBlock != nullptr; }
-	};
-	std::vector<UniformBlockBindingInfo>	_indexedUniformBlockBindingInfo;
-	std::vector<std::string>				_indexedActiveUniformBlocks; // for debugging
+	std::vector<UniformBindingInfo>	_indexedUniformBindingInfo;
+	std::vector<std::string>		_indexedActiveUniforms; // for debugging
 
 public:
 	size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }

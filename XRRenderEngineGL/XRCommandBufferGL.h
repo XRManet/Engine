@@ -18,12 +18,14 @@ public:
 	void begin() override;
 	void end() override;
 
+	void setResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) override;
+
 	void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) override;
 	void endPass() override;
 
 	void bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline) override;
 
-	void bindResource(const std::string& bindingName, XRResource<XRBuffer>* buffer) override;
+	void bindResource(const std::string& bindingName, XRView<XRBuffer>* buffer) override;
 
 	//void addBarrier() override;
 

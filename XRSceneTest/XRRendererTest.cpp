@@ -275,7 +275,7 @@ void XRRendererTest::OnRender()
 		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
-		secondCommands->bindResource();
+		secondCommands->bindResource("", );
 
 		XRObjectGroup const* teapotGroup = GetObjectGroup("teapots_1");
 		teapotGroup->draw(secondCommands);

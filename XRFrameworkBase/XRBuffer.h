@@ -19,23 +19,27 @@ struct XRBufferCreateInfo
 
 using AccessMask = uint32_t;
 template<typename ResourceType>
-class XRResource
+class XRView
 {
-	using ViewType = typename XRResourceType::ViewType;
+	using ViewType = typename XRResourceType::View;
 
-	ResourceType* _resource;
-	ViewType* _view;
-	AccessMask _lastAccessMask;
+	ResourceType*	_resource;
+	ViewType		_view;
+	AccessMask		_lastAccessMask;
 
 public:
-	XRResource(ResourceType* resource)
+	XRView(ResourceType* resource)
 		: _resource(resource), _view()
 	{
 	}
 
-	XRResource(ResourceType* resource, ViewType* view)
+	XRView(ResourceType* resource, ViewType* view)
 	{
 	}
+
+public:
+	inline ViewType const& getViewInfo() const { return _view; }
+	inline ResourceType* getResource() { return _resource; }
 };
 
 class XRBufferRHI
@@ -54,6 +58,13 @@ class XRBaseExport XRBuffer
 	friend XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo);
 #endif
 
+public:
+	struct View
+	{
+		uint32_t			_offset;
+		uint32_t			_size;
+	};
+
 protected:
 	XRBufferRHI*			_rhi;
 	XRBufferCreateInfo		_bufferCreateInfo;
@@ -65,5 +76,6 @@ public:
 	virtual ~XRBuffer() {}
 
 public:
-	XRBufferCreateInfo const* GetBufferCreateInfo() const { return &_bufferCreateInfo; }
+	XRBufferCreateInfo const* getBufferCreateInfo() const { return &_bufferCreateInfo; }
+
 };

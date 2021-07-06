@@ -60,6 +60,9 @@ bool XRPipelineGL::buildProgram(XRShaderStageDescription const* shaderStageDescr
 	// TODO) separate
 	GL_CALL(_glProgram = glCreateProgram());
 
+	glProgramParameteri(_glProgram, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
+	glProgramParameteri(_glProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
+
 	constexpr uint32_t NUM_MAX_STAGES = 5;
 	uint32_t numStages = 0;
 	GLuint shadersToBuild[NUM_MAX_STAGES] = { 0, };

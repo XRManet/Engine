@@ -7,6 +7,8 @@
  */
 
 #include "stdafx.h"
+#include <XRFrameworkBase/XRPipeline.h>
+
 #include "XRCommandBufferGL.h"
 #include "XRBufferGL.h"
 #include "XRModelGL.h"
@@ -69,25 +71,32 @@ void XRCommandBufferGL::endPass()
 
 void XRCommandBufferGL::bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline)
 {
-
+	//auto pipelineGL = static_cast<XRPipelineGL*>(pipeline);
+	//pipelineGL->bind();
+	pipeline->bind();
 }
 
-void XRCommandBufferGL::bindResource(const std::string& bindingName, XRResource<XRBuffer>* buffer)
+void XRCommandBufferGL::bindResource(const std::string& bindingName, XRView<XRBuffer>* buffer)
 {
-	const GLintptr offset = 0;
-	const GLuint resourceUniformBuffer = 0; 
+	auto& viewInfo = buffer->getViewInfo();
 
-	auto found = _programResources._activeUniformBlocks.find(bindingName);
-	if (found != _programResources._activeUniformBlocks.end())
-	{
-		UniformBlockInfo const& uniformBlockInfo = found->second;
-		const GLuint binding = _programResources._indexedUniformBlockBindingInfo[uniformBlockInfo._activeBlockIndex]._binding;
-		GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, binding, resourceUniformBuffer, offset, uniformBlockInfo._blockSize));
-	}
-	else
-	{
-		// failed to bind
-	}
+	auto bindingInfo = _currentResourceLayout->bindingUniform(bindingName, buffer);
+	if (bindingInfo == nullptr)
+		return;
+
+	struct XRBufferAccessor : public XRBuffer {
+		using XRBuffer::_rhi;
+	} *accessor = static_cast<XRBufferAccessor*>(buffer->getResource());
+
+	auto bufferGL = static_cast<XRBufferGL*>(accessor->_rhi);
+
+	//UniformInfo const*	uniformBlockInfo = bindingInfo->_uniformBlock;
+	GLuint const		binding = bindingInfo->_binding;
+	GLuint const		bufferId = bufferGL->getBufferId();
+	GLintptr const 		offset = viewInfo->_offset;
+	GLsizeiptr const	size = viewInfo->_size;
+
+	GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, bindingInfo->_binding, bufferId, offset, size));
 }
 
 void XRCommandBufferGL::draw(XRPrimitiveTopology topology, uint32_t start, uint32_t count)
