@@ -441,7 +441,7 @@ class XRTexture;
 struct UniformBindingInfo
 {
 	int32_t							_binding = -1;
-	const UniformInfo*				_uniformBlock = nullptr;
+	const UniformInfo*				_uniformInfo = nullptr;
 	union {
 		XRView<XRTexture>*			_textureView;
 		XRView<XRBuffer>*			_bufferView;
@@ -527,6 +527,7 @@ enum class XRDynamicState
 struct UniformInfo
 {
 	int32_t _blockSize;			// uniform block의 크기
+	int32_t _activeBlockIndex;
 	std::unordered_map<std::string, uint32_t> _uniformIndices;
 };
 
@@ -546,7 +547,7 @@ struct ProgramResources
 	std::vector<std::string>		_indexedActiveUniforms; // for debugging
 
 public:
-	size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
+	inline size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
 };
 
 class XRBaseExport XRPipeline
@@ -556,6 +557,7 @@ public:
 	virtual ~XRPipeline() {}
 
 	ProgramResources _programResources;
+	XRResourceBinder _resourceBinder;
 
 public:
 	virtual void bind() {}

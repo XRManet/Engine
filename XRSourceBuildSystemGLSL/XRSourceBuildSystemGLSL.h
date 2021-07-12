@@ -21,6 +21,9 @@ public:
 	XRCompilerGLSL(XRBuildSystemAvailability availability);
 
 public:
+	void LoadSourceFiles();
+
+public:
 	XRCompiledObject* Compile(uint32_t numSourceFiles, const char** sourceFiles) override final;
 	XRCompiledObject* Load(const char* objectFile) override final;
 

@@ -92,6 +92,189 @@ bool XRPipelineGL::buildProgram(XRShaderStageDescription const* shaderStageDescr
 	return true;
 }
 
+struct ProgramResourcesGL : public ProgramResources
+{
+	struct ProgramDesc
+	{
+		GLint _numActiveUniform = 0;
+	};
+	virtual void reflectProgram(GLint const glProgram, ProgramDesc& outProgramDesc) = 0;
+
+	struct UniformDesc
+	{
+		constexpr static GLsizei BUF_SIZE = 256;
+		
+		GLchar _blockName[BUF_SIZE];
+
+		GLint _blockIndex = 0;
+		GLint _binding = 0;
+		UniformInfo _uniformInfo;
+	};
+	virtual void reflectUniformDesc(GLint const glProgram, UniformDesc& outUniformDesc) = 0;
+};
+
+struct ProgramResourcesGL4 : public ProgramResourcesGL
+{
+	virtual void reflectProgram(GLint const glProgram, ProgramDesc& outProgramDesc) override final
+	{
+		GL_CALL(glGetProgramInterfaceiv(glProgram, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &_numActiveUniformBlocks));
+		GL_CALL(glGetProgramInterfaceiv(glProgram, GL_UNIFORM_BLOCK, GL_MAX_NUM_ACTIVE_VARIABLES, &_maxNumVariablesInActiveUniformBlock));
+		
+		GL_CALL(glGetProgramInterfaceiv(glProgram, GL_UNIFORM, GL_ACTIVE_RESOURCES, &outProgramDesc._numActiveUniform));
+	}
+
+	virtual void reflectUniformDesc(GLint const glProgram, UniformDesc& outUniformDesc) override final
+	{
+		GLenum props[] = {
+			GL_BUFFER_DATA_SIZE,
+			GL_BUFFER_BINDING,
+			GL_NUM_ACTIVE_VARIABLES,
+			GL_ACTIVE_VARIABLES,
+		};
+		
+		const GLint blockIndex = outUniformDesc._blockIndex;
+		GL_CALL(glGetProgramResourceName(glProgram, GL_UNIFORM_BLOCK, blockIndex, UniformDesc::BUF_SIZE, nullptr, outUniformDesc._blockName));
+
+		outUniformDesc._uniformInfo._activeBlockIndex = blockIndex;
+		glGetProgramResourceiv(glProgram, GL_UNIFORM_BLOCK, blockIndex, 1, &props[0], 1, nullptr, &outUniformDesc._uniformInfo._blockSize);
+
+		glGetProgramResourceiv(glProgram, GL_UNIFORM_BLOCK, blockIndex, 1, &props[1], 1, nullptr, &outUniformDesc._binding);
+
+		GLint numActiveVariables = 0;
+		glGetProgramResourceiv(glProgram, GL_UNIFORM_BLOCK, blockIndex, 1, &props[2], 1, nullptr, &numActiveVariables);
+
+		GLsizei length = 0;
+		std::vector<GLint> arrayUniformIndices(numActiveVariables);
+		glGetProgramResourceiv(glProgram, GL_UNIFORM_BLOCK, blockIndex, 1, &props[3], arrayUniformIndices.size(), &length, arrayUniformIndices.data());
+
+		GLchar uniformName[UniformDesc::BUF_SIZE];
+		for (GLint j = 0; j < length; ++j)
+		{
+			GL_CALL(glGetProgramResourceName(glProgram, GL_UNIFORM, arrayUniformIndices[j], UniformDesc::BUF_SIZE, nullptr, uniformName));
+			outUniformDesc._uniformInfo._uniformIndices[uniformName] = j;
+		}
+
+#if defined(DEBUG_MESSAGE_REFLECT_SHADER)
+		static constexpr GLenum activeUniformQueryProps[] {
+			GL_TYPE, GL_ARRAY_SIZE, GL_BLOCK_INDEX, GL_OFFSET,
+			GL_ARRAY_STRIDE, GL_MATRIX_STRIDE, GL_IS_ROW_MAJOR, GL_ATOMIC_COUNTER_BUFFER_INDEX,
+		};
+		static char const* stringName[] {
+			"Type", "Num", "BlockIndex", "Offset",
+			"ArrayStride", "MatrixStride", "IsRowMajor", "AtomicCounterBufferIndex",
+		};
+		constexpr uint32_t QUERY_COUNT = sizeof(activeUniformQueryProps) / sizeof(activeUniformQueryProps[0]);
+		GLint uniformQueryResult[QUERY_COUNT];
+
+		for (GLint j = 0; j < length; ++j)
+		{
+			GL_CALL(glGetProgramResourceName(glProgram, GL_UNIFORM, arrayUniformIndices[j], UniformDesc::BUF_SIZE, nullptr, uniformName));
+			outUniformDesc._uniformInfo._uniformIndices[uniformName] = j;
+
+			glGetProgramResourceiv(glProgram, GL_UNIFORM, arrayUniformIndices[j], QUERY_COUNT, activeUniformQueryProps, QUERY_COUNT, nullptr, uniformQueryResult);
+			for (GLint j = 0; j < QUERY_COUNT; ++j)
+			{
+				printf("%s: %d, ", stringName[j], uniformQueryResult[j]);
+			}
+			printf("\n");
+		}
+#endif // defined(DEBUG_MESSAGE_REFLECT_SHADER)
+	}
+};
+
+struct ProgramResourcesGL3 : public ProgramResourcesGL
+{
+	virtual void reflectProgram(GLint const glProgram, ProgramDesc& outProgramDesc) override final
+	{
+		GL_CALL(glGetProgramiv(glProgram, GL_ACTIVE_UNIFORM_BLOCKS, &_numActiveUniformBlocks));
+		GL_CALL(glGetProgramiv(glProgram, GL_ACTIVE_UNIFORMS, &outProgramDesc._numActiveUniform));
+
+		_maxNumVariablesInActiveUniformBlock = 0;
+	}
+
+	virtual void reflectUniformDesc(GLint const glProgram, UniformDesc& outUniformDesc) override final
+	{
+		const GLint blockIndex = outUniformDesc._blockIndex;
+
+		GL_CALL(glGetActiveUniformBlockName(glProgram, blockIndex, UniformDesc::BUF_SIZE, nullptr, outUniformDesc._blockName));
+
+		outUniformDesc._uniformInfo._activeBlockIndex = blockIndex;
+		GL_CALL(glGetActiveUniformBlockiv(glProgram, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &outUniformDesc._uniformInfo._blockSize));
+
+		GL_CALL(glGetActiveUniformBlockiv(glProgram, blockIndex, GL_UNIFORM_BLOCK_BINDING, &outUniformDesc._binding));
+
+		GLenum pnames[] = {
+			GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, 0,
+		};
+		GLint numActiveVariables = 0;
+		GL_CALL(glGetActiveUniformBlockiv(glProgram, blockIndex, pnames[0], &numActiveVariables));
+
+		std::vector<GLuint> arrayUniformIndices(numActiveVariables);
+		GL_CALL(glGetActiveUniformBlockiv(glProgram, blockIndex, pnames[1], (GLint*)(arrayUniformIndices.data())));
+
+		GLchar uniformName[UniformDesc::BUF_SIZE];
+		for (GLint j = 0; j < numActiveVariables; ++j)
+		{
+			glGetActiveUniformName(glProgram, arrayUniformIndices[j], UniformDesc::BUF_SIZE, nullptr, uniformName);
+			outUniformDesc._uniformInfo._uniformIndices[uniformName] = j;
+		}
+
+#if defined(DEBUG_MESSAGE_REFLECT_SHADER)
+		static constexpr struct {
+			GLenum pname;
+			const char* stringName;
+		} activeUniformQueryPnames[] = {
+			{ GL_UNIFORM_TYPE,						  "Type"},
+			{ GL_UNIFORM_SIZE,						  "Num"},
+			{ GL_UNIFORM_BLOCK_INDEX,				  "BlockIndex"},
+			{ GL_UNIFORM_OFFSET,					  "Offset"},
+			{ GL_UNIFORM_ARRAY_STRIDE,				  "ArrayStride"},
+			{ GL_UNIFORM_MATRIX_STRIDE,				  "MatrixStride"},
+			{ GL_UNIFORM_IS_ROW_MAJOR,				  "IsRowMajor"},
+			{ GL_UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX, "AtomicCounterBufferIndex"},
+		};
+		constexpr uint32_t queryCount = sizeof(activeUniformQueryPnames) / sizeof(activeUniformQueryPnames[0]);
+		GLint uniformQueryResult[queryCount];
+
+		for (GLint j = 0; j < numActiveVariables; ++j)
+		{
+			glGetActiveUniformName(glProgram, arrayUniformIndices[j], UniformDesc::BUF_SIZE, nullptr, uniformName);
+			outUniformDesc._uniformInfo._uniformIndices[uniformName] = j;
+
+			for (GLint k = 0; k < queryCount; ++k)
+			{
+				glGetActiveUniformsiv(glProgram, 1, &arrayUniformIndices[j], activeUniformQueryPnames[k].pname, &uniformQueryResult[k]);
+				printf("%s: %d, ", activeUniformQueryPnames[k].stringName, uniformQueryResult[k]);
+			}
+			printf("\n");
+		}
+#endif // defined(DEBUG_MESSAGE_REFLECT_SHADER)
+	}
+};
+
+struct ProgramResourcesGLFallback : public ProgramResourcesGL
+{
+	virtual void reflectProgram(GLint const glProgram, ProgramDesc& outProgramDesc) override final
+	{
+		// Do not come here
+		assert(false);
+		printf("Can not use buffer as an uniform buffer. XREngine couldn't support this environment.\n\n");
+
+		// Directly set
+		_activeUniformBlocks["Materials"] = {};
+		_activeUniformBlocks["LightBlock"] = {};
+		_activeUniformBlocks["MatrixBlock"] = {};
+		_numActiveUniformBlocks = static_cast<GLint>(_activeUniformBlocks.size());
+
+		_maxNumVariablesInActiveUniformBlock = 0;
+	}
+
+	virtual void reflectUniformDesc(GLint const glProgram, UniformDesc& outUniformDesc) override final
+	{
+		assert(false);
+	}
+};
+
 bool XRPipelineGL::createBindingInformation()
 {
 	static int isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");
@@ -102,185 +285,86 @@ bool XRPipelineGL::createBindingInformation()
 	static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GLFW_TRUE)
 		|| (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
 
+	ProgramResourcesGL* programResourcesGL = nullptr;
+	if (doQueryProgramInterface == true)
+		programResourcesGL = new (&_programResources) ProgramResourcesGL4;
+	else if (doQueryUniformBuffer == true)
+		programResourcesGL = new (&_programResources) ProgramResourcesGL3;
+	else
+		programResourcesGL = new (&_programResources) ProgramResourcesGLFallback;
+
+
 	GL_CALL(glUseProgram(_glProgram));
 
-	if (doQueryProgramInterface == true)
-	{
-		printf("=============================================\n");
-		printf("Reflect programs\n\n");
+	printf("=============================================\n");
+	printf("Reflect programs\n\n");
 
-		GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &_programResources._numActiveUniformBlocks));
-		printf("Number of uniform block resources: %d\n", _programResources._numActiveUniformBlocks);
-		GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM_BLOCK, GL_MAX_NUM_ACTIVE_VARIABLES, &_programResources._maxNumVariablesInActiveUniformBlock));
-		printf("Max number of uniform block variables: %d\n", _programResources._maxNumVariablesInActiveUniformBlock);
-		GLint numActiveUniform = 0;
-		GL_CALL(glGetProgramInterfaceiv(_glProgram, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniform));
-		printf("Number of uniform resources:  %d\n", numActiveUniform);
+	ProgramResourcesGL::ProgramDesc programDesc;
+	GLint& numActiveUniform = programDesc._numActiveUniform;
+	programResourcesGL->reflectProgram(_glProgram, programDesc);
+
+	printf("Number of uniform block resources: %d\n", _programResources._numActiveUniformBlocks);
+	printf("Max number of uniform block variables: %d\n", _programResources._maxNumVariablesInActiveUniformBlock);
+	printf("Number of uniform resources:  %d\n", numActiveUniform);
+
+	_programResources._indexedUniformBindingInfo.resize(_programResources.GetActiveUniformBlocks());
+	_programResources._indexedActiveUniforms.resize(_programResources.GetActiveUniformBlocks());
+
+	printf("=============================================\n");
+	printf("Reflect uniform blocks\n\n");
+
+	GLsizei length;
+	GLint resultParams[64] = { -1, -1 };
+	constexpr GLsizei maxResultSize = sizeof(resultParams) / sizeof(resultParams[0]);
+	struct ActiveUniformBlockRange
+	{
+		GLint numActiveVariables;
+		GLuint uniformIndices[1];
+	};
+
+	GLint numUniformBlocks = static_cast<GLint>(_programResources.GetActiveUniformBlocks());
+
+	
+	ProgramResourcesGL::UniformDesc uniformDesc;
+	for (GLint i = 0; i < numUniformBlocks; ++i)
+	{
+		uniformDesc._blockIndex = i;
+		programResourcesGL->reflectUniformDesc(_glProgram, uniformDesc);
+
+		_programResources._activeUniformBlocks[uniformDesc._blockName] = {};
+		auto result = _programResources._activeUniformBlocks.insert({ uniformDesc._blockName, {} });
+		assert(result.second == true);
+
+		UniformInfo& uniformInfo = result.first->second;
+		uniformInfo = std::move(uniformDesc._uniformInfo);
+
+		_programResources._indexedActiveUniforms[i] = uniformDesc._blockName;
+		_programResources._indexedUniformBindingInfo[i]._uniformInfo = &uniformInfo;
 	}
-	else
-	{
-		// Do not come here
-		assert(false);
-
-		// Directly set
-		_programResources._activeUniformBlocks["Materials"] = {};
-		_programResources._activeUniformBlocks["LightBlock"] = {};
-		_programResources._activeUniformBlocks["MatrixBlock"] = {};
-		_programResources._numActiveUniformBlocks = static_cast<GLint>(_programResources._activeUniformBlocks.size());
-	}
-
-	_programResources._indexedActiveUniformBlocks.resize(_programResources.GetActiveUniformBlocks());
-
-	if (doQueryUniformBuffer == true)
-	{
-		printf("=============================================\n");
-		printf("Reflect uniform blocks\n\n");
-
-		GLuint uniformIndexTransform = -1;
-
-		GLsizei length;
-		GLint resultParams[64] = { -1, -1 };
-		constexpr GLsizei maxResultSize = sizeof(resultParams) / sizeof(resultParams[0]);
-		struct ActiveUniformBlockRange
-		{
-			GLint numActiveVariables;
-			GLuint uniformIndices[1];
-		};
-
-		GLenum props[3] = {
-			GL_NUM_ACTIVE_VARIABLES, GL_ACTIVE_VARIABLES, 0,
-		};
-		GLenum pnames[3] = {
-			GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, 0,
-		};
-
-		GLint numUniformBlocks = static_cast<GLint>(_programResources.GetActiveUniformBlocks());
-		_programResources._indexedActiveUniformBlocks.reserve(numUniformBlocks);
-		_programResources._indexedUniformBlockBindingInfo.resize(numUniformBlocks);
-
-		for (GLint i = 0; i < numUniformBlocks; ++i)
-		{
-			const GLsizei bufSize = 256;
-
-			GLchar blockName[bufSize];
-			//GL_CALL(glGetProgramResourceName(_glProgram, GL_UNIFORM_BLOCK, i, bufSize, nullptr, blockName));
-			glGetActiveUniformBlockName(_glProgram, i, bufSize, nullptr, blockName);
-			if (glGetError() != GL_NO_ERROR)
-			{
-				_programResources._numActiveUniformBlocks = i;
-				break;
-			}
-			printf("Uniform Block Name: %s, (%d/%d)\n", blockName, i, numUniformBlocks);
-
-			if (doQueryProgramInterface)
-			{
-				_programResources._activeUniformBlocks[blockName] = {};
-			}
-			else
-			{
-				assert(_programResources._activeUniformBlocks.find(blockName) != _programResources._activeUniformBlocks.end());
-			}
-
-			_programResources._indexedActiveUniformBlocks.push_back(blockName);
-			ProgramResources::UniformBlockBindingInfo& bindingInfo = _programResources._indexedUniformBlockBindingInfo[i];
-
-			auto& uniformBlock = _programResources._activeUniformBlocks[blockName];
-			uniformBlock._activeBlockIndex = i;
-
-			bindingInfo._uniformBlock = &uniformBlock;
-			
-			// Todo: 하나의 버퍼에 여러 uniform block을 넣을 경우, 각각에 대한 offset이 필요
-			bindingInfo._bufferId = 0;
-			bindingInfo._offset = 0;
-
-			GL_CALL(glGetActiveUniformBlockiv(_glProgram, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock._blockSize));
-			GL_CALL(glGetActiveUniformBlockiv(_glProgram, i, GL_UNIFORM_BLOCK_BINDING, &bindingInfo._binding));
-
-			auto& blockRange = reinterpret_cast<ActiveUniformBlockRange&>(resultParams);
-			//glGetProgramResourceiv(_glProgram, GL_UNIFORM_BLOCK, i, 2, props, maxResultSize, &length, resultParams);
-			GL_CALL(glGetActiveUniformBlockiv(_glProgram, i, pnames[0], &resultParams[0]));
-			GL_CALL(glGetActiveUniformBlockiv(_glProgram, i, pnames[1], &resultParams[1]));
-
-			GLchar uniformName[bufSize];
-			static constexpr GLenum activeUniformQueryProps[]{
-				GL_TYPE,
-				GL_ARRAY_SIZE,
-				GL_BLOCK_INDEX,
-				GL_OFFSET,
-				GL_ARRAY_STRIDE,
-				GL_MATRIX_STRIDE,
-				GL_IS_ROW_MAJOR,
-				GL_ATOMIC_COUNTER_BUFFER_INDEX,
-			};
-			static constexpr struct {
-				GLenum pname;
-				const char* stringName;
-			} activeUniformQueryPnames[] = {
-				{ GL_UNIFORM_TYPE,						  "Type"},
-				{ GL_UNIFORM_SIZE,						  "Num"},
-				{ GL_UNIFORM_BLOCK_INDEX,				  "BlockIndex"},
-				{ GL_UNIFORM_OFFSET,					  "Offset"},
-				{ GL_UNIFORM_ARRAY_STRIDE,				  "ArrayStride"},
-				{ GL_UNIFORM_MATRIX_STRIDE,				  "MatrixStride"},
-				{ GL_UNIFORM_IS_ROW_MAJOR,				  "IsRowMajor"},
-				{ GL_UNIFORM_ATOMIC_COUNTER_BUFFER_INDEX, "AtomicCounterBufferIndex"},
-			};
-			constexpr uint32_t queryCount = sizeof(activeUniformQueryPnames) / sizeof(activeUniformQueryPnames[0]);
-			GLint uniformQueryResult[queryCount];
-			printf("Uniform NumActiveVariables: %d\n", blockRange.numActiveVariables);
-			for (GLint i = 0; i < blockRange.numActiveVariables; ++i)
-			{
-				GL_CALL(glGetActiveUniformName(_glProgram, blockRange.uniformIndices[i], bufSize, nullptr, uniformName));
-				//GL_CALL(glGetProgramResourceName(_glProgram, GL_UNIFORM, blockRange.uniformIndices[i], bufSize, nullptr, uniformName));
-				printf("\tUniform index [%d] Name: %s, ", blockRange.uniformIndices[i], uniformName);
-				uniformBlock._uniformIndices[uniformName] = i;
-
-				//glGetProgramResourceiv(_glProgram, GL_UNIFORM, blockRange.uniformIndices[i], queryCount, activeUniformQueryProps, queryCount, nullptr, uniformQueryResult);
-				for (GLint j = 0; j < queryCount; ++j)
-				{
-					GL_CALL_WARN(glGetActiveUniformsiv(_glProgram, 1, &blockRange.uniformIndices[i], activeUniformQueryPnames[j].pname, &uniformQueryResult[j]));
-					printf("%s: %d, ", activeUniformQueryPnames[j].stringName, uniformQueryResult[j]);
-				}
-				printf("\n");
-			}
-
-			//GLint variablesQueryResult[64] = {0, };
-			//for (GLint j = 0; j < queryCount; ++j)
-			//{
-			//	glGetActiveUniformsiv(_glProgram, blockRange.numActiveVariables, blockRange.uniformIndices, activeUniformQueries[j], variablesQueryResult);
-			//}
-		}
 
 #if _DEBUG && 0
-		auto& ubMatrixBlock = _programResources._activeUniformBlocks["MatrixBlock"];
-		auto& ubLightBlock = _programResources._activeUniformBlocks["LightBlock"];
+	auto& ubMatrixBlock = _programResources._activeUniformBlocks["MatrixBlock"];
+	auto& ubLightBlock = _programResources._activeUniformBlocks["LightBlock"];
 
-		// Active Uniform Block에 Binding을 직접 부여하는 API.
-		// GLSL layout을 명시적으로 정했든, 자동 부여 되었든 Program 내에 이미 결정된 binding을 변경할 수 있다.
-		GL_CALL(glUniformBlockBinding(_glProgram, ubMatrixBlock._activeBlockIndex, UNIFORM_BINDING_NAME::Matrix));
-		GL_CALL(glUniformBlockBinding(_glProgram, ubLightBlock._activeBlockIndex, UNIFORM_BINDING_NAME::Light));
+	// Active Uniform Block에 Binding을 직접 부여하는 API.
+	// GLSL layout을 명시적으로 정했든, 자동 부여 되었든 Program 내에 이미 결정된 binding을 변경할 수 있다.
+	GL_CALL(glUniformBlockBinding(_glProgram, ubMatrixBlock._activeBlockIndex, UNIFORM_BINDING_NAME::Matrix));
+	GL_CALL(glUniformBlockBinding(_glProgram, ubLightBlock._activeBlockIndex, UNIFORM_BINDING_NAME::Light));
 
-		if (0) // After bind uniform block with buffer, we can get the binding buffer name by following below.
-		{
-			GLint currentBindingPoint = -1;
-			GL_CALL(glGetActiveUniformBlockiv(_glProgram, ubMatrixBlock._activeBlockIndex, GL_UNIFORM_BLOCK_BINDING, &currentBindingPoint));
-		}
-#endif
-
-#if _DEBUG && 0
-		struct BufferRange
-		{
-			GLint64 start = 0;
-			GLint64 size = 0;
-		} bufferRange;
-		GL_CALL(glGetInteger64i_v(GL_UNIFORM_BUFFER_START, UNIFORM_BINDING_NAME::Matrix, &bufferRange.start));
-		GL_CALL(glGetInteger64i_v(GL_UNIFORM_BUFFER_SIZE, UNIFORM_BINDING_NAME::Matrix, &bufferRange.size));
-#endif
-	}
-	else
+	if (0) // After bind uniform block with buffer, we can get the binding buffer name by following below.
 	{
-		printf("Can not use buffer as an uniform buffer. XREngine couldn't support this environment.\n\n");
+		GLint currentBindingPoint = -1;
+		GL_CALL(glGetActiveUniformBlockiv(_glProgram, ubMatrixBlock._activeBlockIndex, GL_UNIFORM_BLOCK_BINDING, &currentBindingPoint));
 	}
+
+	struct BufferRange
+	{
+		GLint64 start = 0;
+		GLint64 size = 0;
+	} bufferRange;
+	GL_CALL(glGetInteger64i_v(GL_UNIFORM_BUFFER_START, UNIFORM_BINDING_NAME::Matrix, &bufferRange.start));
+	GL_CALL(glGetInteger64i_v(GL_UNIFORM_BUFFER_SIZE, UNIFORM_BINDING_NAME::Matrix, &bufferRange.size));
+#endif // _DEBUG
 
 	return true;
 }

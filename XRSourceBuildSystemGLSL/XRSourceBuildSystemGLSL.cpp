@@ -38,6 +38,11 @@ XRCompilerGLSL::XRCompilerGLSL(XRBuildSystemAvailability availability)
     return;
 }
 
+void XRCompilerGLSL::LoadSourceFiles()
+{
+
+}
+
 XRCompiledObject* XRCompilerGLSL::Compile(uint32_t numSourceFiles, const char** sourceFiles)
 {
 	return nullptr;
