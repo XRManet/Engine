@@ -90,11 +90,11 @@ void XRCommandBufferGL::bindResource(const std::string& bindingName, XRView<XRBu
 
 	auto bufferGL = static_cast<XRBufferGL*>(accessor->_rhi);
 
-	//UniformInfo const*	uniformBlockInfo = bindingInfo->_uniformBlock;
+	//UniformInfo const*	uniformBlockInfo = bindingInfo->_uniformInfo;
 	GLuint const		binding = bindingInfo->_binding;
 	GLuint const		bufferId = bufferGL->getBufferId();
-	GLintptr const 		offset = viewInfo->_offset;
-	GLsizeiptr const	size = viewInfo->_size;
+	GLintptr const 		offset = viewInfo._offset;
+	GLsizeiptr const	size = viewInfo._size;
 
 	GL_CALL(glBindBufferRange(GL_UNIFORM_BUFFER, bindingInfo->_binding, bufferId, offset, size));
 }

@@ -19,7 +19,7 @@ void XRBufferGL::Initialize()
 	glGenBuffers(1, &_buffer);
 
 	GLsizeiptr bufferSize = 0;
-	bufferSize = NEXT_ALIGN_2(bufferSize + _handle->GetBufferCreateInfo()->_size, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+	bufferSize = NEXT_ALIGN_2(bufferSize + _handle->getBufferCreateInfo()->_size, UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _buffer);
 	glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, GL_DYNAMIC_DRAW);

@@ -21,7 +21,7 @@ using AccessMask = uint32_t;
 template<typename ResourceType>
 class XRView
 {
-	using ViewType = typename XRResourceType::View;
+	using ViewType = typename ResourceType::View;
 
 	ResourceType*	_resource;
 	ViewType		_view;

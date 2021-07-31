@@ -231,7 +231,7 @@ void XRRendererTest::OnUpdate()
 		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
 		{
 			if (ii->isBound() == false) continue;
-			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformBlock->_blockSize, dataAddress[i]));
+			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformInfo->_blockSize, dataAddress[i]));
 		}
 #elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
 		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data()));
@@ -275,7 +275,7 @@ void XRRendererTest::OnRender()
 		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
-		secondCommands->bindResource("", );
+		//secondCommands->bindResource("", );
 
 		XRObjectGroup const* teapotGroup = GetObjectGroup("teapots_1");
 		teapotGroup->draw(secondCommands);
