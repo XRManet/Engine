@@ -470,7 +470,7 @@ struct XRResourceBinder
 	std::unordered_map<std::string, StorageBindingInfo*>	_storageList;
 };
 
-class XRResourceLayout
+class XRBaseExport XRResourceLayout
 {
 	std::vector<XRResourceBinder*>			_resourceBinderStack;
 	XRResourceBinder*						_currentResourceBinder;

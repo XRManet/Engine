@@ -59,6 +59,10 @@ void XRCommandBufferGL::executeCommands()
 	}
 }
 
+void XRCommandBufferGL::setResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout)
+{
+}
+
 void XRCommandBufferGL::beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo)
 {
 
