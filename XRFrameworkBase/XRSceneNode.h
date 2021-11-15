@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "stdafx.h"
 #include "XRObject.h"
@@ -15,7 +15,6 @@ enum class XRSceneNodeType
 class XRBaseExport XRSceneNode : public XRObject
 {
 public:
-
 	XRSceneNode(XRSceneNode* parent = nullptr);
 	virtual ~XRSceneNode();
 

@@ -25,6 +25,7 @@ public:
 	std::vector<XRObject const*> _objects;
 
 	XRObjectGroup() = default;
+	XRObjectGroup(XRModel const* model) : _model(model), _objects() {}
 	XRObjectGroup(XRModel const* model, std::vector<XRObject const*>&& objects) : _model(model), _objects(std::move(objects)) {}
 
 	XRObjectGroup& operator = (const XRObjectGroup& rhs) = default;

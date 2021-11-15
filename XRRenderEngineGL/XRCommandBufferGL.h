@@ -18,7 +18,8 @@ public:
 	void begin() override;
 	void end() override;
 
-	void setResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) override;
+	void pushResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) override;
+	void popResourceLayout() override;
 
 	void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) override;
 	void endPass() override;

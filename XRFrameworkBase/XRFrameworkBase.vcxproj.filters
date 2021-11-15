@@ -213,6 +213,9 @@
       <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClInclude>
     <ClInclude Include="XRDefault.h" />
+    <ClInclude Include="XRSourceBuildSystemLinker.hpp">
+      <Filter>소스 파일\Engine\Render\Linker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">

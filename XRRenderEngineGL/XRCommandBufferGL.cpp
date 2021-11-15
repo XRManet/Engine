@@ -42,6 +42,13 @@ void XRCommandBufferGL::begin()
 		_commandMemoryPool = new XRCommandMemoryPoolGL;
 
 	_commandMemoryPool->ready(1 << 12);
+
+	// Move to common layer
+	{
+		_resourceLayoutStack.clear();
+		_currentResourceLayout = nullptr;
+		_resourceLayoutStack.push_back(nullptr);
+	}
 }
 
 void XRCommandBufferGL::end()
@@ -59,8 +66,22 @@ void XRCommandBufferGL::executeCommands()
 	}
 }
 
-void XRCommandBufferGL::setResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout)
+void XRCommandBufferGL::pushResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout)
 {
+	if (bindPoint == XRBindPoint::Graphics)
+		_lastGraphicsResourceLayout = resourceLayout;
+	else if (bindPoint == XRBindPoint::Compute)
+		_lastComputeResourceLayout = resourceLayout;
+	else assert(false);
+
+	_currentResourceLayout = resourceLayout;
+	_resourceLayoutStack.push_back(resourceLayout);
+}
+
+void XRCommandBufferGL::popResourceLayout()
+{
+	_resourceLayoutStack.pop_back();
+	_currentResourceLayout = _resourceLayoutStack.back();
 }
 
 void XRCommandBufferGL::beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo)

@@ -69,6 +69,8 @@ namespace XRPlatform
 #define XR_BUILD_SYSTEM_MSBUILD_VS_2017 (_MSC_VER >= 1910)
 #endif // defined(_MSC_BUILD)
 
+#define XR_DYNAMIC_LIBRARY(name)	#name".dll"
+
 ///< APPLE
 #elif defined(__APPLE__)
 #define XR_PLATFORM				XR_PLATFORM_OSX
@@ -81,6 +83,8 @@ namespace XRPlatform
 #else
 #error "Not defined"
 #endif
+
+#define XR_DYNAMIC_LIBRARY(name)	#name".dylib"
 
 #endif
 

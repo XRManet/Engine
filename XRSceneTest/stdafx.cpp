@@ -3,9 +3,3 @@
 // stdafx.obj에는 미리 컴파일된 형식 정보가 포함됩니다.
 
 #include "stdafx.h"
-
-#define XRRENDER_ENGINE			"XRRenderEngineGL"
-#include <XRFrameworkBase/XRRenderEngineLinker.hpp>
-
-//#define XRSHADER_BUILD_SYSTEM	"XRShaderBuildSystemGLSL"
-//#include <XRFrameworkBase/XRRender>

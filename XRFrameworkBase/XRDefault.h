@@ -21,6 +21,14 @@
 #define XRRenderAPI(ReturnType, ApiName) extern ReturnType (*ApiName)
 #endif
 
+#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
+#define XRShaderBuildExport extern "C" __declspec(dllexport)
+#define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __declspec(dllexport) ReturnType ApiName
+#else
+#define XRShaderBuildExport extern "C" __declspec(dllimport)
+#define XRShaderBuildAPI(ReturnType, ApiName) extern __declspec(dllimport) ReturnType (*ApiName)
+#endif
+
 #elif defined(__APPLE__)
 
 #define XRExport __attribute__((visibility("default")))

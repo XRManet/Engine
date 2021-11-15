@@ -1,22 +1,25 @@
-// OpenGLStart.cpp: 콘솔 응용 프로그램의 진입점을 정의합니다.
+﻿// OpenGLStart.cpp: 콘솔 응용 프로그램의 진입점을 정의합니다.
 //
 
 #include "stdafx.h"
 
+#include <XRFrameworkBase/XRSourceBuildSystem.h>
 #include "XRLoopManager.h"
 #include "XRSceneManager.h"
 
 int main(void)
 {
-  XRLoopManager<XRLoopManagerInfra::Default> loopManager({ 800.f, 600.f });
+	XRLoopManager<XRLoopManagerInfra::Default> loopManager({ 800.f, 600.f });
 
-  auto sceneManager = XRSceneManager::GetInstance();
-  
-  sceneManager->BindPrimaryScene("main");
+	XRSourceBuildSystem* shaderBuildSystem = xrGetShaderBuildSystem();
 
-  loopManager.Initialize();
+	auto sceneManager = XRSceneManager::GetInstance();
 
-  loopManager.Run();
+	sceneManager->BindPrimaryScene("main");
 
-  return 0;
+	loopManager.Initialize();
+
+	loopManager.Run();
+
+	return 0;
 }

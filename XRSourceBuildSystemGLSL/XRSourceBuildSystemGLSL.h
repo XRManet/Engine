@@ -1,37 +1,62 @@
-﻿// The following ifdef block is the standard way of creating macros which make exporting
-// from a DLL simpler. All files within this DLL are compiled with the XRSOURCEBUILDSYSTEMGLSL_EXPORTS
-// symbol defined on the command line. This symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see
-// XRSOURCEBUILDSYSTEMGLSL_API functions as being imported from a DLL, whereas this DLL sees symbols
-// defined with this macro as being exported.
-#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
-#define XRSourceBuildSystemAPI __declspec(dllexport)
-#else
-#define XRSourceBuildSystemAPI __declspec(dllimport)
-#endif
+﻿#pragma once
 
-#include <stdint.h>
-
+#include <XRFrameworkBase/XRDefault.h>
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
+#include <XRFrameworkBase/XRIndexedString.h>
 
-// This class is exported from the dll
-class XRSourceBuildSystemAPI XRCompilerGLSL : public XRCompiler
+struct XRGLSL; // using for IndexedString<XRGLSL>
+
+struct XRShaderStageDescription;
+class XRSourceBuildSystemGLSL;
+
+struct XRGLCompileOptions : public XRCompileOptions
+{
+	GLenum _compileType = 0;
+
+	uint64_t getOptionHash() override final;
+};
+
+class XRGLShaderObject : public XRCompiledObject
 {
 public:
-	XRCompilerGLSL(XRBuildSystemAvailability availability);
+	xr::IndexedString<XRGLSL> _sourcePath;
+	GLuint _shader;
+
+public:
+	XRGLShaderObject(GLenum shaderType, xr::IndexedString<XRGLSL> sourcePath);
+	virtual ~XRGLShaderObject();
+};
+
+class XRGLProgram : public XRExecutable
+{
+public:
+	GLuint _program;
+
+public:
+	XRGLProgram();
+	virtual ~XRGLProgram();
+};
+
+class XRCompilerGLSL : public XRCompiler
+{
+public:
+	XRCompilerGLSL(XRSourceBuildSystemGLSL* glslBuildSystem, XRBuildSystemAvailability availability);
 
 public:
 	void LoadSourceFiles();
 
 public:
-	XRCompiledObject* Compile(uint32_t numSourceFiles, const char** sourceFiles) override final;
-	XRCompiledObject* Load(const char* objectFile) override final;
+	XRCompiledObject* Compile(const char* sourceFilePath, XRCompileOptions*) override final;
+	XRCompiledObject* Load(const char* objectFilePath, XRLoadOptions*) override final;
 
 public:
-	XRExecutable* BuildExecutable() override final;
+	XRExecutable* BuildExecutable(XRBuildConfiguration*, XRBuildItemManifest*) override final;
 	XRLinkable* BuildLibrary() override final;
 };
 
-extern XRSourceBuildSystemAPI int nXRSourceBuildSystemGLSL;
-
-XRSourceBuildSystemAPI int fnXRSourceBuildSystemGLSL(void);
+class XRSourceBuildSystemGLSL : public XRSourceBuildSystem
+{
+public:
+	XRSourceBuildSystemGLSL();
+	virtual ~XRSourceBuildSystemGLSL();
+};

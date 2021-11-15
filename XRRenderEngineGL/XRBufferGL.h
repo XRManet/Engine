@@ -12,7 +12,7 @@ public:
 	GLuint getBufferId() const { return _buffer; }
 
 public:
-	void Initialize();
+	void Initialize(XRBuffer* bufferHandle);
 
 private:
 	GLuint _buffer;

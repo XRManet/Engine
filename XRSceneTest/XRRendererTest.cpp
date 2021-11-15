@@ -277,8 +277,11 @@ void XRRendererTest::OnRender()
 
 		//secondCommands->bindResource("", );
 
-		XRObjectGroup const* teapotGroup = GetObjectGroup("teapots_1");
-		teapotGroup->draw(secondCommands);
+		for (auto& i : _objectGroups)
+		{
+			XRObjectGroup const* objectGroup = i.second;
+			objectGroup->draw(secondCommands);
+		}
 
 		secondCommands->endPass();
 		});

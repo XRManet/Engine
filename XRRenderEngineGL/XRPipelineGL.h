@@ -12,9 +12,6 @@ public:
 public:
 	void bind() override;
 
-public:
-	bool buildProgram(XRShaderStageDescription const* shaderStageDescription);
-
 private:
 	bool createBindingInformation();
 

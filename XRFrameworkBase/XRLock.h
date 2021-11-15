@@ -9,6 +9,7 @@ class XRBaseExport MutexLock
 public:
 	MutexLock();
 	~MutexLock();
+	MutexLock(const MutexLock&) = delete;
 
 public:
 	bool lock();

@@ -24,13 +24,11 @@ static XRRenderPassManager* GetDefaultRenderPassManager()
 	return &_default;
 }
 
-static std::string sampleName = "teapot_1";
-
 XRRenderer::XRRenderer()
 	: _pipelineManager(GetDefaultPipelineManager())
 	, _renderPassManager(GetDefaultRenderPassManager())
+	, _objectGroups()
 {
-	_objectGroups[ sampleName ] = new XRObjectGroup;
 }
 
 XRRenderer::~XRRenderer()
@@ -114,9 +112,12 @@ void XRRenderer::Render()
 
 void XRRenderer::Reset()
 {
-	XRObjectGroup* objectGroup = _objectGroups[ sampleName ];
-	
-	objectGroup->_objects.clear();
+	for (auto& i : _objectGroups)
+	{
+		XRObjectGroup* objectGroup = i.second;
+
+		objectGroup->_objects.clear();
+	}
 }
 
 void XRRenderer::RegisterNode(XRSceneNode* node)
@@ -138,7 +139,12 @@ void XRRenderer::RegisterNode(XRSceneNode* node)
 
 void XRRenderer::RegisterTransformNode(XRTransformNode* node)
 {
+	assert(false == _actorStack.empty());
+	auto& lastActor = _actorStack.back();
 
+	XRObjectGroup* objectGroup = lastActor.second;
+
+	objectGroup->_objects.push_back(node);
 }
 
 void XRRenderer::RegisterLightNode(XRLightNode* node)
@@ -148,7 +154,11 @@ void XRRenderer::RegisterLightNode(XRLightNode* node)
 
 void XRRenderer::RegisterActorNode(XRActorNode* node)
 {
-	XRObjectGroup* objectGroup = _objectGroups[ sampleName ];
+	auto result = _objectGroups.insert({ node, nullptr });
+	if (result.second == true)
+	{
+		result.first->second = new XRObjectGroup(node->getModel());
+	}
 
-	objectGroup->_objects.push_back(node);
+	_actorStack.push_back({ node, result.first->second });
 }

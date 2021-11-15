@@ -32,7 +32,8 @@ protected:
 
 	std::unordered_map<uint32_t, XRCommandBuffer*> _bakedCommandBuffers;
 
-	std::unordered_map<std::string, XRObjectGroup*> _objectGroups;
+	std::unordered_map<XRActorNode*, XRObjectGroup*> _objectGroups;
+	std::vector<std::pair<XRActorNode*, XRObjectGroup*>> _actorStack;
 
 public:
 	XRRenderer();
@@ -43,13 +44,6 @@ public:
 
 public:
 	uint64_t GetRenderCounter() const { return _renderCounter; }
-
-	XRObjectGroup const* GetObjectGroup(std::string groupName) const
-	{
-		auto it = _objectGroups.find(groupName);
-		assert(it != _objectGroups.end());
-		return it->second;
-	}
 
 protected:
 	XRCommandBuffer* EvaluateCommands(XRCommandFootprint& commandFootprint);

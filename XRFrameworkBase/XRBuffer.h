@@ -70,8 +70,8 @@ protected:
 	XRBufferCreateInfo		_bufferCreateInfo;
 
 public:
-	XRBuffer(XRBufferCreateInfo const* bufferCreateInfo)
-		: _rhi(nullptr), _bufferCreateInfo(*bufferCreateInfo)
+	XRBuffer(XRBufferCreateInfo const* bufferCreateInfo, XRBufferRHI* bufferRHI)
+		: _rhi(bufferRHI), _bufferCreateInfo(*bufferCreateInfo)
 	{}
 	virtual ~XRBuffer() {}
 

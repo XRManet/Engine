@@ -6,6 +6,7 @@
 #include <glm/vec4.hpp>
 
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
+#include <XRSourceBuildSystemGLSL/XRSourceBuildSystemGLSL.h>
 
 namespace
 {
@@ -18,11 +19,20 @@ void BuildProgram(GLuint glProgram, GLuint glShaders[], GLuint counts);
 XRPipelineGL::XRPipelineGL(XRPipelineStateDescription const* description)
 	: XRPipeline(description)
 {
-	bool result = buildProgram(description->_shaderStageDescription);
-	if (result == false)
+	XRSourceBuildSystem* glslBuildSystem = xrGetShaderBuildSystem();
+	XRCompiler* glslCompiler = glslBuildSystem->getCompiler();
+
+	XRBuildConfiguration buildConfiguration = {};
+	XRBuildItemManifest buildItemManifest = {};
+	buildItemManifest._shaderStageDescription = description->_shaderStageDescription;
+
+	XRGLProgram* glProgram = static_cast<XRGLProgram*>(glslCompiler->BuildExecutable(&buildConfiguration, &buildItemManifest));
+	if (glProgram == nullptr)
 		throw;
 
-	result = createBindingInformation();
+	_glProgram = glProgram->_program;
+
+	bool result = createBindingInformation();
 	if (result == false)
 		throw;
 
@@ -46,50 +56,10 @@ void XRPipelineGL::bind()
 	if (_needUpdate == true)
 	{
 		glUseProgramStages(_glProgram, GL_VERTEX_SHADER_BIT, _glProgram);
-		glUseProgramStages(_glProgram, GL_FRAGMENT_SHADER, _glProgram);
+		glUseProgramStages(_glProgram, GL_FRAGMENT_SHADER_BIT, _glProgram);
 
 		_needUpdate = false;
 	}
-}
-
-bool XRPipelineGL::buildProgram(XRShaderStageDescription const* shaderStageDescription)
-{
-	printf("\n=============================================\n");
-	printf("Create programs\n\n");
-
-	// TODO) separate
-	GL_CALL(_glProgram = glCreateProgram());
-
-	glProgramParameteri(_glProgram, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
-	glProgramParameteri(_glProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
-
-	constexpr uint32_t NUM_MAX_STAGES = 5;
-	uint32_t numStages = 0;
-	GLuint shadersToBuild[NUM_MAX_STAGES] = { 0, };
-
-	if (nullptr != shaderStageDescription->_vertexFilename)
-	{
-		GL_CALL(_glVertexShader = glCreateShader(GL_VERTEX_SHADER));
-
-		const char* vertexShaders[]{ shaderStageDescription->_vertexFilename };
-		CompileShader(_glVertexShader, std::size(vertexShaders), vertexShaders);
-
-		shadersToBuild[numStages++] = _glVertexShader;
-	}
-
-	if (nullptr != shaderStageDescription->_fragmentFilename)
-	{
-		GL_CALL(_glFragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
-
-		const char* fragmentShaders[]{ "SimpleFragment.glsl" };
-		CompileShader(_glFragmentShader, std::size(fragmentShaders), fragmentShaders);
-
-		shadersToBuild[numStages++] = _glFragmentShader;
-	}
-
-	BuildProgram(_glProgram, shadersToBuild, numStages);
-
-	return true;
 }
 
 struct ProgramResourcesGL : public ProgramResources
@@ -287,11 +257,11 @@ bool XRPipelineGL::createBindingInformation()
 
 	ProgramResourcesGL* programResourcesGL = nullptr;
 	if (doQueryProgramInterface == true)
-		programResourcesGL = new (&_programResources) ProgramResourcesGL4;
+		programResourcesGL = new (&_programResources) ProgramResourcesGL4();
 	else if (doQueryUniformBuffer == true)
-		programResourcesGL = new (&_programResources) ProgramResourcesGL3;
+		programResourcesGL = new (&_programResources) ProgramResourcesGL3();
 	else
-		programResourcesGL = new (&_programResources) ProgramResourcesGLFallback;
+		programResourcesGL = new (&_programResources) ProgramResourcesGLFallback();
 
 
 	GL_CALL(glUseProgram(_glProgram));
@@ -331,7 +301,6 @@ bool XRPipelineGL::createBindingInformation()
 		uniformDesc._blockIndex = i;
 		programResourcesGL->reflectUniformDesc(_glProgram, uniformDesc);
 
-		_programResources._activeUniformBlocks[uniformDesc._blockName] = {};
 		auto result = _programResources._activeUniformBlocks.insert({ uniformDesc._blockName, {} });
 		assert(result.second == true);
 
@@ -430,6 +399,7 @@ void CompileShader(GLuint shader, GLsizei fileCount, const char** filename)
 
 	GL_CALL(glShaderSource(shader, fileCount, shaderSources, sizes));
 	GL_CALL(glCompileShader(shader));
+	//glCompileShaderIncludeARB();
 
 	bool result = CheckShaderState(shader);
 

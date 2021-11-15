@@ -53,9 +53,37 @@ void GLAPIENTRY MessageCallback(
 	const GLchar* message,
 	const void* userParam)
 {
-	fprintf(stderr, "GL CALLBACK: %s type = %s, severity = %s, message = %s\n",
+	constexpr size_t defaultBufferSize = 1024;
+	static thread_local GLchar defaultBuffer[defaultBufferSize];
+	static thread_local struct {
+		GLchar* _memory = defaultBuffer;
+		size_t _size = defaultBufferSize;
+	} messageBuffer;
+
+	constexpr const char decoratedMessage[] = "GL CALLBACK - %s\nType: %s\nSeverity: %s\nMessage: ";
+	constexpr const char decoratedMessage2[] = "** GL ERROR **";
+	constexpr size_t decoratedMessageSize = sizeof(decoratedMessage) + sizeof(decoratedMessage2) + 64ull;
+	
+	size_t requiredBufferSize = length + decoratedMessageSize;
+	if (messageBuffer._size < requiredBufferSize)
+	{
+		if (messageBuffer._memory != defaultBuffer)
+			delete[] messageBuffer._memory;
+
+		size_t size = (requiredBufferSize > defaultBufferSize) ? requiredBufferSize : defaultBufferSize;
+		messageBuffer._memory = new GLchar[size]();
+		messageBuffer._size = size;
+	}
+
+	int messageOffset = sprintf_s(messageBuffer._memory, messageBuffer._size, "GL CALLBACK - %s\nType: %s\nSeverity: %s\nMessage: ",
 		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-		GetGlMeaningDebugType(type), GetGlMeaningSeverity(severity), message);
+		GetGlMeaningDebugType(type), GetGlMeaningSeverity(severity));
+	strncpy_s(messageBuffer._memory + messageOffset, messageBuffer._size - messageOffset, message, length);
+	messageBuffer._memory[messageOffset + length + 0] = '\n';
+	messageBuffer._memory[messageOffset + length + 1] = '\n';
+	messageBuffer._memory[messageOffset + length + 2] = '\0';
+	OutputDebugStringA(messageBuffer._memory);
+	
 	assert(type != GL_DEBUG_TYPE_ERROR);
 }
 
@@ -171,10 +199,9 @@ XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 {
 	RenderEngineGLInitializer::GetInitializer();
 	auto bufferGL = new XRBufferGL;
-	auto bufferHandle = new XRBuffer(createInfo);
-	bufferHandle->_rhi = bufferGL;
+	auto bufferHandle = new XRBuffer(createInfo, bufferGL);
 
-	bufferGL->Initialize();
+	bufferGL->Initialize(bufferHandle);
 	return bufferHandle;
 }
 

@@ -21,7 +21,7 @@ XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
 #include "XRRenderGroup.h"
 XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 
-#define XRRENDER_ENGINE_DEFAULT     "XRRenderEngineGL"
+#define XRRENDER_ENGINE_DEFAULT     XR_DYNAMIC_LIBRARY(XRRenderEngineGL)
 
 #ifndef XRRENDER_ENGINE
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
@@ -33,7 +33,7 @@ static struct XRRenderEngineLinker
 
 	XRRenderEngineLinker()
 	{
-		static const char* renderEngineName = XRRENDER_ENGINE;
+		constexpr static const char* renderEngineName = XRRENDER_ENGINE;
 		_dso = XRPlatform::LoadDSO(renderEngineName);
 		assert(_dso != nullptr);
 

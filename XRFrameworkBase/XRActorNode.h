@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "XRSceneNode.h"
 
@@ -11,8 +11,10 @@ public:
 	XRActorNode();
 	virtual ~XRActorNode();
 
-	void BindModel(XRModel* model) { _model = model; }
-	void BindTexture(XRTexture* texture) { _texture = texture; }
+	void bindModel(XRModel* model) { _model = model; }
+	void bindTexture(XRTexture* texture) { _texture = texture; }
+
+	XRModel* getModel() const { return _model; }
 
 private:
 	XRModel* _model;

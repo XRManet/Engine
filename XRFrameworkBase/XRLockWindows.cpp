@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include <XRFrameworkBase/XRPlatform.h>
 #include "XRLock.h"
@@ -39,10 +39,18 @@ bool MutexLock::lock()
 	case WAIT_OBJECT_0: // This thread got ownership of mutex object.
 		return true;
 	case WAIT_ABANDONED:// Error. The ownership of mutex object is abandoned.
+		assert(false);
+		break;
+	case WAIT_FAILED:
+		{
+			DWORD lastError = GetLastError();
+			assert(false);
+	}
+		break;
 	default:
 		assert(false);
-		return false;
 	}
+	return false;
 }
 
 bool MutexLock::unlock()

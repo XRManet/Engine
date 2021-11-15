@@ -1,6 +1,6 @@
 #define xrSetObject1	2
 
-XR_RESOURCE_LAYOUT(xrSetObject1, binding = 0, std140, column_major) uniform MatrixBlock
+layout(XR_SET(xrSetObject1) binding = 0, std140, column_major) uniform MatrixBlock
 {
 	mat4 _view;
 	mat4 _proj;
@@ -11,7 +11,10 @@ struct Material {
 	vec4 _diffuse;
 };
 
-XR_RESOURCE_LAYOUT(xrSetObject1, binding = 1) uniform Material Materials;
+layout(XR_SET(xrSetObject1) binding = 1) uniform Materials
+{
+	Material _material;
+};
 
 struct Light {
 	vec4 _position;
@@ -19,7 +22,7 @@ struct Light {
 	float _attenuation;
 };
 
-XR_RESOURCE_LAYOUT(xrSetObject1, binding = 2, shared) uniform LightBlock
+layout(XR_SET(xrSetObject1) binding = 2, shared) uniform LightBlock
 {
 	Light _light;
 };

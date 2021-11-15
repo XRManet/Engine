@@ -1,4 +1,11 @@
 ﻿#include "stdafx.h"
+
+#define XRRENDER_ENGINE			XR_DYNAMIC_LIBRARY(XRRenderEngineGL)
+#include <XRFrameworkBase/XRRenderEngineLinker.hpp>
+
+#define XRSHADER_BUILD_SYSTEM	XR_DYNAMIC_LIBRARY(XRSourceBuildSystemGLSL)
+#include <XRFrameworkBase/XRSourceBuildSystemLinker.hpp>
+
 #include <unordered_set>
 
 #include "XRSceneTest.h"
@@ -11,6 +18,7 @@
 
 #include <XRFrameworkBase/XRObject.h>
 #include <XRFrameworkBase/XRActorNode.h>
+#include <XRFrameworkBase/XRTransformNode.h>
 
 #include <GL/glew.h>
 
@@ -25,14 +33,16 @@ XRSceneTest::XRSceneTest()
 	_cameras[0].SetPosition(glm::vec4{ 0, 1, 2.5, 1 });
 
 	XRActorNode* actor = new XRActorNode();
-
-	auto model = _resource_manager.GetModelByKey("wolf");
-	glm::vec4 position{ -2, 0, 0, 1 };
-
-	actor->BindModel(model);
-	actor->SetPosition(position);
+	XRTransformNode* transform = new XRTransformNode();
 
 	_root->AddChild(actor);
+
+	auto model = _resource_manager.GetModelByKey("wolf");
+	actor->bindModel(model);
+	actor->AddChild(transform);
+
+	glm::vec4 position{ -2, 0, 0, 1 };
+	transform->SetPosition(position);
 }
 
 XRSceneTest::~XRSceneTest()

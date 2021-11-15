@@ -57,10 +57,33 @@ https://docs.microsoft.com/ko-kr/visualstudio/debugger/create-custom-views-of-na
   </Type>
 
   <Type Name="xr::IndexedString&lt;*&gt;">
-    <DisplayString>{{ [{_index}] {*sContainer_PS._allAccessors._Mypair._Myval2._Myfirst[_index]} }}</DisplayString>
+    <DisplayString>{{ [{_index}] {*sContainer._allAccessors._Mypair._Myval2._Myfirst[_index]} }}</DisplayString>
     <Expand>
-      <Item Name="[string]">*sContainer_PS._allAccessors._Mypair._Myval2._Myfirst[_index]</Item>
+      <Item Name="[string]">*sContainer._allAccessors._Mypair._Myval2._Myfirst[_index]</Item>
     </Expand>
+  </Type>
+
+  <Type Name="XRSourceBuildSystemGLSL.dll!xr::IndexedString&lt;XRGLSL,unsigned short&gt;">
+    <DisplayString>{{ [{_index}] {XRFrameworkBase.dll!xr::IndexedString&lt;XRGLSL,unsigned short&gt;::sContainer._allAccessors._Mypair._Myval2._Myfirst[_index]} }}</DisplayString>
+    <Expand>
+      <Item Name="[string]">(XRFrameworkBase.dll!xr::IndexedString&lt;XRGLSL,unsigned short&gt;::sContainer._allAccessors._Mypair._Myval2._Myfirst[_index])</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="XRCompiledObject" Inheritable="false">
+    <DisplayString>{{ {static_cast&lt;XRSourceBuildSystemGLSL.dll!XRGLShaderObject*&gt;(this)} }}</DisplayString>
+    <Expand>
+      <Item Name="[GL]">static_cast&lt;XRSourceBuildSystemGLSL.dll!XRGLShaderObject*&gt;(this)</Item>
+    </Expand>
+    <!--<DisplayString>{{ [{_index}] {*XRSourceBuildSystemGLSL.dll!xr::IndexedString&lt;XRGLSL,unsigned short&gt;>::sContainer._allAccessors._Mypair._Myval2._Myfirst[_index]} }}</DisplayString>-->
+  </Type>
+
+  <Type Name="XRGLProgram">
+    <DisplayString>{{ProgramID={_program}}}</DisplayString>
+  </Type>
+
+  <Type Name="XRSourceBuildSystem" Inheritable="false">
+    <DisplayString>{{ RootDir={static_cast&lt;XRSourceBuildSystemGLSL.dll!XRSourceBuildSystemGLSL*&gt;(this)->_rootDirectory}}}</DisplayString>
   </Type>
 
   <Type Name="XRMeshHeader">

@@ -14,9 +14,10 @@ extern GLint MAX_COMBINED_TEXTURE_IMAGE_UNITS;
 extern GLint MAX_COMPUTE_TEXTURE_IMAGE_UNITS;
 
 
-void XRBufferGL::Initialize()
+void XRBufferGL::Initialize(XRBuffer* bufferHandle)
 {
 	glGenBuffers(1, &_buffer);
+	_handle = bufferHandle;
 
 	GLsizeiptr bufferSize = 0;
 	bufferSize = NEXT_ALIGN_2(bufferSize + _handle->getBufferCreateInfo()->_size, UNIFORM_BUFFER_OFFSET_ALIGNMENT);

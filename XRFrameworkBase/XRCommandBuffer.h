@@ -66,7 +66,8 @@ public:
 	virtual void begin() {}
 	virtual void end() {}
 
-	virtual void setResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) {}
+	virtual void pushResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) {}
+	virtual void popResourceLayout() {}
 
 	virtual void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) {}
 	virtual void endPass() {}
@@ -115,6 +116,7 @@ protected:
 	XRResourceLayout*	_lastGraphicsResourceLayout;
 	XRResourceLayout*	_lastComputeResourceLayout;
 
+	std::vector<XRResourceLayout*> _resourceLayoutStack;
 	XRResourceLayout*	_currentResourceLayout;
 	XRRenderPassBase*	_currentRenderPass;
 	XRPipelineGroup*	_currentPipelineGroup;

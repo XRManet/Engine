@@ -548,6 +548,9 @@ struct ProgramResources
 
 public:
 	inline size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }
+
+public:
+	virtual ~ProgramResources() {}
 };
 
 class XRBaseExport XRPipeline
