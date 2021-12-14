@@ -22,11 +22,11 @@
 #endif
 
 #ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
-#define XRShaderBuildExport extern "C" __declspec(dllexport)
+#define XRShaderBuildExport __declspec(dllexport)
 #define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __declspec(dllexport) ReturnType ApiName
 #else
-#define XRShaderBuildExport extern "C" __declspec(dllimport)
-#define XRShaderBuildAPI(ReturnType, ApiName) extern __declspec(dllimport) ReturnType (*ApiName)
+#define XRShaderBuildExport __declspec(dllimport)
+#define XRShaderBuildAPI(ReturnType, ApiName) extern ReturnType (*ApiName)
 #endif
 
 #elif defined(__APPLE__)

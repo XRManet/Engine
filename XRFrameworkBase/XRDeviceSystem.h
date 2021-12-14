@@ -7,7 +7,8 @@ struct XRDeviceSystemCompatibility
 
 class XRDeviceSystemAttachment
 {
-
+public:
+	virtual ~XRDeviceSystemAttachment() = default;
 };
 
 /**

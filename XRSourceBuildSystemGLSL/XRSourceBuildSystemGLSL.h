@@ -39,8 +39,12 @@ public:
 
 class XRCompilerGLSL : public XRCompiler
 {
+#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
+	friend XRSourceBuildSystem* xrLoadShaderBuildSystem();
+#endif
+
 public:
-	XRCompilerGLSL(XRSourceBuildSystemGLSL* glslBuildSystem, XRBuildSystemAvailability availability);
+	XRCompilerGLSL(XRBuildSystemAvailability availability);
 
 public:
 	void LoadSourceFiles();
@@ -59,4 +63,7 @@ class XRSourceBuildSystemGLSL : public XRSourceBuildSystem
 public:
 	XRSourceBuildSystemGLSL();
 	virtual ~XRSourceBuildSystemGLSL();
+
+public:
+	void registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject) override final;
 };

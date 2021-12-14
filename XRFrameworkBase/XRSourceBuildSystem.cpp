@@ -2,11 +2,13 @@
 
 #include "XRSourceBuildSystem.h"
 
-void XRSourceBuildSystem::registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject)
+XRSourceBuildSystem* xrGetShaderBuildSystem()
 {
-	auto result = _compiledObjects.insert({ uniqueKey, nullptr });
-	if (true == result.second)
-	{
-		result.first->second = compiledObject;
-	}
+	static XRSourceBuildSystem* defaultShaderBuildSystem = xrLoadShaderBuildSystem();
+	return defaultShaderBuildSystem;
+}
+
+XRSourceBuildSystem::XRSourceBuildSystem(XRCompiler* compiler)
+	: _compiler(compiler)
+{
 }

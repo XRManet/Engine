@@ -4,7 +4,6 @@
 #include "XRSourceBuildSystem.h"
 
 XRSourceBuildSystem* (*xrLoadShaderBuildSystem)() = nullptr;
-XRSourceBuildSystem* (*xrGetShaderBuildSystem)() = nullptr;
 
 #define XRSHADER_BUILD_SYSTEM_DEFAULT    XR_DYNAMIC_LIBRARY(XRSourceBuildSystemGLSL)
 
@@ -27,7 +26,6 @@ static struct XRShaderBuildSystemLinker
 		XRPlatform::ListDLLFunctions(_dso, dllLists);
 
 		GetProcAddress(xrLoadShaderBuildSystem, "xrLoadShaderBuildSystem");
-		GetProcAddress(xrGetShaderBuildSystem, "xrGetShaderBuildSystem");
 	}
 
 	~XRShaderBuildSystemLinker()

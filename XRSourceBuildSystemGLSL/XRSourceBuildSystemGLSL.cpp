@@ -11,18 +11,13 @@ namespace xr
 //EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRGLSL);
 }
 
-static XRBuildSystemAvailability g_buildSystemAvailability{
-	.runtimeCompile = true,
-	.offlineCompile = false,
+static XRBuildSystemAvailability g_buildSystemAvailability {
+	.runtimeCompile =	true,
+	.offlineCompile =	false,
 	.compatibleObject = false,
 };
 
-XRSourceBuildSystem* g_lastShaderBuildSystem = nullptr;
-
-XRSourceBuildSystem* xrLoadShaderBuildSystem()
-{
-	return g_lastShaderBuildSystem;
-}
+XRSourceBuildSystemGLSL* g_lastShaderBuildSystem = nullptr;
 
 struct SourceBuildSystemGLSLInitializer
 {
@@ -46,21 +41,27 @@ struct SourceBuildSystemGLSLInitializer
 	}
 };
 
-XRSourceBuildSystem* xrGetShaderBuildSystem()
-{
-	SourceBuildSystemGLSLInitializer::GetInitializer();
-	return g_lastShaderBuildSystem;
-}
-
 #define DEFAULT_RESOURCE_PATH "Resources/Shaders/OpenGL/"
 constexpr uint32_t lenResourcePath = sizeof(DEFAULT_RESOURCE_PATH) - 1;
 
-XRSourceBuildSystemGLSL::XRSourceBuildSystemGLSL()
-	: XRSourceBuildSystem(new XRCompilerGLSL(this, g_buildSystemAvailability))
+XRSourceBuildSystem* xrLoadShaderBuildSystem()
 {
-	_rootDirectory = DEFAULT_RESOURCE_PATH;
+	SourceBuildSystemGLSLInitializer::GetInitializer();
 
-	for (auto& entry : std::filesystem::recursive_directory_iterator(_rootDirectory))
+	XRCompilerGLSL* compilerGlsl = static_cast<XRCompilerGLSL*>(g_lastShaderBuildSystem->getCompiler());
+	compilerGlsl->_buildSystem = g_lastShaderBuildSystem;
+
+	return g_lastShaderBuildSystem;
+}
+
+
+XRSourceBuildSystemGLSL::XRSourceBuildSystemGLSL()
+	: XRSourceBuildSystem(new XRCompilerGLSL(g_buildSystemAvailability))
+{
+	_impl = new XRSourceBuildSystemBase(DEFAULT_RESOURCE_PATH);
+
+	static auto recursiveDirectoryIterator = std::filesystem::recursive_directory_iterator(_impl->_rootDirectory);
+	for (auto& entry : recursiveDirectoryIterator)
 	{
 		std::string filepath = entry.path().string();
 
@@ -95,12 +96,17 @@ XRSourceBuildSystemGLSL::~XRSourceBuildSystemGLSL()
 {
 }
 
+void XRSourceBuildSystemGLSL::registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject)
+{
+	_impl->registerCompiledObject(uniqueKey, compiledObject);
+}
+
 // This is the constructor of a class that has been exported.
 static int isProgramInterfaceQueriable = 0;
 static int isUniformBufferObjectQueriable = 0;
 static int isShadingLanguageSupportInclude = 0;
-XRCompilerGLSL::XRCompilerGLSL(XRSourceBuildSystemGLSL* glslBuildSystem, XRBuildSystemAvailability availability)
-    : XRCompiler(glslBuildSystem, availability)
+XRCompilerGLSL::XRCompilerGLSL(XRBuildSystemAvailability availability)
+    : XRCompiler(availability)
 {
 
 	isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");

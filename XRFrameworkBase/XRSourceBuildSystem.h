@@ -4,6 +4,12 @@
 #include <XRFrameworkBase/XRUtility.h>
 
 struct XRShaderStageDescription;
+class XRSourceBuildSystem;
+
+XRBaseExport XRSourceBuildSystem* xrGetShaderBuildSystem();
+
+XRShaderBuildAPI(XRSourceBuildSystem*, xrLoadShaderBuildSystem)();
+
 
 struct XRBuildSystemAvailability
 {
@@ -62,13 +68,33 @@ class XRBaseExport XRLinkable
 public:
 };
 
+class XRSourceBuildSystemBase
+{
+public:
+	std::string _rootDirectory;
+	std::unordered_map<uint64_t, XRCompiledObject*> _compiledObjects;
+
+public:
+	XRSourceBuildSystemBase(std::string&& rootDirectory) : _rootDirectory(move(rootDirectory)) {}
+	virtual ~XRSourceBuildSystemBase() = default;
+
+public:
+	inline void registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject)
+	{
+		auto result = _compiledObjects.insert({ uniqueKey, nullptr });
+		if (true == result.second)
+		{
+			result.first->second = compiledObject;
+		}
+	}
+};
+
 class XRSourceBuildSystem;
 class XRBaseExport XRCompiler
 {
 public:
-	XRCompiler(XRSourceBuildSystem* buildSystem, XRBuildSystemAvailability availability)
-		: _buildSystem(buildSystem)
-		, _systemAvailability(availability)
+	XRCompiler(XRBuildSystemAvailability availability)
+		: _systemAvailability(availability)
 	{
 
 	}
@@ -101,24 +127,20 @@ class XRDeviceSystem;
 
 class XRBaseExport XRSourceBuildSystem : public XRDeviceSystemAttachment
 {
+#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
+	friend XRSourceBuildSystem* xrLoadShaderBuildSystem();
+#endif
+
 protected:
 	XRCompiler* _compiler;
-	std::string _rootDirectory;
+	XRSourceBuildSystemBase* _impl;
 
 public:
-	XRSourceBuildSystem(XRCompiler* compiler) : _compiler(compiler), _compiledObjects() {}
+	XRSourceBuildSystem(XRCompiler* compiler);
+	virtual ~XRSourceBuildSystem() = default;
 
 public:
 	XRCompiler* getCompiler() const { return _compiler; }
 
-
-	// Separate
-protected:
-	std::unordered_map<uint64_t, XRCompiledObject*> _compiledObjects;
-
-public:
-	void registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject);
+	virtual void registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject) = 0;
 };
-
-XRShaderBuildAPI(XRSourceBuildSystem*, xrLoadShaderBuildSystem)();
-XRShaderBuildAPI(XRSourceBuildSystem*, xrGetShaderBuildSystem)();

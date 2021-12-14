@@ -39,7 +39,8 @@ public:
 		void* result = ::GetProcAddress(_handle, proc);
 		if (nullptr == result)
 		{
-			auto found = _demangledNameLookup.find(proc);
+			std::string procString(proc);
+			auto found = _demangledNameLookup.find(procString);
 			if (_demangledNameLookup.end() != found)
 				proc = found->second.c_str();
 		}
@@ -72,7 +73,7 @@ public:
 				{
 					if (UnDecorateSymbolName(name, demangledName, sizeof(demangledName), UNDNAME_NAME_ONLY) != 0)
 					{
-						_demangledNameLookup.insert({ demangledName, name });
+						_demangledNameLookup.insert({ demangledName, std::string(name) });
 						name = demangledName;
 					}
 					else
