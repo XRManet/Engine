@@ -56,13 +56,13 @@ struct PermutationDescription<SamplePermutation>
 	using Type = std::tuple<bool, int>;
 };
 
-class RenderPass(XRRenderPassPresent)
+class WorkPass(XRWorkPassPresent)
 {
 private:
 	virtual void DefaultPipelineState(XRPipelineStateDescription & outDefault) override {}
 };
 
-class RenderPass(XRRenderPassSample)
+class WorkPass(XRWorkPassSample)
 {
 private: // Common-Pipeline descriptions;
 	XRInputLayout const* _inputLayout;
@@ -75,7 +75,7 @@ private: // Per-Pipeline descriptions;
 	XRVertexInputStateDescription _defaultVertexInputStateDescription;
 
 public:
-	XRRenderPassSample()
+	XRWorkPassSample()
 		//: _inputLayout(inputLayout)
 	{
 		//Create RenderPass
@@ -151,8 +151,8 @@ XRRendererTest::~XRRendererTest()
 
 void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 {
-	static xr::IndexedString<XRRenderPassBase> renderPassSampleName = "XRRenderPassSample";
-	XRRenderPassSample* renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
+	static xr::IndexedString<XRWorkPassBase> workPassSampleName = "XRWorkPassSample";
+	XRWorkPassSample* renderPassSample = static_cast<XRWorkPassSample*>(_workPassManager->GetWorkPass(workPassSampleName));
 
 	_pipelineManager->CreatePipeline(renderPassSample->_pipelineCreateInfos[0]);
 
@@ -248,19 +248,14 @@ void XRRendererTest::OnRender()
 
 	static xr::IndexedString<XRCommandStep> sFistStep("firstStepAlways");
 	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands) {
-		static xr::IndexedString<XRRenderPassBase> renderPassSampleName = "XRRenderPassSample";
-		static XRRenderPassSample* renderPassSample = static_cast<XRRenderPassSample*>(_renderPassManager->GetRenderPass(renderPassSampleName));
+		static xr::IndexedString<XRWorkPassBase> renderPassSampleName = "XRWorkPassSample";
+		static XRWorkPassSample* workPassSample = static_cast<XRWorkPassSample*>(_workPassManager->GetWorkPass(renderPassSampleName));
 
-		XRRenderPassBase* renderPass = renderPassSample;
-		XRBeginPassInfo beginPassInfo{
-			._extent = { 1024, 768, 1 },
-			._clearValues = {
-				XRClearValue(1.f),
-				xr::vec4<float_t>{1.f, 0.f, 0.f, 1.f},
-				uint32_t(0u) },
+		XRBeginPassInfo beginPassInfo {
+			._workPass = workPassSample
 		};
 
-		secondCommands->beginPass(renderPass, beginPassInfo);
+		secondCommands->beginPass(beginPassInfo);
 
 		static xr::IndexedString<XRPipeline> samplePipelineName = "SampleFirstPipeline";
 		XRPipelineGroup* pipelineGroup = _pipelineManager->GetPipelineGroup(samplePipelineName);
@@ -276,12 +271,29 @@ void XRRendererTest::OnRender()
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
 		//secondCommands->bindResource("", );
+		
+		XRClearValue color = xr::vec4<float_t>{ 1.f, 1.f, 1.f, 1.f };
+		XRClearValue depth = XRClearValue(1.f, 0u);
+		
+		XRBeginRenderPassInfo beginRenderPassInfo{
+			._renderPass = nullptr,
+			._framebuffer = nullptr,
+			._extent = { 1024, 768, 1 },
+			._clearValues = { color, depth }
+		};
+		XRBeginSubPassInfo beginSubPassInfo {
+			._secondaryCommandBuffer = false
+		};
+
+		secondCommands->beginRenderPass(beginRenderPassInfo, beginSubPassInfo);
 
 		for (auto& i : _objectGroups)
 		{
 			XRObjectGroup const* objectGroup = i.second;
 			objectGroup->draw(secondCommands);
 		}
+
+		secondCommands->endRenderPass();
 
 		secondCommands->endPass();
 		});

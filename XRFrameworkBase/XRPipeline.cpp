@@ -168,11 +168,11 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 
 #pragma region XRRenderPassManager
 
-bool XRRenderPassManager::RegisterRenderPassGenerator(std::string&& string, void* fpGnerator)
+bool XRWorkPassManager::RegisterWorkPassGenerator(std::string&& string, void* fpGnerator)
 {
 	auto Generate = static_cast<XRPFN_GENERATE_RENDERPASS>(fpGnerator);
-	XRRenderPassBase* renderPass = Generate();
-	auto result = _renderPasses.insert({ string, { renderPass, Generate } });
+	XRWorkPassBase* workPass = Generate();
+	auto result = _workPasses.insert({ string, { workPass, Generate } });
 	return result.second;
 }
 

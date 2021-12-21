@@ -4,7 +4,7 @@
 
 #include <XRFrameworkBase/XRPlatform.h>
 
-class XRRenderPassBase;
+class XRWorkPassBase;
 class XRPipeline;
 struct XRPermutationElement;
 struct XRCommandStep;
@@ -22,7 +22,7 @@ namespace xr
 // Debugging:	XRFrameworkBase.dll!xr::IndexedString<Category,unsigned short>::sContainer
 
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(DefaultStringCategory);
-EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRRenderPassBase);
+EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRWorkPassBase);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPipeline);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPermutationElement);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRCommandStep);

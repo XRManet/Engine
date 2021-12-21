@@ -16,7 +16,8 @@ enum class XRBindPoint
 };
 
 class XRResourceLayout;
-class XRRenderPassBase;
+class XRWorkPassBase;
+class XRRenderPass;
 class XRFramebuffer;
 class XRPipeline;
 class XRPipelineGroup;
@@ -27,8 +28,20 @@ class XRBuffer;
 
 struct XRBeginPassInfo
 {
+	XRWorkPassBase* _workPass;
+};
+
+struct XRBeginRenderPassInfo
+{
+	XRRenderPass* _renderPass;
+	XRFramebuffer* _framebuffer;
 	xr::vec3<uint32_t> _extent;
 	xr::ContiguousReference<XRClearValue const> _clearValues;
+};
+
+struct XRBeginSubPassInfo
+{
+	bool _secondaryCommandBuffer;
 };
 
 class XRModel;
@@ -37,11 +50,16 @@ class XRBaseExport XRCommandBuffer
 public:
 	enum CommandName
 	{
-		// RenderPass 관련
+		// WorkPass 관련
 		BeginPass,
 		EndPass,
 
 		BindPipeline,
+
+		// RenderPass
+		BeginRenderPass,
+		NextSubPass,
+		EndRenderPass,
 
 		// Barrier 관련
 		AddBarrier,
@@ -69,7 +87,7 @@ public:
 	virtual void pushResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) {}
 	virtual void popResourceLayout() {}
 
-	virtual void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) {}
+	virtual void beginPass(XRBeginPassInfo& beginPassInfo) {}
 	virtual void endPass() {}
 
 	/**
@@ -83,6 +101,10 @@ public:
 	 * @param 	bindPoint	The bind point.
 	 */
 	virtual void bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline) {}
+	
+	virtual void beginRenderPass(XRBeginRenderPassInfo& beginRenderPassInfo, XRBeginSubPassInfo& beginSubPassInfo) {}
+	virtual void nextSubPass(XRBeginSubPassInfo& beginRenderPassInfo) {}
+	virtual void endRenderPass() {}
 
 	virtual void addBarrier() {}
 
@@ -118,7 +140,7 @@ protected:
 
 	std::vector<XRResourceLayout*> _resourceLayoutStack;
 	XRResourceLayout*	_currentResourceLayout;
-	XRRenderPassBase*	_currentRenderPass;
+	XRWorkPassBase*		_currentWorkPass;
 	XRPipelineGroup*	_currentPipelineGroup;
 	XRPipeline*			_currentPipeline;
 };

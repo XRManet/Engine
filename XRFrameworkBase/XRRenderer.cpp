@@ -18,15 +18,15 @@ static XRPipelineManager* GetDefaultPipelineManager()
 	return &_default;
 }
 
-static XRRenderPassManager* GetDefaultRenderPassManager()
+static XRWorkPassManager* GetDefaultWorkPassManager()
 {
-	static XRRenderPassManager _default;
+	static XRWorkPassManager _default;
 	return &_default;
 }
 
 XRRenderer::XRRenderer()
 	: _pipelineManager(GetDefaultPipelineManager())
-	, _renderPassManager(GetDefaultRenderPassManager())
+	, _workPassManager(GetDefaultWorkPassManager())
 	, _objectGroups()
 {
 }
@@ -48,9 +48,9 @@ bool XRRenderer::Bind(XRPlatform::XRDSO* dso)
 
 	for (uint32_t i = 0; i < dllLists.size(); ++i)
 	{
-		constexpr char const* head = "RenderPassAutoGenerator<";
+		constexpr char const* head = "WorkPassAutoGenerator<";
 		constexpr char const* tail = ">::generate";
-		constexpr size_t lenHead = sizeof("RenderPassAutoGenerator<") - 1;
+		constexpr size_t lenHead = sizeof("WorkPassAutoGenerator<") - 1;
 
 		size_t pos = dllLists[i].find(head);
 		if (pos == std::string::npos)
@@ -66,7 +66,7 @@ bool XRRenderer::Bind(XRPlatform::XRDSO* dso)
 			continue;
 
 		auto renderPassName = std::string(name + lenHead, pos - lenHead);
-		_renderPassManager->RegisterRenderPassGenerator(std::move(renderPassName), found);
+		_workPassManager->RegisterWorkPassGenerator(std::move(renderPassName), found);
 	}
 
 	return true;

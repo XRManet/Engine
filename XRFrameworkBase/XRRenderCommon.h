@@ -439,19 +439,20 @@ union XRClearValue
 		xr::vec4<uint32_t> _uint;
 	} _color;
 
-	float_t _depth;
-	uint32_t _stencil;
+	struct {
+		float_t _depth;
+		uint32_t _stencil;
+	};
 
 public:
-	XRClearValue() = default;
-	XRClearValue(XRClearValue const&) = default;
+	XRClearValue() : _color{ ._float {} } {}
+	XRClearValue(XRClearValue const& rhs) = default;
 
 	XRClearValue(xr::vec4<float_t> const& floatClear) : _color{ ._float = floatClear } {}
 	XRClearValue(xr::vec4<int32_t> const& intClear) : _color{ ._int = intClear } {}
 	XRClearValue(xr::vec4<uint32_t> const& uintClear) : _color{ ._uint = uintClear } {}
 	
-	XRClearValue(float_t depthClear) : _depth(depthClear) {}
-	XRClearValue(uint32_t stencilClear) : _stencil(stencilClear) {}
+	XRClearValue(float_t depthClear, uint32_t stencilClear) : _depth(depthClear), _stencil(stencilClear) {}
 };
 
 struct XRBarrierDescription

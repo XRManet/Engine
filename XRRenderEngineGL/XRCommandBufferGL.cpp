@@ -84,13 +84,29 @@ void XRCommandBufferGL::popResourceLayout()
 	_currentResourceLayout = _resourceLayoutStack.back();
 }
 
-void XRCommandBufferGL::beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo)
+void XRCommandBufferGL::beginPass(XRBeginPassInfo& beginPassInfo)
 {
-
+	_commandMemoryPool->emplaceCommand<XRCommandGL_BeginPass>(beginPassInfo);
 }
 
 void XRCommandBufferGL::endPass()
 {
+
+}
+
+void XRCommandBufferGL::beginRenderPass(XRBeginRenderPassInfo& beginRenderPassInfo, XRBeginSubPassInfo& beginSubPassInfo)
+{
+	_commandMemoryPool->emplaceCommand<XRCommandGL_BeginRenderPass>(beginRenderPassInfo, beginSubPassInfo);
+}
+
+void XRCommandBufferGL::nextSubPass(XRBeginSubPassInfo& beginSubPassInfo)
+{
+	_commandMemoryPool->emplaceCommand<XRCommandGL_NextSubPass>(beginSubPassInfo);
+}
+
+void XRCommandBufferGL::endRenderPass()
+{
+	_commandMemoryPool->emplaceCommand<XRCommandGL_EndRenderPass>();
 
 }
 
@@ -211,6 +227,36 @@ void XRCommandGL_DrawModel::execute()
 
 	//	glMultiDrawElementsIndirectBindlessNV(topologyGL, indexTypeGL, command, _drawCount, 0, 4);
 	//}
+}
+
+void XRCommandGL_BeginPass::execute()
+{
+}
+
+void XRCommandGL_BeginRenderPass::execute()
+{
+	auto& attachments = _beginRenderPassInfo._renderPass->getAttachments();
+
+	//const int32_t numAttachments = attachments.size();
+	//assert(numAttachments == _beginRenderPassInfo._clearValues._size);
+
+	//for (int32_t i = 0; i < numAttachments; ++i)
+	//{
+	//	auto& attachment = attachments[i];
+	//	attachment._attachmentLayout._format;
+	//}
+	//glClearColor(1, 1, 1, 1);
+	//
+	//glClear(GL_COLOR_BUFFER_BIT);
+	glClearBufferfv(GL_COLOR, 0, &_beginRenderPassInfo._clearValues._data[0]._color._float._x);
+}
+
+void XRCommandGL_NextSubPass::execute()
+{
+}
+
+void XRCommandGL_EndRenderPass::execute()
+{
 }
 
 namespace

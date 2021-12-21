@@ -21,10 +21,14 @@ public:
 	void pushResourceLayout(XRBindPoint bindPoint, XRResourceLayout* resourceLayout) override;
 	void popResourceLayout() override;
 
-	void beginPass(XRRenderPassBase* renderPass, XRBeginPassInfo& beginPassInfo) override;
+	void beginPass(XRBeginPassInfo& beginPassInfo) override;
 	void endPass() override;
 
 	void bindPipeline(XRBindPoint bindPoint, XRPipeline* pipeline) override;
+
+	void beginRenderPass(XRBeginRenderPassInfo& beginRenderPassInfo, XRBeginSubPassInfo& beginSubPassInfo) override;
+	void nextSubPass(XRBeginSubPassInfo& beginRenderPassInfo) override;
+	void endRenderPass() override;
 
 	void bindResource(const std::string& bindingName, XRView<XRBuffer>* buffer) override;
 
@@ -157,17 +161,16 @@ struct XRCommandGL_Dispatch : public XRCommandGL
 
 struct XRCommandGL_BeginPass : public XRCommandGL
 {
-	XRRenderPassBase* _renderPass;
 	XRBeginPassInfo _beginPassInfo;
 
 	XRCommandGL_BeginPass()
 		: XRCommandGL(XRCommandBuffer::CommandName::BeginPass)
-		, _renderPass(nullptr), _beginPassInfo()
+		, _beginPassInfo()
 	{}
 
-	XRCommandGL_BeginPass(XRRenderPassBase* renderPass, XRBeginPassInfo const& beginPassInfo)
+	XRCommandGL_BeginPass(XRBeginPassInfo const& beginPassInfo)
 		: XRCommandGL(XRCommandBuffer::CommandName::BeginPass)
-		, _renderPass(renderPass), _beginPassInfo(beginPassInfo)
+		, _beginPassInfo(beginPassInfo)
 	{}
 
 	void execute() override;
@@ -177,6 +180,55 @@ struct XRCommandGL_EndPass : public XRCommandGL
 {
 	XRCommandGL_EndPass()
 		: XRCommandGL(XRCommandBuffer::CommandName::EndPass)
+	{}
+
+	void execute() override;
+};
+
+struct XRCommandGL_BeginRenderPass : public XRCommandGL
+{
+	XRBeginRenderPassInfo _beginRenderPassInfo;
+	XRBeginSubPassInfo _beginSubPassInfo;
+	XRClearValue _clearValues[8];
+
+	XRCommandGL_BeginRenderPass()
+		: XRCommandGL(XRCommandBuffer::CommandName::BeginRenderPass)
+		, _beginRenderPassInfo(), _beginSubPassInfo(), _clearValues()
+	{}
+
+	XRCommandGL_BeginRenderPass(XRBeginRenderPassInfo const& renderPass, XRBeginSubPassInfo const& beginPassInfo)
+		: XRCommandGL(XRCommandBuffer::CommandName::BeginRenderPass)
+		, _beginRenderPassInfo(renderPass), _beginSubPassInfo(beginPassInfo)
+	{
+		for (uint32_t i = 0; i < _beginRenderPassInfo._clearValues._size; ++i)
+		{
+			_clearValues[i] = _beginRenderPassInfo._clearValues._data[i];
+		}
+		_beginRenderPassInfo._clearValues._data = _clearValues;
+	}
+
+	void execute() override;
+};
+
+struct XRCommandGL_NextSubPass : public XRCommandGL
+{
+	XRBeginSubPassInfo _beginSubPassInfo;
+
+	XRCommandGL_NextSubPass()
+		: XRCommandGL(XRCommandBuffer::CommandName::NextSubPass)
+	{}
+
+	XRCommandGL_NextSubPass(XRBeginSubPassInfo const& beginPassInfo)
+		: XRCommandGL(XRCommandBuffer::CommandName::NextSubPass)
+		, _beginSubPassInfo(beginPassInfo) {}
+
+	void execute() override;
+};
+
+struct XRCommandGL_EndRenderPass : public XRCommandGL
+{
+	XRCommandGL_EndRenderPass()
+		: XRCommandGL(XRCommandBuffer::CommandName::EndRenderPass)
 	{}
 
 	void execute() override;

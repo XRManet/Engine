@@ -8,7 +8,7 @@ class XRLightNode;
 class XRActorNode;
 
 class XRResourceManager;
-class XRRenderPassManager;
+class XRWorkPassManager;
 class XRPipelineManager;
 
 class XRCommandFootprint;
@@ -27,7 +27,7 @@ private:
 	uint64_t _renderCounter = 0;
 
 protected:
-	XRRenderPassManager* const _renderPassManager;
+	XRWorkPassManager* const _workPassManager;
 	XRPipelineManager* const _pipelineManager;
 
 	std::unordered_map<uint32_t, XRCommandBuffer*> _bakedCommandBuffers;

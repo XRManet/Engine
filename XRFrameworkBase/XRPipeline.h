@@ -604,12 +604,13 @@ public:
 class XRImageView {};
 class XRRenderTargetView : public XRImageView {};
 class XRDepthStencilView : public XRImageView {};
-class XRRenderPassBase;
+class XRWorkPassBase;
+class XRRenderPass;
 
 struct XRFramebufferLayout
 {
 	xr::vec3<uint32_t> _extent; // width, height, layers
-	XRRenderPassBase* _compatibleRenderPass;
+	XRRenderPass* _compatibleWorkPass;
 };
 
 /**
@@ -696,6 +697,18 @@ struct XRRenderPassCreateInfo
 	uint32_t _renderPassCreateTest;
 };
 
+class XRBaseExport XRRenderPass
+{
+
+protected: // Attachments
+	/** @brief	The attachments. 이 렌더패스 내에서 사용할 모든 attachments에 대한 설명. */
+	std::vector<XRAttachmentDescription> _attachments;
+
+public:
+	const std::vector<XRAttachmentDescription>& getAttachments() const { return _attachments; }
+
+};
+
 struct SampleState
 {
 	int32_t _testInt = 0;
@@ -776,12 +789,12 @@ public:
 	bool CreatePipeline(XRPipelineCreateInfo const& createInfo);
 };
 
-// Note(jiman): VC++에서 'RenderPassAutoGenerator<RenderPass>::generate' 형식으로 처리
-template<typename RenderPass> struct RenderPassAutoGenerator { public:	XRExport static RenderPass* generate() { return new RenderPass; } };
+// Note(jiman): VC++에서 'WorkPassAutoGenerator<WorkPass>::generate' 형식으로 처리
+template<typename WorkPass> struct WorkPassAutoGenerator { public:	XRExport static WorkPass* generate() { return new WorkPass; } };
 // Note(jiman): #RequiredClangOption (-fdelayed-template-parsing)
-#define RenderPass(XRRenderPassName) XRRenderPassName; template struct RenderPassAutoGenerator<XRRenderPassName>; class XRRenderPassName : public XRRenderPassBase
+#define WorkPass(XRWorkPassName) XRWorkPassName; template struct WorkPassAutoGenerator<XRWorkPassName>; class XRWorkPassName : public XRWorkPassBase
 
-class XRBaseExport XRRenderPassBase
+class XRBaseExport XRWorkPassBase
 {
 public:
 	using LinkInitializeFunc = void();
@@ -792,10 +805,6 @@ protected: // Permutations
 	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
 
 	std::vector<XRPermutationElementArgument> _elements;
-
-protected: // Attachments
-	/** @brief	The attachments. 이 렌더패스 내에서 사용할 모든 attachments에 대한 설명. */
-	std::vector<XRAttachmentDescription> _attachments;
 
 public:
 	inline void SetElement(int32_t elementIndex, int32_t value) { _elements[elementIndex]._value = value; }
@@ -822,7 +831,7 @@ public:
 	void dependency();
 	void record()
 	{
-		//xrBeginRenderPass();
+		//xrBeginWorkPass();
 
 	}
 
@@ -831,23 +840,23 @@ private:
 	LinkUpdateFunc* _update;
 };
 
-using XRPFN_GENERATE_RENDERPASS = XRRenderPassBase * (*)(void);
+using XRPFN_GENERATE_RENDERPASS = XRWorkPassBase * (*)(void);
 
-class XRBaseExport XRRenderPassManager
+class XRBaseExport XRWorkPassManager
 {
 private:
-	struct RenderPassInternal
+	struct WorkPassInternal
 	{
-		XRRenderPassBase*			_renderPass;
+		XRWorkPassBase*				_workPass;
 		XRPFN_GENERATE_RENDERPASS	_generate;
 	};
 
 private:
-	std::unordered_map<xr::IndexedString<XRRenderPassBase>, RenderPassInternal> _renderPasses;
+	std::unordered_map<xr::IndexedString<XRWorkPassBase>, WorkPassInternal> _workPasses;
 
 public:
-	bool RegisterRenderPassGenerator(std::string&& string, void* generator);
-	XRRenderPassBase* GetRenderPass(xr::IndexedString<XRRenderPassBase> const& renderPassName) const { return _renderPasses.find(renderPassName)->second._renderPass; }
+	bool RegisterWorkPassGenerator(std::string&& string, void* generator);
+	XRWorkPassBase* GetWorkPass(xr::IndexedString<XRWorkPassBase> const& workPassName) const { return _workPasses.find(workPassName)->second._workPass; }
 };
 
 struct XRCommandStep
