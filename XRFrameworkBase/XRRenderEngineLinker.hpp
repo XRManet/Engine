@@ -1,4 +1,3 @@
-﻿//#include "stdafx.h"
 #include "XRPlatform.h"
 
 #include "XRModel.h"

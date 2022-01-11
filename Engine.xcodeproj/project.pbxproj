@@ -22,9 +22,9 @@
 		E828C93A2524FA43000FF36B /* XRFrameworkBaseRenderEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = E828C9372524FA43000FF36B /* XRFrameworkBaseRenderEngine.h */; };
 		E828C93C2524FA9E000FF36B /* XRRenderGroupGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E828C93B2524FA9E000FF36B /* XRRenderGroupGL.h */; };
 		E828C93E2524FC01000FF36B /* XRRenderGroupGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E828C93D2524FC01000FF36B /* XRRenderGroupGL.cpp */; };
-		E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
-		E88219C024CA26DE00868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
-		E88219C224CA26E200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; };
+		E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E88219C024CA26DE00868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E88219C224CA26E200868276 /* libXRFrameworkBase.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E8B5188F259E3C2D00351BE9 /* XRLightNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8B5187B259E3C2D00351BE9 /* XRLightNode.cpp */; };
 		E8B51890259E3C2D00351BE9 /* XRRenderCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5187C259E3C2D00351BE9 /* XRRenderCommon.h */; };
 		E8B51891259E3C2D00351BE9 /* XRActorNode.h in Headers */ = {isa = PBXBuildFile; fileRef = E8B5187D259E3C2D00351BE9 /* XRActorNode.h */; };
@@ -58,10 +58,7 @@
 		E8C1BA6F22B63283006EDA1E /* XRSceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6222B63283006EDA1E /* XRSceneManager.cpp */; };
 		E8C1BA7022B63283006EDA1E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6822B63283006EDA1E /* main.cpp */; };
 		E8C1BA7122B63283006EDA1E /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA6922B63283006EDA1E /* stdafx.cpp */; };
-		E8C1BA7722B63658006EDA1E /* GLEW.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; };
 		E8C1BA7922B6368A006EDA1E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7822B6368A006EDA1E /* OpenGL.framework */; };
-		E8C1BA7B22B636D7006EDA1E /* libglfw.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */; };
-		E8C1BA7D22B63981006EDA1E /* GLEW.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; };
 		E8C1BA9022B63BBB006EDA1E /* XRRenderEngineGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */; };
 		E8C1BA9122B63BBB006EDA1E /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = E8C1BA8822B63BBB006EDA1E /* stdafx.h */; };
 		E8C1BA9322B63BBB006EDA1E /* XRModelGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8C1BA8C22B63BBB006EDA1E /* XRModelGL.cpp */; };
@@ -111,6 +108,10 @@
 		E8E67C3F234A7DB10015A403 /* XRTextureGL.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E67C3D234A7DB10015A403 /* XRTextureGL.h */; };
 		E8E67C40234A7DB10015A403 /* XRTextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */; };
 		E8E67C43234A80860015A403 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7822B6368A006EDA1E /* OpenGL.framework */; };
+		E8EEBE8E278E05F40079BD73 /* GLEW.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; };
+		E8EEBE8F278E05F40079BD73 /* GLEW.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8C1BA7622B63658006EDA1E /* GLEW.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E8EEBE90278E06090079BD73 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */; };
+		E8EEBE91278E06090079BD73 /* libglfw.3.2.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */; };
 		E8EED0552475B3D7003852A7 /* XRHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8EED0532475B3D7003852A7 /* XRHash.cpp */; };
 		E8EED0562475B3D7003852A7 /* XRHash.h in Headers */ = {isa = PBXBuildFile; fileRef = E8EED0542475B3D7003852A7 /* XRHash.h */; };
 /* End PBXBuildFile section */
@@ -149,11 +150,13 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		E88219BF24CA26D200868276 /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				E8EEBE91278E06090079BD73 /* libglfw.3.2.dylib in Embed Libraries */,
 				E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */,
+				E8EEBE8F278E05F40079BD73 /* GLEW.framework in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,7 +190,6 @@
 			dstSubfolderSpec = 16;
 			files = (
 				E8E67C2A234A59B40015A403 /* Resources in Copy Files */,
-				E8C1BA7D22B63981006EDA1E /* GLEW.framework in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -262,7 +264,6 @@
 		E8C1BA6D22B63283006EDA1E /* SceneKeys.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SceneKeys.json; sourceTree = "<group>"; };
 		E8C1BA7622B63658006EDA1E /* GLEW.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLEW.framework; path = "ThirdParty/OSX/glew-2.1.0/bin/Release/GLEW.framework"; sourceTree = "<group>"; };
 		E8C1BA7822B6368A006EDA1E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.dylib; path = "ThirdParty/OSX/glfw-3.2.1/bin/Release/libglfw.dylib"; sourceTree = "<group>"; };
 		E8C1BA8222B63B8A006EDA1E /* libXRRenderEngineGL.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libXRRenderEngineGL.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8C1BA8722B63BBB006EDA1E /* XRRenderEngineGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRRenderEngineGL.cpp; sourceTree = "<group>"; };
 		E8C1BA8822B63BBB006EDA1E /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
@@ -273,6 +274,14 @@
 		E8C1BA8D22B63BBB006EDA1E /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
 		E8C1BA8E22B63BBB006EDA1E /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
 		E8C1BA8F22B63BBB006EDA1E /* XRModelGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRModelGL.h; sourceTree = "<group>"; };
+		E8D4839A25BC4BA10046184D /* libBSDPClient.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libBSDPClient.tbd; path = usr/lib/libBSDPClient.tbd; sourceTree = SDKROOT; };
+		E8D4839C25BC4BD00046184D /* libmacho.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libmacho.tbd; path = usr/lib/system/libmacho.tbd; sourceTree = SDKROOT; };
+		E8D4839E25BC4C450046184D /* libSystem.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libSystem.tbd; path = usr/lib/libSystem.tbd; sourceTree = SDKROOT; };
+		E8D483A125BC4D5E0046184D /* SystemExtensions.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemExtensions.framework; path = System/Library/Frameworks/SystemExtensions.framework; sourceTree = SDKROOT; };
+		E8D483A325BC4D6A0046184D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E8D483A825BC4E480046184D /* Kernel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kernel.framework; path = System/Library/Frameworks/Kernel.framework; sourceTree = SDKROOT; };
+		E8D483AB25BC56960046184D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		E8D483AF25BC58310046184D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		E8E5915E226AF66300164749 /* libXRFrameworkBase.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libXRFrameworkBase.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8E59163226AF68200164749 /* XRLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRLogging.h; sourceTree = "<group>"; };
 		E8E59164226AF68200164749 /* XRBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRBody.cpp; sourceTree = "<group>"; };
@@ -316,6 +325,7 @@
 		E8E67C3D234A7DB10015A403 /* XRTextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTextureGL.h; sourceTree = "<group>"; };
 		E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTextureGL.cpp; sourceTree = "<group>"; };
 		E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = "ThirdParty/OSX/glfw-3.2.1/bin/Release/libglfw.3.2.dylib"; sourceTree = "<group>"; };
+		E8EEBE89278DF9750079BD73 /* XREntrypoint.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XREntrypoint.entitlements; sourceTree = "<group>"; };
 		E8EED0532475B3D7003852A7 /* XRHash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XRHash.cpp; sourceTree = "<group>"; };
 		E8EED0542475B3D7003852A7 /* XRHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRHash.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -334,9 +344,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E81D4E7523769CA0003E4C0D /* libXRFrameworkBase.dylib in Frameworks */,
+				E8EEBE8E278E05F40079BD73 /* GLEW.framework in Frameworks */,
 				E8C1BA7922B6368A006EDA1E /* OpenGL.framework in Frameworks */,
-				E8C1BA7B22B636D7006EDA1E /* libglfw.dylib in Frameworks */,
-				E8C1BA7722B63658006EDA1E /* GLEW.framework in Frameworks */,
+				E8EEBE90278E06090079BD73 /* libglfw.3.2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +423,7 @@
 		E8C1BA5B22B6319F006EDA1E /* XREntrypoint */ = {
 			isa = PBXGroup;
 			children = (
+				E8EEBE89278DF9750079BD73 /* XREntrypoint.entitlements */,
 				E8C1BA6822B63283006EDA1E /* main.cpp */,
 				E8C1BA6622B63283006EDA1E /* OpenGLStart.rc */,
 				E8C1BA6322B63283006EDA1E /* OpenGLStart.vcxproj */,
@@ -433,8 +444,15 @@
 		E8C1BA7222B634BB006EDA1E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E8D483AF25BC58310046184D /* AppKit.framework */,
+				E8D483AB25BC56960046184D /* IOKit.framework */,
+				E8D483A825BC4E480046184D /* Kernel.framework */,
+				E8D483A325BC4D6A0046184D /* SystemConfiguration.framework */,
+				E8D483A125BC4D5E0046184D /* SystemExtensions.framework */,
+				E8D4839E25BC4C450046184D /* libSystem.tbd */,
+				E8D4839C25BC4BD00046184D /* libmacho.tbd */,
+				E8D4839A25BC4BA10046184D /* libBSDPClient.tbd */,
 				E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */,
-				E8C1BA7A22B636D7006EDA1E /* libglfw.dylib */,
 				E8C1BA7822B6368A006EDA1E /* OpenGL.framework */,
 				E8C1BA7622B63658006EDA1E /* GLEW.framework */,
 			);
@@ -705,7 +723,7 @@
 		E812F83E2263417E00C87624 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1160;
 				ORGANIZATIONNAME = XRManet;
 				TargetAttributes = {
 					E8C1BA5122B630FE006EDA1E = {
@@ -935,6 +953,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -953,6 +972,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -979,6 +999,10 @@
 					$PROJECT_DIR/ThirdParty/Common/glm,
 					$PROJECT_DIR,
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -994,6 +1018,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fdelayed-template-parsing",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1018,6 +1046,10 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fdelayed-template-parsing",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1026,9 +1058,11 @@
 		E8C1BA5F22B6319F006EDA1E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = XREntrypoint/XREntrypoint.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
@@ -1045,10 +1079,12 @@
 		E8C1BA6022B6319F006EDA1E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = XREntrypoint/XREntrypoint.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = PBNTNUR4XK;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1145,6 +1181,10 @@
 					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
 					$PROJECT_DIR/ThirdParty/Common/glm,
 					$PROJECT_DIR,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
