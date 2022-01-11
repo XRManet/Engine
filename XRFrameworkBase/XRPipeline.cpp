@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "XRHash.h"
 #include "XRPipeline.h"
@@ -68,7 +68,7 @@ uint32_t XRPipelineGroup::CalcPermutationHash(std::vector<XRPermutationElementAr
 	std::vector<uint16_t> permutationFingerprint;
 	permutationFingerprint.resize(_createInfo->_permutationLayout._numEnums, 0);
 
-	uint32_t numElementArguments = elementArguments.size();
+	uint32_t numElementArguments = static_cast<uint32_t>(elementArguments.size());
 	for (uint32_t i = 0; i < numElementArguments; ++i)
 	{
 		XRPermutationElementArgument const& arg = elementArguments[i];
@@ -168,11 +168,24 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 
 #pragma region XRRenderPassManager
 
+template<typename FPType>
+struct FuncPointerAssigner
+{
+	union {
+		FPType _fpTypedAddress;
+		void* _fpUntypedAddress;
+	};
+};
+
 bool XRWorkPassManager::RegisterWorkPassGenerator(std::string&& string, void* fpGnerator)
 {
-	auto Generate = static_cast<XRPFN_GENERATE_RENDERPASS>(fpGnerator);
-	XRWorkPassBase* workPass = Generate();
-	auto result = _workPasses.insert({ string, { workPass, Generate } });
+	// VS 비표준 구현은 이를 static casting으로 대입하는 것이 가능했지만, void*를 function pointer로 전달하는 것을 일반적으로는 용납할 수 없기 때문에
+	// union을 통해 address를 강제로 전달합니다. 사실상 reinterpret와 다를 건 없습니다.
+	FuncPointerAssigner<XRPFN_GENERATE_RENDERPASS> fpGeneratorAssigner;
+	fpGeneratorAssigner._fpUntypedAddress = fpGeneratorAddress;
+	
+	XRWorkPassBase* workPass = fpGeneratorAssigner._fpTypedAddress();
+	auto result = _workPasses.insert({ string, { workPass, fpGeneratorAssigner._fpTypedAddress } });
 	return result.second;
 }
 

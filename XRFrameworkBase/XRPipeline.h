@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <XRFrameworkBase/XRDefault.h>
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
@@ -792,6 +792,7 @@ public:
 // Note(jiman): VC++에서 'WorkPassAutoGenerator<WorkPass>::generate' 형식으로 처리
 template<typename WorkPass> struct WorkPassAutoGenerator { public:	XRExport static WorkPass* generate() { return new WorkPass; } };
 // Note(jiman): #RequiredClangOption (-fdelayed-template-parsing)
+//				WorkPass를 정의하는 모든 프로젝트는 Clang빌드 시 위 옵션을 추가해야 합니다.
 #define WorkPass(XRWorkPassName) XRWorkPassName; template struct WorkPassAutoGenerator<XRWorkPassName>; class XRWorkPassName : public XRWorkPassBase
 
 class XRBaseExport XRWorkPassBase
