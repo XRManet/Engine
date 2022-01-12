@@ -1,4 +1,4 @@
-﻿// XRFrameworkBase/stdafx.h
+// XRFrameworkBase/stdafx.h
 #pragma once
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -54,5 +54,11 @@ namespace xr
 			return 0;
 		return errno;
 	}
+
+#define sprintf_s 							snprintf
+#define strncpy_s(dst, size, src, len) 		strncpy(dst, src, len);
+#define strcpy_s(dst, size, src)			strcpy(dst, src);
+
+#define OutputDebugStringA 					printf
 #endif
 }

@@ -1,4 +1,4 @@
-﻿// stdafx.h : 자주 사용하지만 자주 변경되지는 않는
+// stdafx.h : 자주 사용하지만 자주 변경되지는 않는
 // 표준 시스템 포함 파일 또는 프로젝트 특정 포함 파일이 들어 있는
 // 포함 파일입니다.
 //
@@ -9,17 +9,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <vector>
-#include <string>
-#include <assert.h>
-
 //////////////////////////// Platform-dependent headers
-#if defined(_WIN32) || defined(_WIN64)
-#define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
-#include "targetver.h"
-#include <windows.h>
-#elif defined(__APPLE__)
-#endif
+#include <XRFrameworkBase/stdafx.h>
 
 /* XRRenderExport
  * XRRENDERENGINEGL_EXPORTS is defined in settings for a project file per each platform-dependent IDE.

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 char const* GetGlErrorString(GLenum errorCode)
 {
@@ -10,7 +10,7 @@ char const* GetGlErrorString(GLenum errorCode)
 	case GL_INVALID_VALUE:          return "GL_INVALID_VALUE";
 	case GL_INVALID_OPERATION:      return "GL_INVALID_OPERATION";
 	default:
-		sprintf_s(stringifiedErrorCode, "0x%x", errorCode);
+		sprintf_s(stringifiedErrorCode, 31, "0x%x", errorCode);
 		return stringifiedErrorCode;
 	}
 	return nullptr;

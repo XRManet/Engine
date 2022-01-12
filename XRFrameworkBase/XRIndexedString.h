@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <XRFrameworkBase/XRDefault.h>
 
@@ -167,7 +167,7 @@ IndexedStringContainer<Category, Capacity> IndexedString<Category, Capacity>::sC
 
 #define EXPLICIT_GEN_INDEXED_STRING_SYMBOL(Category, ...) \
 	template IndexedString<Category, ##__VA_ARGS__>; \
-	/*template*/ XRBaseExport IndexedStringContainer<Category, ##__VA_ARGS__> IndexedString<Category, ##__VA_ARGS__>::sContainer_PS;
+	template XRBaseExport IndexedStringContainer<Category, ##__VA_ARGS__> IndexedString<Category, ##__VA_ARGS__>::sContainer_PS;
 #else
 #define EXPLICIT_GEN_INDEXED_STRING_SYMBOL(Category, ...) \
 	static_assert(false, "Not implemented yet");
