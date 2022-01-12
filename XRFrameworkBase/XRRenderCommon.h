@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "stdafx.h"
 #include <stdint.h>
@@ -445,7 +445,7 @@ union XRClearValue
 	};
 
 public:
-	XRClearValue() : _color{ ._float {} } {}
+	XRClearValue() : _color{ ._float = {} } {}
 	XRClearValue(XRClearValue const& rhs) = default;
 
 	XRClearValue(xr::vec4<float_t> const& floatClear) : _color{ ._float = floatClear } {}

@@ -1,4 +1,4 @@
-﻿//
+//
 //  XRPlatform.h
 //  Engine
 //
@@ -84,7 +84,7 @@ namespace XRPlatform
 #error "Not defined"
 #endif
 
-#define XR_DYNAMIC_LIBRARY(name)	#name".dylib"
+#define XR_DYNAMIC_LIBRARY(name)	"lib"#name".dylib"
 
 #endif
 

@@ -38,16 +38,11 @@ namespace XRPlatform
         
         XRDSOImpl(const char* dso_name)
         {
-            sprintf(_openName, "lib%s.dylib", dso_name);
+            sprintf(_openName, "%s", dso_name);
 			
 			//_dyld_register_func_for_add_image(callback);
             _handle = dlopen(_openName, RTLD_LOCAL);
-            if(_handle == nullptr)
-            {
-                const char* fallback_name = "libXRRenderEngineGL.dylib";
-				sprintf(_openName, "%s", fallback_name);
-                _handle = dlopen(_openName, RTLD_LOCAL);
-            }
+			assert(_handle != nullptr);
         }
         virtual ~XRDSOImpl()
         {

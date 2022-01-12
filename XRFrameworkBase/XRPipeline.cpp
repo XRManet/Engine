@@ -177,7 +177,7 @@ struct FuncPointerAssigner
 	};
 };
 
-bool XRWorkPassManager::RegisterWorkPassGenerator(std::string&& string, void* fpGnerator)
+bool XRWorkPassManager::RegisterWorkPassGenerator(std::string&& string, void* fpGeneratorAddress)
 {
 	// VS 비표준 구현은 이를 static casting으로 대입하는 것이 가능했지만, void*를 function pointer로 전달하는 것을 일반적으로는 용납할 수 없기 때문에
 	// union을 통해 address를 강제로 전달합니다. 사실상 reinterpret와 다를 건 없습니다.

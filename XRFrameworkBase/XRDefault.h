@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #if defined(_WIN32) || defined(_WIN64)
 
@@ -44,6 +44,18 @@
 #endif // #ifdef XRFRAMEWORKBASE_EXPORTS
 
 #define XRRenderExport extern "C" __attribute__((visibility("default")))
+#ifdef XRRENDERENGINEGL_EXPORTS
+#define XRRenderAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType ApiName
+#else
+#define XRRenderAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType (*ApiName)
+#endif
+
+#define XRShaderBuildExport extern "C" __attribute__((visibility("default")))
+#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
+#define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType ApiName
+#else
+#define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType (*ApiName)
+#endif
 
 #else
 #error "Not considered yet"
