@@ -544,7 +544,7 @@ struct ProgramResources
 	std::unordered_map<std::string, UniformInfo> _activeUniformBlocks;
 
 	std::vector<UniformBindingInfo>	_indexedUniformBindingInfo;
-	std::vector<std::string>		_indexedActiveUniforms; // for debugging
+	std::vector<std::string>		_indexedActiveUniformNames; // for debugging
 
 public:
 	inline size_t GetActiveUniformBlocks() const { return _numActiveUniformBlocks; }

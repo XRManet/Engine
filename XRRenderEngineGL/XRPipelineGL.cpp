@@ -278,7 +278,7 @@ bool XRPipelineGL::createBindingInformation()
 	printf("Number of uniform resources:  %d\n", numActiveUniform);
 
 	_programResources._indexedUniformBindingInfo.resize(_programResources.GetActiveUniformBlocks());
-	_programResources._indexedActiveUniforms.resize(_programResources.GetActiveUniformBlocks());
+	_programResources._indexedActiveUniformNames.resize(_programResources.GetActiveUniformBlocks());
 
 	printf("=============================================\n");
 	printf("Reflect uniform blocks\n\n");
@@ -307,7 +307,7 @@ bool XRPipelineGL::createBindingInformation()
 		UniformInfo& uniformInfo = result.first->second;
 		uniformInfo = std::move(uniformDesc._uniformInfo);
 
-		_programResources._indexedActiveUniforms[i] = uniformDesc._blockName;
+		_programResources._indexedActiveUniformNames[i] = uniformDesc._blockName;
 		_programResources._indexedUniformBindingInfo[i]._uniformInfo = &uniformInfo;
 	}
 
