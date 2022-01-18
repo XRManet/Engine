@@ -9,6 +9,17 @@
 class XRCamera;
 class XRRenderer;
 
+struct XRInputLinkage
+{
+	int32_t keyboardPressed[256];
+
+	double curX, curY;
+	double anchorX, anchorY;
+	bool anchored;
+	float cameraStep;
+
+};
+
 class XRPipelineManager;
 class XRBaseExport XRScene
 {
@@ -17,6 +28,8 @@ protected:
 	XRResourceManager _resource_manager;
 	std::vector<XRCamera> _cameras;
 	XRSceneNode* _root;
+
+	XRInputLinkage* _input;
 
 public:
 	std::vector<XRCamera>& getCameras() { return _cameras; }
@@ -31,6 +44,9 @@ public:
 public:
 	// 왠지 이런게 필요할거같긴한데...
 	XRSceneNode* GenerateNode(XRSceneNodeType type);
+
+public:
+	void LinkInput(XRInputLinkage* inputLink) { _input = inputLink; }
 
 public:
 	virtual void Initialize() {}

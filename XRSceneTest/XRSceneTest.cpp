@@ -55,6 +55,34 @@ void XRSceneTest::Initialize()
 
 void XRSceneTest::Update(float dt)
 {
+	glm::vec3 cameraMove{
+		(_input->keyboardPressed['D'] - _input->keyboardPressed['A']),
+		(_input->keyboardPressed['E'] - _input->keyboardPressed['Q']),
+		(_input->keyboardPressed['S'] - _input->keyboardPressed['W'])
+	};
+	glm::vec3 alignedMove = glm::mat3_cast(_cameras[0].GetQuaternion()) * cameraMove * _input->cameraStep;
+	_cameras[0].Move(alignedMove);
+
+	static bool anchorOrientation = false;
+	static glm::quat orientation;
+	if (true == _input->anchored)
+	{
+		static const auto up = glm::vec3(0, 1, 0);
+		static const auto right = glm::vec3(1, 0, 0);
+
+		if (false == anchorOrientation)
+		{
+			orientation = _cameras[0].GetQuaternion();
+			anchorOrientation = true;
+		}
+		auto axisXangle = glm::radians(-float(_input->curX - _input->anchorX)) * _input->cameraStep;
+		auto axisYangle = glm::radians(float(_input->curY - _input->anchorY)) * _input->cameraStep;
+
+		auto rotation = glm::rotate(glm::rotate(orientation, axisXangle, up), axisYangle, right);
+		_cameras[0].SetQuaternion(rotation);
+	}
+	else anchorOrientation = false;
+
 }
 
 

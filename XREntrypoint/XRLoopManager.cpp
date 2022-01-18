@@ -5,14 +5,14 @@
 #include <XRFrameworkBase/XRScene.h>
 #include "XRSceneManager.h"
 
-int32_t g_keyboardPressed[256] = { 0, };
+XRInputLinkage g_input;
 
 void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	auto _this = static_cast<XRRenderingInfra<GLFW>*>(glfwGetWindowUserPointer(window));
 
 	if (key < 256)
-		g_keyboardPressed[key] = (action == GLFW_REPEAT || action == GLFW_PRESS) ? 1 : 0;
+		g_input.keyboardPressed[key] = (action == GLFW_REPEAT || action == GLFW_PRESS) ? 1 : 0;
 
 	switch (key)
 	{
@@ -29,24 +29,19 @@ void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scan
 	}
 }
 
-double curX = 0, curY = 0;
-double anchorX = 0, anchorY = 0;
-bool anchored = false;
-float cameraStep = .1f;
-
 void XRRenderingInfra<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
 	{
 		if (action == GLFW_PRESS)
 		{
-			anchorX = curX;
-			anchorY = curY;
-			anchored = true;
+			g_input.anchorX = g_input.curX;
+			g_input.anchorY = g_input.curY;
+			g_input.anchored = true;
 		}
 		else if (action == GLFW_RELEASE)
 		{
-			anchored = false;
+			g_input.anchored = false;
 		}
 	}
 }
@@ -56,16 +51,16 @@ void XRRenderingInfra<GLFW>::PositionMouse(GLFWwindow* window, double xpos, doub
 	int32_t windowSizeX = 0, windowSizeY = 0;
 	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
 
-	curX = xpos;
-	curY = double(windowSizeY) - ypos;
+	g_input.curX = xpos;
+	g_input.curY = double(windowSizeY) - ypos;
 }
 
 void XRRenderingInfra<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, double yoffset)
 {
 	printf("%lf\n", yoffset);
-	cameraStep += float(yoffset * .1f) ;
-	if (cameraStep <= .1f)
-		cameraStep = .1f;
+	g_input.cameraStep += float(yoffset * .1f) ;
+	if (g_input.cameraStep <= .1f)
+		g_input.cameraStep = .1f;
 }
 
 #if TEST_CODE// TEST_CODE
@@ -276,88 +271,6 @@ void XRRendererTest::Initialize()
 	}
 }
 
-void XRRendererTest::Update()
-{
-	std::vector<unsigned char> uniformBufferData;
-	{
-		struct MatrixBlock
-		{
-			glm::mat4 view;
-			glm::mat4 proj;
-			glm::mat4 viewProj;
-		};
-
-		struct LightBlock
-		{
-			glm::vec4 position;
-			glm::vec3 intensity;
-			float attenuation;
-		};
-
-		const size_t offsetMatrixBlock = 0;
-		const size_t sizeMatrixBlock = (sizeof(MatrixBlock) * 1);
-		const size_t offsetLightBlock = offsetMatrixBlock + sizeMatrixBlock;
-		const size_t sizeLightBlock = (sizeof(LightBlock) * 1);
-		uniformBufferData.resize(sizeMatrixBlock + sizeLightBlock);
-
-		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix];
-		MatrixBlock& matrixBlock = reinterpret_cast<MatrixBlock&>(uniformBufferData[offsetMatrixBlock]);
-		LightBlock& lightBlock = reinterpret_cast<LightBlock&>(uniformBufferData[offsetLightBlock]);
-
-		glm::vec3 cameraMove{
-			(g_keyboardPressed['D'] - g_keyboardPressed['A']),
-			(g_keyboardPressed['E'] - g_keyboardPressed['Q']),
-			(g_keyboardPressed['S'] - g_keyboardPressed['W'])
-		};
-		glm::vec3 alignedMove = glm::mat3_cast(scene->getCameras()[0].GetQuaternion()) * cameraMove * cameraStep;
-		scene->getCameras()[0].Move(alignedMove);
-
-		static bool anchorOrientation = false;
-		static glm::quat orientation;
-		if (true == anchored)
-		{
-			static const auto up = glm::vec3(0, 1, 0);
-			static const auto right = glm::vec3(1, 0, 0);
-
-			if (false == anchorOrientation)
-			{
-				orientation = scene->getCameras()[0].GetQuaternion();
-				anchorOrientation = true;
-			}
-			auto axisXangle = glm::radians(-float(curX - anchorX)) * cameraStep;
-			auto axisYangle = glm::radians(float(curY - anchorY)) * cameraStep;
-			
-			auto rotation = glm::rotate(glm::rotate(orientation, axisXangle, up), axisYangle, right);
-			scene->getCameras()[0].SetQuaternion(rotation);
-		}
-		else anchorOrientation = false;
-
-		matrixBlock.view = scene->getCameras()[0].GetInvTransform();
-		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();
-		matrixBlock.viewProj = matrixBlock.proj * matrixBlock.view;
-
-#define UPLOAD_METHOD_PER_DATA	0
-#define UPLOAD_METHOD_ALL_ONCE	1
-#define UPLOAD_METHOD			UPLOAD_METHOD_ALL_ONCE
-
-#if UPLOAD_METHOD == UPLOAD_METHOD_PER_DATA
-		std::vector<void*> dataAddress;
-		dataAddress.resize(programResources._indexedUniformBlockBindingInfo.size());
-		dataAddress[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
-		dataAddress[UNIFORM_BINDING_NAME::Light] = &lightBlock;
-
-		uint32_t i = 0;
-		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
-		{
-			if (ii->isBound() == false) continue;
-			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformInfo->_blockSize, dataAddress[i]));
-		}
-#elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
-		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data() ));
-#endif
-	}
-}
-
 #include <XRRenderEngineGL/XRModelGL.h>
 #include <XRRenderEngineGL/XRPipelineGL.h>
 
@@ -391,6 +304,8 @@ void XRFrameWalker::Initialize()
 	auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
 
+	scene->LinkInput(&g_input);
+
 	// Note(jiman): 임시로 ResourceManager를 씬에서 얻게 함. 나중에 전역으로 변경
 	auto resourceManager = scene->GetResourceManager();
 	renderer->Initialize(resourceManager);
@@ -410,6 +325,6 @@ void XRFrameWalker::UpdateFrame()
 	scene->Update(0);
 	scene->Render(renderer);
 
-	renderer->Update();
+	renderer->Update(scene);
 	renderer->Render();
 }
