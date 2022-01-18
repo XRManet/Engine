@@ -40,4 +40,6 @@ void XRSceneNode::Render(XRRenderer* renderer)
 	{
 		child->Render(renderer);
 	}
+	
+	renderer->LeaveNode(this);
 }

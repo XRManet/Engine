@@ -3,12 +3,13 @@
 #include "XRRendererTest.h"
 
 #include <XRFrameworkBase/XRUtility.h>
+#include <XRFrameworkBase/XRIndexedString.h>
+#include <XRFrameworkBase/XRScene.h>
 
 #include <XRFrameworkBase/XRResourceManager.h>
 #include <XRFrameworkBase/XRObjectManager.h>
 #include <XRFrameworkBase/XRModel.h>
 
-#include <XRFrameworkBase/XRIndexedString.h>
 
 #include <XRFrameworkBase/XRCommandBuffer.h>
 #include <XRFrameworkBase/XRPipeline.h>
@@ -167,56 +168,31 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 	_lightBuffer = xrCreateBuffer(&lightBufferCreateInfo);
 }
 
-void XRRendererTest::OnUpdate()
+void XRRendererTest::WillUpdateRenderGraph(XRScene* scene)
 {
-#if 0
-	std::vector<unsigned char> uniformBufferData;
 	{
-
 		const size_t offsetMatrixBlock = 0;
 		const size_t sizeMatrixBlock = (sizeof(MatrixBlock) * 1);
 		const size_t offsetLightBlock = offsetMatrixBlock + sizeMatrixBlock;
 		const size_t sizeLightBlock = (sizeof(LightBlock) * 1);
-		uniformBufferData.resize(sizeMatrixBlock + sizeLightBlock);
+		_uniformBufferData.resize(sizeMatrixBlock + sizeLightBlock);
 
-		programResources._indexedUniformBlockBindingInfo[UNIFORM_BINDING_NAME::Matrix];
-		MatrixBlock& matrixBlock = reinterpret_cast<MatrixBlock&>(uniformBufferData[offsetMatrixBlock]);
-		LightBlock& lightBlock = reinterpret_cast<LightBlock&>(uniformBufferData[offsetLightBlock]);
-
-		glm::vec3 cameraMove{
-			(g_keyboardPressed['D'] - g_keyboardPressed['A']),
-			(g_keyboardPressed['E'] - g_keyboardPressed['Q']),
-			(g_keyboardPressed['S'] - g_keyboardPressed['W'])
-		};
-		glm::vec3 alignedMove = glm::mat3_cast(scene->getCameras()[0].GetQuaternion()) * cameraMove * cameraStep;
-		scene->getCameras()[0].Move(alignedMove);
-
-		static bool anchorOrientation = false;
-		static glm::quat orientation;
-		if (true == anchored)
-		{
-			static const auto up = glm::vec3(0, 1, 0);
-			static const auto right = glm::vec3(1, 0, 0);
-
-			if (false == anchorOrientation)
-			{
-				orientation = scene->getCameras()[0].GetQuaternion();
-				anchorOrientation = true;
-			}
-			auto axisXangle = glm::radians(-float(curX - anchorX)) * cameraStep;
-			auto axisYangle = glm::radians(float(curY - anchorY)) * cameraStep;
-
-			auto rotation = glm::rotate(glm::rotate(orientation, axisXangle, up), axisYangle, right);
-			scene->getCameras()[0].SetQuaternion(rotation);
-		}
-		else anchorOrientation = false;
+		MatrixBlock& matrixBlock = reinterpret_cast<MatrixBlock&>(_uniformBufferData[offsetMatrixBlock]);
+		LightBlock& lightBlock = reinterpret_cast<LightBlock&>(_uniformBufferData[offsetLightBlock]);
 
 		matrixBlock.view = scene->getCameras()[0].GetInvTransform();
 		matrixBlock.proj = scene->getCameras()[0].GetProjectionTransform();
 		matrixBlock.viewProj = matrixBlock.proj * matrixBlock.view;
 	}
+}
 
+void XRRendererTest::didUpdateRenderGraph(XRCommandBuffer* commandBuffer)
+{
 	{
+		//commandBuffer->uploadBuffer(_matrixBuffer, 0, );
+
+/*
+ * 
 #define UPLOAD_METHOD_PER_DATA	0
 #define UPLOAD_METHOD_ALL_ONCE	1
 #define UPLOAD_METHOD			UPLOAD_METHOD_ALL_ONCE
@@ -232,12 +208,12 @@ void XRRendererTest::OnUpdate()
 		{
 			if (ii->isBound() == false) continue;
 			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformInfo->_blockSize, dataAddress[i]));
-		}
+}
 #elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
-		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, uniformBufferData.size(), uniformBufferData.data()));
+		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, _uniformBufferData.size(), _uniformBufferData.data()));
 #endif
+*/
 	}
-#endif
 }
 
 void XRRendererTest::OnRender()

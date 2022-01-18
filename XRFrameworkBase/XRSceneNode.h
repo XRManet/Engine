@@ -7,9 +7,11 @@ class XRRenderer;
 
 enum class XRSceneNodeType
 {
+	NONE,
 	TRANSFORMATION,
 	LIGHT,
-	ACTOR
+	ACTOR,
+	MATERIAL,
 };
 
 class XRBaseExport XRSceneNode : public XRObject
@@ -23,7 +25,7 @@ public:
 	void Render(XRRenderer *renderer);
 
 protected:
-	XRSceneNodeType _type;
+	XRSceneNodeType _type = XRSceneNodeType::NONE;
 
 private:
 	void setParent(XRSceneNode* parent);

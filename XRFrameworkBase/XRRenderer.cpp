@@ -98,9 +98,24 @@ XRCommandBuffer* XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootpri
 	return commandBuffer;
 }
 
-void XRRenderer::Update()
+void XRRenderer::Update(XRScene* scene)
 {
-	OnUpdate();
+	WillUpdateRenderGraph(scene);
+
+	for (auto& i : _objectGroups)
+	{
+		XRObjectGroup* objectGroup = i.second;
+	}
+
+	XRCommandBuffer* commandBuffer = xrCreateCommandBuffer();
+	commandBuffer->begin();
+
+	didUpdateRenderGraph(commandBuffer);
+
+	commandBuffer->end();
+	commandBuffer->executeCommands();
+
+	delete commandBuffer;
 }
 
 void XRRenderer::Render()

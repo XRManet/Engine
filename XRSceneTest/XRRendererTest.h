@@ -22,6 +22,8 @@ class XRRendererTest : public XRRenderer
 		};
 	};
 
+	std::vector<unsigned char> _uniformBufferData;
+
 	XRBuffer* _matrixBuffer;
 	XRBuffer* _lightBuffer;
 
@@ -43,7 +45,8 @@ public:
 
 	void Initialize(XRResourceManager* resourceManager) override final;
 
-	void OnUpdate() override final;
+	void WillUpdateRenderGraph(XRScene* scene) override final;
+	void didUpdateRenderGraph(XRCommandBuffer* commandBuffer) override final;
 	void OnRender() override final;
 };
 

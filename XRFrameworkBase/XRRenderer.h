@@ -7,6 +7,8 @@ class XRTransformNode;
 class XRLightNode;
 class XRActorNode;
 
+class XRScene;
+
 class XRResourceManager;
 class XRWorkPassManager;
 class XRPipelineManager;
@@ -52,14 +54,22 @@ public:
 	virtual void Initialize(XRResourceManager* resourceManager) {}
 
 public:
-	virtual void OnUpdate() = 0;
+	virtual void WillUpdateRenderGraph(XRScene* scene) {}
+	virtual void didUpdateRenderGraph(XRCommandBuffer* commandBuffer) {}
 	virtual void OnRender() = 0;
 
 public:
-	void Update();
+	void Update(XRScene* scene);
 	void Render();
 
+
 public:
+	/**
+	 * @brief	Graph Interfaces
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2022-01-19
+	 */
 
 	/**
 	 * @fn	void Reset();
