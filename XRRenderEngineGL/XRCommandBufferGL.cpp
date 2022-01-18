@@ -327,7 +327,7 @@ void XRCommandMemoryPoolGL::emplaceCommand(Args&&... args)
 		_commandMemory.resize(APPROX_ONE_HALF);
 	}
 
-	new (&_commandMemory[current]) CommandGL( args... );
+	new (&_commandMemory[current]) CommandGL( std::forward<Args>(args)... );
 
 	_commandLocations.push_back(required);
 }
