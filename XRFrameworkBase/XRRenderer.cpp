@@ -141,13 +141,13 @@ void XRRenderer::RegisterNode(XRSceneNode* node)
 	switch (type)
 	{
 	case XRSceneNodeType::TRANSFORMATION:
-		RegisterTransformNode(dynamic_cast<XRTransformNode*>(node));
+		RegisterTransformNode(static_cast<XRTransformNode*>(node));
 		break;
 	case XRSceneNodeType::LIGHT:
-		RegisterLightNode(dynamic_cast<XRLightNode*>(node));
+		RegisterLightNode(static_cast<XRLightNode*>(node));
 		break;
 	case XRSceneNodeType::ACTOR:
-		RegisterActorNode(dynamic_cast<XRActorNode*>(node));
+		RegisterActorNode(static_cast<XRActorNode*>(node));
 		break;
 	}
 }
@@ -176,4 +176,39 @@ void XRRenderer::RegisterActorNode(XRActorNode* node)
 	}
 
 	_actorStack.push_back({ node, result.first->second });
+}
+
+void XRRenderer::LeaveNode(XRSceneNode* node)
+{
+	XRSceneNodeType type = node->GetType();
+	switch (type)
+	{
+	case XRSceneNodeType::TRANSFORMATION:
+		LeaveTransformNode(static_cast<XRTransformNode*>(node));
+		break;
+	case XRSceneNodeType::LIGHT:
+		LeaveLightNode(static_cast<XRLightNode*>(node));
+		break;
+	case XRSceneNodeType::ACTOR:
+		LeaveActorNode(static_cast<XRActorNode*>(node));
+		break;
+	}
+}
+
+void XRRenderer::LeaveTransformNode(XRTransformNode* node)
+{
+
+}
+
+void XRRenderer::LeaveLightNode(XRLightNode* node)
+{
+
+}
+
+void XRRenderer::LeaveActorNode(XRActorNode* node)
+{
+	auto& lastActor = _actorStack.back();
+	assert(lastActor.first == node);
+
+	_actorStack.pop_back();
 }

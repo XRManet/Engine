@@ -79,14 +79,19 @@ public:
 	 * @author	Jiman Jeong
 	 * @date	2021-02-19
 	 */
-
 	void Reset();
+
 	void RegisterNode(XRSceneNode* node);
+	void LeaveNode(XRSceneNode* node);
 	
 private:
 	void RegisterTransformNode(XRTransformNode* node);
 	void RegisterLightNode(XRLightNode* node);
 	void RegisterActorNode(XRActorNode* node);
+
+	void LeaveTransformNode(XRTransformNode* node);
+	void LeaveLightNode(XRLightNode* node);
+	void LeaveActorNode(XRActorNode* node);
 };
 
 
