@@ -5,6 +5,7 @@
 
 #include "XRCommon.glsl"
 
+#include "XRResFrame.glsl"
 #include "XRResObject1.glsl"
 
 // Vertex0 Layout
@@ -30,7 +31,7 @@ void main()
 {
 	gl_Position = _viewProj * vec4(_position, 1.0);
 	
-	_vertexOut._position = gl_Position.xyz;
+	_vertexOut._position = gl_Position.xyz * _frameCounter;
 	_vertexOut._normal = mat3(_view) * _normal;
 	//_vertexOut._normal = mat3(_view) * _vertexIn._normal + test.xyz;
 }

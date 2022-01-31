@@ -8,6 +8,41 @@
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
 #include <XRSourceBuildSystemGLSL/XRSourceBuildSystemGLSL.h>
 
+#define DEBUG_MESSAGE_REFLECT_SHADER
+
+const char* getTypeCStr(GLenum type)
+{
+	switch (type)
+	{
+	case GL_INT:			return "int";
+	case GL_UNSIGNED_INT:	return "uint";
+	case GL_FLOAT:			return "float";
+	case GL_FLOAT_VEC2:		return "float2";
+	case GL_FLOAT_VEC3:		return "float3";
+	case GL_FLOAT_VEC4:		return "float4";
+	case GL_INT_VEC2:		return "int2";
+	case GL_INT_VEC3:		return "int3";
+	case GL_INT_VEC4:		return "int4";
+	case GL_BOOL:			return "bool";
+	case GL_BOOL_VEC2:		return "bool2";
+	case GL_BOOL_VEC3:		return "bool3";
+	case GL_BOOL_VEC4:		return "bool4";
+	case GL_FLOAT_MAT2:		return "mat2";
+	case GL_FLOAT_MAT3:		return "mat3";
+	case GL_FLOAT_MAT4:		return "mat4";
+	case GL_FLOAT_MAT2x3:	return "mat2x3";
+	case GL_FLOAT_MAT2x4:	return "mat2x4";
+	case GL_FLOAT_MAT3x2:	return "mat3x2";
+	case GL_FLOAT_MAT3x4:	return "mat3x4";
+	case GL_FLOAT_MAT4x2:	return "mat4x2";
+	case GL_FLOAT_MAT4x3:	return "mat4x3";
+	case GL_UNSIGNED_INT_VEC2: return "uint2";
+	case GL_UNSIGNED_INT_VEC3: return "uint3";
+	case GL_UNSIGNED_INT_VEC4: return "uint4";
+	}
+	return "unkn";
+}
+
 namespace
 {
 // Move to a project 'XRSourceBuildSystemGLSL'
@@ -125,14 +160,26 @@ struct ProgramResourcesGL4 : public ProgramResourcesGL
 		}
 
 #if defined(DEBUG_MESSAGE_REFLECT_SHADER)
+		printf("Uniform Block Name: %s, (%d/%d), Binding: %d\n", outUniformDesc._blockName, blockIndex, _numActiveUniformBlocks, outUniformDesc._binding);
+
 		static constexpr GLenum activeUniformQueryProps[] {
-			GL_TYPE, GL_ARRAY_SIZE, GL_BLOCK_INDEX, GL_OFFSET,
-			GL_ARRAY_STRIDE, GL_MATRIX_STRIDE, GL_IS_ROW_MAJOR, GL_ATOMIC_COUNTER_BUFFER_INDEX,
+			GL_TYPE, GL_ARRAY_SIZE, GL_BLOCK_INDEX, GL_OFFSET, GL_ARRAY_STRIDE, GL_MATRIX_STRIDE, GL_IS_ROW_MAJOR, GL_ATOMIC_COUNTER_BUFFER_INDEX,
 		};
-		static char const* stringName[] {
-			"Type", "Num", "BlockIndex", "Offset",
-			"ArrayStride", "MatrixStride", "IsRowMajor", "AtomicCounterBufferIndex",
+		struct QueryResultLogger
+		{
+			char const* _propName;
+			void (*_printFunc)(GLint) = [](GLint intVal) {printf("%d, ", intVal); };
+		} logger[] = {
+			{ "Type",			[](GLint type) { printf("%s, ", getTypeCStr(type)); } },
+			{ "Num" },
+			{ "BlockIndex" },
+			{ "Offset" },
+			{ "ArrayStride" },
+			{ "MatrixStride" },
+			{ "IsRowMajor" },
+			{ "AtomicCounterBufferIndex" },
 		};
+
 		constexpr uint32_t QUERY_COUNT = sizeof(activeUniformQueryProps) / sizeof(activeUniformQueryProps[0]);
 		GLint uniformQueryResult[QUERY_COUNT];
 
@@ -141,10 +188,12 @@ struct ProgramResourcesGL4 : public ProgramResourcesGL
 			GL_CALL(glGetProgramResourceName(glProgram, GL_UNIFORM, arrayUniformIndices[j], UniformDesc::BUF_SIZE, nullptr, uniformName));
 			outUniformDesc._uniformInfo._uniformIndices[uniformName] = j;
 
+			printf("\tUniform index [%d] Name: %s\n\t\t", j, uniformName);
 			glGetProgramResourceiv(glProgram, GL_UNIFORM, arrayUniformIndices[j], QUERY_COUNT, activeUniformQueryProps, QUERY_COUNT, nullptr, uniformQueryResult);
 			for (GLint j = 0; j < QUERY_COUNT; ++j)
 			{
-				printf("%s: %d, ", stringName[j], uniformQueryResult[j]);
+				printf("%s: ", logger[j]._propName);
+				logger[j]._printFunc(uniformQueryResult[j]);
 			}
 			printf("\n");
 		}
