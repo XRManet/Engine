@@ -20,3 +20,12 @@ private:
 	XRModel* _model;
 	XRTexture* _texture;
 };
+
+class XRMaterial;
+
+class XRBaseExport XRMaterialNode : public XRSceneNode
+{
+public:
+	XRMaterialNode();
+	virtual ~XRMaterialNode();
+};

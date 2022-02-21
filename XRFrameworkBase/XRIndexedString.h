@@ -100,6 +100,7 @@ public:
 
 public:
 	inline char const* c_str() const { return sContainer._allAccessors[_index]->c_str(); }
+	inline std::string const& string() const { return *sContainer._allAccessors[_index]; }
 	inline size_t length() const { return sContainer._allAccessors[_index]->length(); }
 	inline Capacity const getIndex() const { return _index; }
 

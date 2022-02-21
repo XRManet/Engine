@@ -1,12 +1,12 @@
-#pragma once
+﻿#pragma once
 
-#include <stdafx.h>
+#include "XRIndexedString.h"
 
 // TODO) File Manager
 class XRLoadable
 {
 private:
-	std::string _path;
+	xr::IndexedString<XRLoadable, uint32_t> _path;
 
 
 protected:
@@ -18,10 +18,6 @@ public:
 	XRLoadable(std::string const & path);
 
 
-protected:
-	std::string const & GetPath() const { return _path; }
-
-
 public:
 	virtual bool LoadDataFromFile() { return false; }
 	virtual bool ResetData() { return false; }
@@ -29,5 +25,6 @@ public:
 	virtual bool Write() { return false; }
 
 public:
+	std::string const& GetPath() const { return _path.string(); }
 	const uint8_t* GetData() const { return _memory.data(); }
 };

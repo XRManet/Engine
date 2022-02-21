@@ -14,6 +14,12 @@ enum class XRSceneNodeType
 	MATERIAL,
 };
 
+struct MemoryRange
+{
+	uint32_t _offset;
+	uint32_t _size;
+};
+
 class XRBaseExport XRSceneNode : public XRObject
 {
 public:
@@ -24,12 +30,19 @@ public:
 	void AddChild(XRSceneNode* child);
 	void Render(XRRenderer *renderer);
 
-protected:
-	XRSceneNodeType _type = XRSceneNodeType::NONE;
+public:
+	const MemoryRange& getBoundMemoryRange() const { return _boundMemoryRange; }
 
 private:
 	void setParent(XRSceneNode* parent);
 
+protected:
+	XRSceneNodeType _type = XRSceneNodeType::NONE;
+	bool _isModified = false;
+
+private:
 	XRSceneNode* _parent;
 	std::vector<XRSceneNode*> _children;
+
+	MemoryRange _boundMemoryRange;
 };

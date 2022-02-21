@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "XRActorNode.h"
 
@@ -15,4 +15,14 @@ XRActorNode::~XRActorNode()
 		delete _model;
 	if (_texture != nullptr)
 		delete _texture;
+}
+
+XRMaterialNode::XRMaterialNode()
+{
+
+}
+
+XRMaterialNode::~XRMaterialNode()
+{
+
 }

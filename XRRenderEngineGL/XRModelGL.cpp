@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "XRModelGL.h"
 
 #include <XRFrameworkBase/XRModelData.h>
@@ -515,24 +515,36 @@ void XRModelGL::bind() const
 }
 
 uint32_t XRModelGL::getNumVertices() const {
-	return 0;
-	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+	XRObjectHeader const* header = _data->GetHeader();
+	uint32_t numMeshVertices = 0;
+	for (uint32_t meshIndex = 0; meshIndex < header->_numMeshes; ++meshIndex)
+		numMeshVertices += getNumVertices(meshIndex);
+	return numMeshVertices;
 }
 uint32_t XRModelGL::getNumVertices(uint32_t meshIndex) const {
-	return 0;
-	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
+	XRObjectHeader const* header = _data->GetHeader();
+	uint32_t numMeshVertices = 0;
+	for (uint32_t submeshIndex = 0; submeshIndex < header->_meshes[meshIndex]->_numSubmeshes; ++submeshIndex)
+		numMeshVertices += getNumVertices(meshIndex, submeshIndex);
+	return numMeshVertices;
 }
 uint32_t XRModelGL::getNumVertices(uint32_t meshIndex, uint32_t submeshIndex) const {
 	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getVertexBufferSize(0) / _inputLayout->getStride(0);
 }
 
 uint32_t XRModelGL::getNumIndices() const {
-	return 0;
-	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
+	XRObjectHeader const* header = _data->GetHeader();
+	uint32_t numMeshIndices = 0;
+	for (uint32_t meshIndex = 0; meshIndex < header->_numMeshes; ++meshIndex)
+		numMeshIndices += getNumIndices(meshIndex);
+	return numMeshIndices;
 }
 uint32_t XRModelGL::getNumIndices(uint32_t meshIndex) const {
-	return 0;
-	//return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;
+	XRObjectHeader const* header = _data->GetHeader();
+	uint32_t numMeshIndices = 0;
+	for (uint32_t submeshIndex = 0; submeshIndex < header->_meshes[meshIndex]->_numSubmeshes; ++submeshIndex)
+		numMeshIndices += getNumIndices(meshIndex, submeshIndex);
+	return numMeshIndices;
 }
 uint32_t XRModelGL::getNumIndices(uint32_t meshIndex, uint32_t submeshIndex) const {
 	return _data->GetHeader()->_meshes[meshIndex]->_submeshes[submeshIndex]->getIndexBufferSize() / _data->GetHeader()->_meshes[meshIndex]->_indexSize;

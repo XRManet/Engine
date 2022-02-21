@@ -4,6 +4,8 @@
 #include "XRRenderer.h"
 #include "XRObjectManager.h"
 
+#include "XRModel.h"
+
 #include "XRSceneNode.h"
 #include "XRTransformNode.h"
 #include "XRLightNode.h"
@@ -11,6 +13,8 @@
 
 #include "XRCommandBuffer.h"
 #include "XRPipeline.h"
+
+#include "XRBuffer.h"
 
 static XRPipelineManager* GetDefaultPipelineManager()
 {
@@ -100,6 +104,8 @@ XRCommandBuffer* XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootpri
 
 void XRRenderer::Update(XRScene* scene)
 {
+	BuildMemoryLayout();
+
 	WillUpdateRenderGraph(scene);
 
 	for (auto& i : _objectGroups)
@@ -125,6 +131,91 @@ void XRRenderer::Render()
 	++_renderCounter;
 }
 
+struct XRPrimitiveBuffer
+{
+	static const uint32_t MaxVertexBuffers = 4;
+
+	XRBuffer* _vertexBuffers[MaxVertexBuffers]{};
+	XRBuffer* _indexBuffer{};
+};
+
+class XRLoadable;
+struct XRPrimitiveDescription
+{
+	std::vector<xr::IndexedString<XRLoadable, uint32_t>> _meshNames;
+	uint32_t _vertexCount{};
+	uint32_t _indexCount{};
+};
+
+// XRMutablePrimitive 가 더 맞음
+struct XRPrimitive
+{
+	XRPrimitiveDescription _description{};
+	XRPrimitiveBuffer _buffers{};
+};
+
+/**
+ * @fn	void XRRenderer::BuildMemoryLayout()
+ *
+ * @brief	input layout
+ * 				mesh
+ * 					per-mesh materials
+ * 						instance
+ * 							instance buffer per-instance materials
+ * 						sub-mesh
+ * 							vertex buffers index buffer per-sub-mesh materials
+ *
+ * @author	Jiman Jeong
+ * @date	2022-02-23
+ */
+
+void XRRenderer::BuildMemoryLayout()
+{
+	XRBufferCreateInfo meshBufferCreateInfo;
+	xrCreateBuffer(&meshBufferCreateInfo);
+
+	BuildMemoryLayout_StaticMesh();
+}
+
+void XRRenderer::BuildMemoryLayout_StaticMesh()
+{
+	std::unordered_map<XRInputLayout const*, XRPrimitive> __map;
+	std::unordered_map<XRInputLayout const*, XRPrimitiveDescription> __compare;
+
+	for (auto& i : _objectGroups)
+	{
+		XRObjectGroup* objectGroup = i.second;
+		XRModel const* model = objectGroup->_model;
+		XRInputLayout const* inputLayout = model->getInputLayout();
+
+		auto result = __compare.insert({ inputLayout, {} });
+		XRPrimitiveDescription& primitiveDescription = result.first->second;
+		primitiveDescription._vertexCount += model->getNumVertices();
+		primitiveDescription._indexCount += model->getNumIndices();
+	}
+
+	// 이번에 추가된 primitive와 이전 것을 비교, 변경점이 있으면 background 갱신 처리가 들어가야 한다.
+	for (auto& i : _objectGroups)
+	{
+		XRObjectGroup* objectGroup = i.second;
+		XRModel const* model = objectGroup->_model;
+		XRInputLayout const* inputLayout = model->getInputLayout();
+
+
+		auto result = __map.insert({ inputLayout, {} });
+		auto found = __compare.find(inputLayout);
+
+		XRPrimitiveDescription& curPrimitiveDescription = result.first->second._description;
+		XRPrimitiveDescription& newPrimitiveDescription = found->second;
+		if ((curPrimitiveDescription._vertexCount != newPrimitiveDescription._vertexCount)
+			|| (curPrimitiveDescription._indexCount != newPrimitiveDescription._indexCount))
+		{
+			
+		}
+
+	}
+}
+
 void XRRenderer::Reset()
 {
 	for (auto& i : _objectGroups)
@@ -135,24 +226,24 @@ void XRRenderer::Reset()
 	}
 }
 
-void XRRenderer::RegisterNode(XRSceneNode* node)
+void XRRenderer::VisitNode(XRSceneNode* node)
 {
 	XRSceneNodeType type = node->GetType();
 	switch (type)
 	{
 	case XRSceneNodeType::TRANSFORMATION:
-		RegisterTransformNode(static_cast<XRTransformNode*>(node));
+		VisitTransformNode(static_cast<XRTransformNode*>(node));
 		break;
 	case XRSceneNodeType::LIGHT:
-		RegisterLightNode(static_cast<XRLightNode*>(node));
+		VisitLightNode(static_cast<XRLightNode*>(node));
 		break;
 	case XRSceneNodeType::ACTOR:
-		RegisterActorNode(static_cast<XRActorNode*>(node));
+		VisitActorNode(static_cast<XRActorNode*>(node));
 		break;
 	}
 }
 
-void XRRenderer::RegisterTransformNode(XRTransformNode* node)
+void XRRenderer::VisitTransformNode(XRTransformNode* node)
 {
 	assert(false == _actorStack.empty());
 	auto& lastActor = _actorStack.back();
@@ -162,12 +253,12 @@ void XRRenderer::RegisterTransformNode(XRTransformNode* node)
 	objectGroup->_objects.push_back(node);
 }
 
-void XRRenderer::RegisterLightNode(XRLightNode* node)
+void XRRenderer::VisitLightNode(XRLightNode* node)
 {
 
 }
 
-void XRRenderer::RegisterActorNode(XRActorNode* node)
+void XRRenderer::VisitActorNode(XRActorNode* node)
 {
 	auto result = _objectGroups.insert({ node, nullptr });
 	if (result.second == true)
@@ -176,6 +267,10 @@ void XRRenderer::RegisterActorNode(XRActorNode* node)
 	}
 
 	_actorStack.push_back({ node, result.first->second });
+}
+
+void XRRenderer::VisitMaterialNode(XRMaterialNode* node)
+{
 }
 
 void XRRenderer::LeaveNode(XRSceneNode* node)
@@ -211,4 +306,9 @@ void XRRenderer::LeaveActorNode(XRActorNode* node)
 	assert(lastActor.first == node);
 
 	_actorStack.pop_back();
+}
+
+void XRRenderer::LeaveMaterialNode(XRMaterialNode* node)
+{
+
 }

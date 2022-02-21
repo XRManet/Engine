@@ -1,6 +1,4 @@
-#pragma once
-
-#include <stdafx.h>
+﻿#pragma once
 
 #include "XRLoadable.h"
 #include "XRPrimitiveTypes.h"
@@ -16,42 +14,43 @@ struct XRObjectHeader;
 class XRModelDataLoader : public XRLoadable
 {
 public:
-  struct VertexPosition { float x, y, z, w; };
-  struct VertexNormal { float x, y, z; };
-  struct TextureCoordinate { float u, v, w; };
-  struct VertexParameter { float u, v, w; };
-  struct FaceElement { int vertex, texture, normal; };
-  struct FaceIndexTriangle { int v0, v1, v2; };
-  struct FaceIndexQuad { int v0, v1, v2, v3; };
+	struct VertexPosition { float x, y, z, w; };
+	struct VertexNormal { float x, y, z; };
+	struct TextureCoordinate { float u, v, w; };
+	struct VertexParameter { float u, v, w; };
+	struct FaceElement { int vertex, texture, normal; };
+	struct FaceIndexTriangle { int v0, v1, v2; };
+	struct FaceIndexQuad { int v0, v1, v2, v3; };
 
-  struct VertexAttribute
-  {
-	  size_t offset = 0;
-	  uint32_t num_elements = 0;
-  };
+	struct VertexAttribute
+	{
+		size_t offset = 0;
+		uint32_t num_elements = 0;
+	};
 
 public:
-  XRModelDataLoader(std::string && path) : XRLoadable(std::move(path)) { Initialize(); }
-  XRModelDataLoader(std::string const& path) : XRLoadable(path) { Initialize(); }
+	XRModelDataLoader(std::string&& path) : XRLoadable(std::move(path)) { Initialize(); }
+	XRModelDataLoader(std::string const& path) : XRLoadable(path) { Initialize(); }
 
 private:
-  void Initialize();
+	void	Initialize();
 
-public:		XRObjectHeader const*	GetHeader() const	{ return reinterpret_cast<XRObjectHeader const*>(_memory.data()); }
-protected:	XRObjectHeader *		GetHeader()			{ return reinterpret_cast<XRObjectHeader*>(_memory.data()); }
+public:		XRObjectHeader const* GetHeader() const { return reinterpret_cast<XRObjectHeader const*>(_memory.data()); }
+protected:	XRObjectHeader* GetHeader() { return reinterpret_cast<XRObjectHeader*>(_memory.data()); }
 };
 
 class XRModelData
 {
 private:
 	XRModelDataLoader* _modelDataLoader;
-	
-public:
-	XRModelData(std::string && path);
-	XRModelData(std::string const& path);
-	
-public:
-	bool LoadDataFromFile() { return _modelDataLoader->LoadDataFromFile(); }
 
-public:		XRObjectHeader const*	GetHeader() const { return const_cast<XRModelDataLoader const*>(_modelDataLoader)->GetHeader(); }
+public:
+	XRModelData(std::string&& path);
+	XRModelData(std::string const& path);
+
+public:
+	bool	LoadDataFromFile() { return _modelDataLoader->LoadDataFromFile(); }
+
+public:
+	XRObjectHeader const* GetHeader() const { return const_cast<XRModelDataLoader const*>(_modelDataLoader)->GetHeader(); }
 };

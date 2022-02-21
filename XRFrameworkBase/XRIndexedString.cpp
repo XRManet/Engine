@@ -6,6 +6,7 @@
 
 class XRWorkPassBase;
 class XRPipeline;
+class XRLoadable;
 struct XRPermutationElement;
 struct XRCommandStep;
 struct XRGLSL;
@@ -27,4 +28,5 @@ EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPipeline);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRPermutationElement);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRCommandStep);
 EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRGLSL);
+EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRLoadable, uint32_t);
 }

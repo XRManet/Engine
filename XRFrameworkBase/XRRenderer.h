@@ -6,6 +6,7 @@ class XRSceneNode;
 class XRTransformNode;
 class XRLightNode;
 class XRActorNode;
+class XRMaterialNode;
 
 class XRScene;
 
@@ -42,18 +43,34 @@ public:
 	~XRRenderer();
 
 public:
+	/**
+	 * @brief	WorkPass interfaces
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2022-02-22
+	 */
+
 	bool Bind(XRPlatform::XRDSO* dso);
 
-public:
-	uint64_t GetRenderCounter() const { return _renderCounter; }
-
 protected:
+	/**
+	 * @brief	Command interfaces
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2022-02-22
+	 */
 	XRCommandBuffer* EvaluateCommands(XRCommandFootprint& commandFootprint);
 
 public:
+	/**
+	 * @brief	Renderer interfaces
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2022-02-22
+	 */
+
 	virtual void Initialize(XRResourceManager* resourceManager) {}
 
-public:
 	virtual void WillUpdateRenderGraph(XRScene* scene) {}
 	virtual void didUpdateRenderGraph(XRCommandBuffer* commandBuffer) {}
 	virtual void OnRender() = 0;
@@ -62,10 +79,23 @@ public:
 	void Update(XRScene* scene);
 	void Render();
 
+	uint64_t GetRenderCounter() const { return _renderCounter; }
 
 public:
 	/**
-	 * @brief	Graph Interfaces
+	 * @brief	SceneGraph to RHI MemoryLayout
+	 *
+	 * @author	Jiman Jeong
+	 * @date	2022-02-22
+	 */
+	void BuildMemoryLayout();
+
+private:
+	void BuildMemoryLayout_StaticMesh();
+
+public:
+	/**
+	 * @brief	SceneGraph Interfaces
 	 *
 	 * @author	Jiman Jeong
 	 * @date	2022-01-19
@@ -81,17 +111,19 @@ public:
 	 */
 	void Reset();
 
-	void RegisterNode(XRSceneNode* node);
+	void VisitNode(XRSceneNode* node);
 	void LeaveNode(XRSceneNode* node);
 	
 private:
-	void RegisterTransformNode(XRTransformNode* node);
-	void RegisterLightNode(XRLightNode* node);
-	void RegisterActorNode(XRActorNode* node);
+	void VisitTransformNode(XRTransformNode* node);
+	void VisitLightNode(XRLightNode* node);
+	void VisitActorNode(XRActorNode* node);
+	void VisitMaterialNode(XRMaterialNode* node);
 
 	void LeaveTransformNode(XRTransformNode* node);
 	void LeaveLightNode(XRLightNode* node);
 	void LeaveActorNode(XRActorNode* node);
+	void LeaveMaterialNode(XRMaterialNode* node);
 };
 
 

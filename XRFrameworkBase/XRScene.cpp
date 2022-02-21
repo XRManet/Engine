@@ -13,7 +13,6 @@ XRScene::XRScene()
 	_root = new XRSceneNode();
 }
 
-
 XRScene::~XRScene()
 {
 }
@@ -37,6 +36,20 @@ XRSceneNode* XRScene::GenerateNode(XRSceneNodeType type)
 
 	return node;
 }
+
+struct MaterialDataDescription
+{
+	uint32_t _dataSize;
+};
+
+struct MeshDataDescription
+{
+	XRModel* _model;
+};
+
+// Mesh Model
+// Material Data - Custom Bytes
+// Instance Data - Transforms
 
 void XRScene::Render(XRRenderer* renderer)
 {

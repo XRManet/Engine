@@ -81,8 +81,10 @@ void XRSceneTest::Update(float dt)
 		auto rotation = glm::rotate(glm::rotate(orientation, axisXangle, up), axisYangle, right);
 		_cameras[0].SetQuaternion(rotation);
 	}
-	else anchorOrientation = false;
-
+	else
+	{
+		anchorOrientation = false;
+	}
 }
 
 

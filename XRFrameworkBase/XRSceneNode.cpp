@@ -23,8 +23,15 @@ XRSceneNode::~XRSceneNode()
 
 void XRSceneNode::AddChild(XRSceneNode* child)
 {
-	child->setParent(this);
+	XRSceneNode* parent = this;
+	child->setParent(parent);
 	_children.push_back(child);
+
+	while (parent != nullptr && parent->_isModified == false)
+	{
+		parent->_isModified = true;
+		parent = parent->_parent;
+	}
 }
 
 void XRSceneNode::setParent(XRSceneNode* parent)
@@ -34,11 +41,16 @@ void XRSceneNode::setParent(XRSceneNode* parent)
 
 void XRSceneNode::Render(XRRenderer* renderer)
 {
-	renderer->RegisterNode(this);
+	renderer->VisitNode(this);
 
-	for (auto child : _children)
+	if (_isModified == true)
 	{
-		child->Render(renderer);
+		for (auto child : _children)
+		{
+			child->Render(renderer);
+		}
+
+		_isModified = false;
 	}
 	
 	renderer->LeaveNode(this);
