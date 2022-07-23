@@ -10,27 +10,27 @@ namespace xr
 #if XR_PLATFORM == XR_PLATFORM_OSX
 MutexLock::MutexLock()
 {
-	std::mutex& mutex = reinterpret_cast<std::mutex&>(_mutex);
-	new (&mutex) std::mutex;
+	std::mutex*& mutex = reinterpret_cast<std::mutex*&>(_mutex);
+	mutex = new std::mutex;
 }
 
 MutexLock::~MutexLock()
 {
-	std::mutex& mutex = reinterpret_cast<std::mutex&>(_mutex);
-	mutex.~mutex();
+	std::mutex*& mutex = reinterpret_cast<std::mutex*&>(_mutex);
+	delete mutex;
 }
 
 bool MutexLock::lock()
 {
-	std::mutex& mutex = reinterpret_cast<std::mutex&>(_mutex);
-	mutex.lock();
+	std::mutex*& mutex = reinterpret_cast<std::mutex*&>(_mutex);
+	mutex->lock();
 	return true;
 }
 
 bool MutexLock::unlock()
 {
-	std::mutex& mutex = reinterpret_cast<std::mutex&>(_mutex);
-	mutex.unlock();
+	std::mutex*& mutex = reinterpret_cast<std::mutex*&>(_mutex);
+	mutex->unlock();
 	return true;
 }
 #endif
