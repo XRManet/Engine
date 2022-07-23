@@ -124,12 +124,14 @@ bool XRWavefrontObject::LoadDataFromFile()
 	XRWavefrontObjectSubmeshes* currentSubobject = &currentObject->_submeshes.back();
 	bool hasManyObjects = false;
 	bool hasManySubobjects = false;
+
+	static int32_t indexOffset[4] = { 1, 1, 1, 1 };
+	indexOffset[0] = indexOffset[1] = indexOffset[2] = indexOffset[3] = 1;
 	
 	while (fgets(line, MAX_LINE_CHARACTERS, fp) != nullptr)
 	{
 		static const float default_value[4] = { 0.f, 0.f, 0.f, 1.f };
 		static const uint32_t default_index[4] = { 0, };
-		static int32_t indexOffset[4] = { 1, 1, 1, 1 };
 
 		int read_pos = 2;
 		int available_count = 0;
