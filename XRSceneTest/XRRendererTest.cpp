@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "XRRendererTest.h"
 
@@ -47,8 +47,8 @@ struct PermutationEnum
 #define PermutationElementInfoCtor(name, count) { {#name, count} }
 
 STATIC_ENUM_BEGIN(SamplePermutation, XRPermutationBase);
-	ADD_ENUM(SamplePermutation, AlphaTest, 2);
-	ADD_ENUM(SamplePermutation, Lod, 2);
+ADD_ENUM(SamplePermutation, AlphaTest, 2);
+ADD_ENUM(SamplePermutation, Lod, 2);
 STATIC_ENUM_END(SamplePermutation);
 
 template<>
@@ -119,7 +119,7 @@ public:
 	}
 
 private:
-	virtual void DefaultPipelineState(XRPipelineStateDescription& outDefault) override
+	virtual void DefaultPipelineState(XRPipelineStateDescription & outDefault) override
 	{
 
 	}
@@ -157,15 +157,10 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 
 	_pipelineManager->CreatePipeline(renderPassSample->_pipelineCreateInfos[0]);
 
-	XRBufferCreateInfo matrixBufferCreateInfo = {
-		._size = sizeof(MatrixBlock)
+	XRBufferCreateInfo bufferCreateInfoPerFrame = {
+		._size = sizeof(MatrixBlock) + sizeof(LightBlock)
 	};
-	_matrixBuffer = xrCreateBuffer(&matrixBufferCreateInfo);
-
-	XRBufferCreateInfo lightBufferCreateInfo = {
-		._size = sizeof(LightBlock)
-	};
-	_lightBuffer = xrCreateBuffer(&lightBufferCreateInfo);
+	_bufferPerFrame = xrCreateBuffer(&bufferCreateInfoPerFrame);
 }
 
 void XRRendererTest::WillUpdateRenderGraph(XRScene* scene)
@@ -188,31 +183,31 @@ void XRRendererTest::WillUpdateRenderGraph(XRScene* scene)
 
 void XRRendererTest::didUpdateRenderGraph(XRCommandBuffer* commandBuffer)
 {
+	commandBuffer->copyBuffer(_bufferPerFrame, 0, _uniformBufferData.size(), _uniformBufferData.data());
+
 	{
-		//commandBuffer->uploadBuffer(_matrixBuffer, 0, );
+		/*
+		 *
+		#define UPLOAD_METHOD_PER_DATA	0
+		#define UPLOAD_METHOD_ALL_ONCE	1
+		#define UPLOAD_METHOD			UPLOAD_METHOD_ALL_ONCE
 
-/*
- * 
-#define UPLOAD_METHOD_PER_DATA	0
-#define UPLOAD_METHOD_ALL_ONCE	1
-#define UPLOAD_METHOD			UPLOAD_METHOD_ALL_ONCE
+		#if UPLOAD_METHOD == UPLOAD_METHOD_PER_DATA
+				std::vector<void*> dataAddress;
+				dataAddress.resize(programResources._indexedUniformBlockBindingInfo.size());
+				dataAddress[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
+				dataAddress[UNIFORM_BINDING_NAME::Light] = &lightBlock;
 
-#if UPLOAD_METHOD == UPLOAD_METHOD_PER_DATA
-		std::vector<void*> dataAddress;
-		dataAddress.resize(programResources._indexedUniformBlockBindingInfo.size());
-		dataAddress[UNIFORM_BINDING_NAME::Matrix] = &matrixBlock;
-		dataAddress[UNIFORM_BINDING_NAME::Light] = &lightBlock;
-
-		uint32_t i = 0;
-		for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
-		{
-			if (ii->isBound() == false) continue;
-			GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformInfo->_blockSize, dataAddress[i]));
-}
-#elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
-		GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, _uniformBufferData.size(), _uniformBufferData.data()));
-#endif
-*/
+				uint32_t i = 0;
+				for (auto ii = programResources._indexedUniformBlockBindingInfo.begin(); ii != programResources._indexedUniformBlockBindingInfo.end(); ++ii, ++i)
+				{
+					if (ii->isBound() == false) continue;
+					GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, ii->_offset, ii->_uniformInfo->_blockSize, dataAddress[i]));
+		}
+		#elif UPLOAD_METHOD == UPLOAD_METHOD_ALL_ONCE
+				GL_CALL(glBufferSubData(GL_UNIFORM_BUFFER, 0, _uniformBufferData.size(), _uniformBufferData.data()));
+		#endif
+		*/
 	}
 }
 
@@ -227,7 +222,7 @@ void XRRendererTest::OnRender()
 		static xr::IndexedString<XRWorkPassBase> renderPassSampleName = "XRWorkPassSample";
 		static XRWorkPassSample* workPassSample = static_cast<XRWorkPassSample*>(_workPassManager->GetWorkPass(renderPassSampleName));
 
-		XRBeginPassInfo beginPassInfo {
+		XRBeginPassInfo beginPassInfo{
 			._workPass = workPassSample
 		};
 
@@ -247,17 +242,17 @@ void XRRendererTest::OnRender()
 		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
 		//secondCommands->bindResource("", );
-		
+
 		XRClearValue color = xr::vec4<float_t>{ 1.f, 1.f, 1.f, 1.f };
 		XRClearValue depth = XRClearValue(1.f, 0u);
-		
+
 		XRBeginRenderPassInfo beginRenderPassInfo{
 			._renderPass = nullptr,
 			._framebuffer = nullptr,
 			._extent = { 1024, 768, 1 },
 			._clearValues = { color, depth }
 		};
-		XRBeginSubPassInfo beginSubPassInfo {
+		XRBeginSubPassInfo beginSubPassInfo{
 			._secondaryCommandBuffer = false
 		};
 

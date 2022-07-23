@@ -42,6 +42,10 @@ public:
 	//void drawIndirect() override;
 
 	//void dispatch() override;
+	//void dispatchIndirect() override;
+	
+	void copyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, const void* srcData) override;
+	void copyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, XRBuffer* srcBuffer, uint32_t srcOffset) override;
 	
 	void executeCommands() override;
 	
@@ -238,6 +242,36 @@ struct XRCommandGL_AddBarrier : public XRCommandGL
 {
 	XRCommandGL_AddBarrier()
 		: XRCommandGL(XRCommandBuffer::CommandName::AddBarrier)
+	{}
+
+	void execute() override;
+};
+
+struct XRCommandGL_CopyBuffer : public XRCommandGL
+{
+	XRBuffer* _dstBuffer;
+	uint32_t _dstOffset;
+	uint32_t _copyDataSize;
+	union {
+		const void* _srcData;
+		XRBuffer* _srcBuffer;
+	};
+	uint32_t _srcOffset;
+
+	inline bool isUploading() const { return _srcOffset == ~0; }
+
+	XRCommandGL_CopyBuffer()
+		: XRCommandGL_CopyBuffer(nullptr, 0, 0, nullptr, 0)
+	{}
+
+	XRCommandGL_CopyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, const void* srcData)
+		: XRCommandGL(XRCommandBuffer::CommandName::CopyBuffer)
+		, _dstBuffer(dstBuffer), _dstOffset(dstOffset), _copyDataSize(copyDataSize), _srcData(srcData), _srcOffset(~0)
+	{}
+
+	XRCommandGL_CopyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, XRBuffer* srcBuffer, uint32_t srcOffset)
+		: XRCommandGL(XRCommandBuffer::CommandName::CopyBuffer)
+		, _dstBuffer(dstBuffer), _dstOffset(dstOffset), _copyDataSize(copyDataSize), _srcBuffer(srcBuffer), _srcOffset(srcOffset)
 	{}
 
 	void execute() override;

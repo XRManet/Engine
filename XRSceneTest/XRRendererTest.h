@@ -24,8 +24,7 @@ class XRRendererTest : public XRRenderer
 
 	std::vector<unsigned char> _uniformBufferData;
 
-	XRBuffer* _matrixBuffer;
-	XRBuffer* _lightBuffer;
+	XRBuffer* _bufferPerFrame;
 
 	struct Light
 	{

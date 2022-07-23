@@ -104,7 +104,7 @@ XRCommandBuffer* XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootpri
 
 void XRRenderer::Update(XRScene* scene)
 {
-	BuildMemoryLayout();
+	BuildSceneMemoryLayout();
 
 	WillUpdateRenderGraph(scene);
 
@@ -155,7 +155,7 @@ struct XRPrimitive
 };
 
 /**
- * @fn	void XRRenderer::BuildMemoryLayout()
+ * @fn	void XRRenderer::BuildSceneMemoryLayout()
  *
  * @brief	input layout
  * 				mesh
@@ -169,15 +169,12 @@ struct XRPrimitive
  * @date	2022-02-23
  */
 
-void XRRenderer::BuildMemoryLayout()
+void XRRenderer::BuildSceneMemoryLayout()
 {
-	XRBufferCreateInfo meshBufferCreateInfo;
-	xrCreateBuffer(&meshBufferCreateInfo);
-
-	BuildMemoryLayout_StaticMesh();
+	BuildSceneMemoryLayout_StaticMesh();
 }
 
-void XRRenderer::BuildMemoryLayout_StaticMesh()
+void XRRenderer::BuildSceneMemoryLayout_StaticMesh()
 {
 	std::unordered_map<XRInputLayout const*, XRPrimitive> __map;
 	std::unordered_map<XRInputLayout const*, XRPrimitiveDescription> __compare;

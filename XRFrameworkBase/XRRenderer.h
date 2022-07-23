@@ -88,10 +88,10 @@ public:
 	 * @author	Jiman Jeong
 	 * @date	2022-02-22
 	 */
-	void BuildMemoryLayout();
+	void BuildSceneMemoryLayout();
 
 private:
-	void BuildMemoryLayout_StaticMesh();
+	void BuildSceneMemoryLayout_StaticMesh();
 
 public:
 	/**

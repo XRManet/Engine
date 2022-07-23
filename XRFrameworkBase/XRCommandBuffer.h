@@ -64,14 +64,20 @@ public:
 		// Barrier 관련
 		AddBarrier,
 
-		// Draw/Dispatch
+		// Draw
 		Draw,
 		DrawIndexed,
 		DrawModel,
 		DrawInstanced,
 		DrawIndexedInstanced,
 		DrawIndirect,
+
+		// Dispatch
 		Dispatch,
+		DispatchIndirect,
+
+		// Copy
+		CopyBuffer,
 
 		NumAllCommands,
 	};
@@ -130,6 +136,10 @@ public:
 	virtual void drawIndirect() {}
 
 	virtual void dispatch() {}
+	virtual void dispatchIndirect() {}
+
+	virtual void copyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, const void* srcData) {}
+	virtual void copyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, XRBuffer* srcBuffer, uint32_t srcOffset) {}
 
 	// Note: non that state bleeds back of toward the primary command buffer
 	virtual void executeCommands() {}

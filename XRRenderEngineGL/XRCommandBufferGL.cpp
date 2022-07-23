@@ -155,6 +155,16 @@ void XRCommandBufferGL::drawModel(XRPrimitiveTopology topology, XRModel const* m
 	_commandMemoryPool->emplaceCommand<XRCommandGL_DrawModel>(topology, model);
 }
 
+void XRCommandBufferGL::copyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, const void* srcData)
+{
+	_commandMemoryPool->emplaceCommand<XRCommandGL_CopyBuffer>(dstBuffer, dstOffset, copyDataSize, srcData);
+}
+
+void XRCommandBufferGL::copyBuffer(XRBuffer* dstBuffer, uint32_t dstOffset, uint32_t copyDataSize, XRBuffer* srcBuffer, uint32_t srcOffset)
+{
+	_commandMemoryPool->emplaceCommand<XRCommandGL_CopyBuffer>(dstBuffer, dstOffset, copyDataSize, srcBuffer, srcOffset);
+}
+
 void XRCommandGL_Draw::execute()
 {
 	GLenum topologyGL = ConvertPrimitiveTopology(_topology);
@@ -257,6 +267,26 @@ void XRCommandGL_NextSubPass::execute()
 
 void XRCommandGL_EndRenderPass::execute()
 {
+}
+
+void XRCommandGL_CopyBuffer::execute()
+{
+	class XRBufferInternal : public XRBuffer
+	{
+	public:
+		inline auto getBufferGL() const { return static_cast<XRBufferGL*>(_rhi); }
+	};
+
+	auto dstBufferGL = static_cast<XRBufferInternal*>(_dstBuffer)->getBufferGL();
+	if (isUploading())
+	{
+		glNamedBufferSubData(dstBufferGL->getBufferId(), _dstOffset, _copyDataSize, _srcData);
+	}
+	else
+	{
+		auto srcBufferGL = static_cast<XRBufferInternal*>(_srcBuffer)->getBufferGL();
+		glCopyNamedBufferSubData(srcBufferGL->getBufferId(), dstBufferGL->getBufferId(), _srcOffset, _dstOffset, _copyDataSize);
+	}
 }
 
 namespace
