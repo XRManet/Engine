@@ -12,3 +12,5 @@
 #include <GLFW/glfw3.h>
 
 #include <filesystem>
+
+char const* GetGlErrorString(GLenum errorCode);

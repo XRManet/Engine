@@ -1,4 +1,4 @@
-﻿// XRSourceBuildSystemGLSL.cpp : Defines the exported functions for the DLL.
+// XRSourceBuildSystemGLSL.cpp : Defines the exported functions for the DLL.
 //
 
 #include "pch.h"
@@ -86,6 +86,12 @@ XRSourceBuildSystemGLSL::XRSourceBuildSystemGLSL()
 			glNamedStringARB(GL_SHADER_INCLUDE_ARB,
 				lenFilename, filename,
 				static_cast<int>(lenShaderSource), shaderSource);
+			
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR)
+			{
+				printf("Error: %s\n", GetGlErrorString(error));
+			}
 		}
 
 		fclose(fp);
@@ -118,7 +124,7 @@ XRCompilerGLSL::XRCompilerGLSL(XRBuildSystemAvailability availability)
 		|| (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
 
 	isShadingLanguageSupportInclude = glfwExtensionSupported("GL_ARB_shading_language_include");
-	static bool doQueryNamedString = (isUniformBufferObjectQueriable == GLFW_TRUE)
+	static bool doQueryNamedString = (isShadingLanguageSupportInclude == GLFW_TRUE)
 		|| (glfwGetProcAddress("glNamedStringARB") != nullptr);
 	
     return;
@@ -158,7 +164,9 @@ XRCompiledObject* XRCompilerGLSL::Compile(const char* cstrSourcePath, XRCompileO
 
 	XRGLCompileOptions* glCompileOptions = static_cast<XRGLCompileOptions*>(compileOptions);
 	XRGLShaderObject* shaderObject = new XRGLShaderObject(glCompileOptions->_compileType, sourcePath);
-
+	GLenum error = glGetError();
+	assert(GL_NO_ERROR == error);
+	
 	bool result = true;
 	if (isShadingLanguageSupportInclude == true)
 	{
@@ -168,14 +176,25 @@ XRCompiledObject* XRCompilerGLSL::Compile(const char* cstrSourcePath, XRCompileO
 
 		GLint sourceLength = 0;
 		glGetNamedStringivARB(sourcePath.length() + 1, resourcePath, GL_NAMED_STRING_LENGTH_ARB, &sourceLength);
-
+		error = glGetError();
+		assert(GL_NO_ERROR == error);
+		
 		char* buffer = new char[sourceLength + 1]();
 		glGetNamedStringARB(sourcePath.length() + 1, resourcePath, sourceLength + 1, &sourceLength, buffer);
+		error = glGetError();
+		assert(GL_NO_ERROR == error);
 
-		const char* includePath = "/";
 		glShaderSource(shaderObject->_shader, 1, &buffer, &sourceLength);
-		glCompileShaderIncludeARB(shaderObject->_shader, 1, &includePath, nullptr);
-
+		error = glGetError();
+		assert(GL_NO_ERROR == error);
+		
+		const char* includePaths[] = { "/", };
+		int includePathLengths[] = { 2, };
+		glCompileShader(shaderObject->_shader);
+		//glCompileShaderIncludeARB(shaderObject->_shader, 1, includePaths, includePathLengths);
+		error = glGetError();
+		assert(GL_NO_ERROR == error);
+		
 		delete[] buffer;
 	}
 	else
