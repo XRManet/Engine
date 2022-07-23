@@ -1,4 +1,4 @@
-// XRSourceBuildSystemGLSL.cpp : Defines the exported functions for the DLL.
+﻿// XRSourceBuildSystemGLSL.cpp : Defines the exported functions for the DLL.
 //
 
 #include "pch.h"
@@ -189,9 +189,13 @@ XRCompiledObject* XRCompilerGLSL::Compile(const char* cstrSourcePath, XRCompileO
 		assert(GL_NO_ERROR == error);
 		
 		const char* includePaths[] = { "/", };
+#if XR_PLATFORM == XR_PLATFORM_WINDOWS
+		int includePathLengths[] = { 1, };
+#elif XR_PLATFORM == XR_PLATFORM_OSX
 		int includePathLengths[] = { 2, };
-		glCompileShader(shaderObject->_shader);
-		//glCompileShaderIncludeARB(shaderObject->_shader, 1, includePaths, includePathLengths);
+#endif // XR_PLATFORM
+
+		glCompileShaderIncludeARB(shaderObject->_shader, 1, includePaths, includePathLengths);
 		error = glGetError();
 		assert(GL_NO_ERROR == error);
 		
