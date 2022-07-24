@@ -1,4 +1,4 @@
-﻿// XRSourceBuildSystemGLSL.cpp : Defines the exported functions for the DLL.
+// XRSourceBuildSystemGLSL.cpp : Defines the exported functions for the DLL.
 //
 
 #include "pch.h"
@@ -114,18 +114,17 @@ static int isShadingLanguageSupportInclude = 0;
 XRCompilerGLSL::XRCompilerGLSL(XRBuildSystemAvailability availability)
     : XRCompiler(availability)
 {
+	isProgramInterfaceQueriable = glewIsExtensionSupported("GL_ARB_program_interface_query");
+	static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GL_TRUE)
+		|| (glGetProgramInterfaceiv != nullptr);
 
-	isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");
-	static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GLFW_TRUE)
-		|| (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
+	isUniformBufferObjectQueriable = glewIsExtensionSupported("GL_ARB_uniform_buffer_object");
+	static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GL_TRUE)
+		|| (glGetActiveUniformsiv != nullptr);
 
-	isUniformBufferObjectQueriable = glfwExtensionSupported("GL_ARB_uniform_buffer_object");
-	static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GLFW_TRUE)
-		|| (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
-
-	isShadingLanguageSupportInclude = glfwExtensionSupported("GL_ARB_shading_language_include");
-	static bool doQueryNamedString = (isShadingLanguageSupportInclude == GLFW_TRUE)
-		|| (glfwGetProcAddress("glNamedStringARB") != nullptr);
+	isShadingLanguageSupportInclude = glewIsExtensionSupported("GL_ARB_shading_language_include");
+	static bool doQueryNamedString = (isShadingLanguageSupportInclude == GL_TRUE)
+		|| (glNamedStringARB != nullptr);
 	
     return;
 }

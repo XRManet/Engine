@@ -1,10 +1,8 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "XRModelGL.h"
 
 #include <XRFrameworkBase/XRModelData.h>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
 struct XRFormatGL : public XRFormat

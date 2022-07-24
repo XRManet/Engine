@@ -3,10 +3,6 @@
 
 #include <XRFrameworkBase/XRTextureData.h>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/vec4.hpp>
-
 struct GLFormatInfo
 {
 	GLuint internal_format = GL_NONE;

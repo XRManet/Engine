@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file	XRRenderEngineGL\XRCommandBufferGL.cpp.
  *
  * @brief	XRCommandBufferGL class를 구현합니다.
@@ -12,10 +12,6 @@
 #include "XRCommandBufferGL.h"
 #include "XRBufferGL.h"
 #include "XRModelGL.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/vec4.hpp>
 
 namespace
 {

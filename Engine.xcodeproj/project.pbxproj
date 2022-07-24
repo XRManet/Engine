@@ -127,11 +127,10 @@
 		E8EEBEA4278E21D20079BD73 /* XRSourceBuildSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = E8EEBE9B278E21D20079BD73 /* XRSourceBuildSystem.h */; };
 		E8EEBEA6278E21D20079BD73 /* XRDeviceSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = E8EEBE9D278E21D20079BD73 /* XRDeviceSystem.h */; };
 		E8EEBEA7278E21D20079BD73 /* XRSerializable.h in Headers */ = {isa = PBXBuildFile; fileRef = E8EEBE9E278E21D20079BD73 /* XRSerializable.h */; };
-		E8EEBEAA278E263E0079BD73 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */; };
-		E8EEBEAC278E26900079BD73 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */; };
 		E8EED0552475B3D7003852A7 /* XRHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8EED0532475B3D7003852A7 /* XRHash.cpp */; };
 		E8EED0562475B3D7003852A7 /* XRHash.h in Headers */ = {isa = PBXBuildFile; fileRef = E8EED0542475B3D7003852A7 /* XRHash.h */; };
-		E8F810DC278E388B00EE5B94 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */; };
+		E8FCF5D1288D56D500DE6DD0 /* libglfw.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8FCF5CB288D537F00DE6DD0 /* libglfw.3.dylib */; };
+		E8FCF5D2288D56D500DE6DD0 /* libglfw.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E8FCF5CB288D537F00DE6DD0 /* libglfw.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -206,6 +205,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				E88219BE24CA26D200868276 /* libXRFrameworkBase.dylib in Embed Libraries */,
+				E8FCF5D2288D56D500DE6DD0 /* libglfw.3.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -371,7 +371,6 @@
 		E8E67C36234A7AAD0015A403 /* XRDXTC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRDXTC.h; sourceTree = "<group>"; };
 		E8E67C3D234A7DB10015A403 /* XRTextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRTextureGL.h; sourceTree = "<group>"; };
 		E8E67C3E234A7DB10015A403 /* XRTextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRTextureGL.cpp; sourceTree = "<group>"; };
-		E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = "ThirdParty/OSX/glfw-3.2.1/bin/Release/libglfw.3.2.dylib"; sourceTree = "<group>"; };
 		E8EEBE89278DF9750079BD73 /* XREntrypoint.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XREntrypoint.entitlements; sourceTree = "<group>"; };
 		E8EEBE92278E219A0079BD73 /* XRBufferGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRBufferGL.h; sourceTree = "<group>"; };
 		E8EEBE93278E219A0079BD73 /* XRBufferGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XRBufferGL.cpp; sourceTree = "<group>"; };
@@ -385,6 +384,7 @@
 		E8EEBE9E278E21D20079BD73 /* XRSerializable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XRSerializable.h; sourceTree = "<group>"; };
 		E8EED0532475B3D7003852A7 /* XRHash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = XRHash.cpp; sourceTree = "<group>"; };
 		E8EED0542475B3D7003852A7 /* XRHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRHash.h; sourceTree = "<group>"; };
+		E8FCF5CB288D537F00DE6DD0 /* libglfw.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.dylib; path = ThirdParty/OSX/glfw/bin/Release/libglfw.3.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,7 +392,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8F810DC278E388B00EE5B94 /* libglfw.3.2.dylib in Frameworks */,
 				E8902C47288870EF00BFB8B8 /* OpenGL.framework in Frameworks */,
 				E8A4F80628795B9300D5FDE4 /* GLEW.framework in Frameworks */,
 				E80C702F278E31F900B7BA1F /* libXRFrameworkBase.dylib in Frameworks */,
@@ -411,8 +410,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8EEBEAC278E26900079BD73 /* libglfw.3.2.dylib in Frameworks */,
 				E81D4E7523769CA0003E4C0D /* libXRFrameworkBase.dylib in Frameworks */,
+				E8FCF5D1288D56D500DE6DD0 /* libglfw.3.dylib in Frameworks */,
 				E8C1BA7922B6368A006EDA1E /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,7 +423,6 @@
 				E8E67C43234A80860015A403 /* OpenGL.framework in Frameworks */,
 				E8A4F80428795B8400D5FDE4 /* GLEW.framework in Frameworks */,
 				E81D4E7323769C9F003E4C0D /* libXRFrameworkBase.dylib in Frameworks */,
-				E8EEBEAA278E263E0079BD73 /* libglfw.3.2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,6 +550,7 @@
 		E8C1BA7222B634BB006EDA1E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E8FCF5CB288D537F00DE6DD0 /* libglfw.3.dylib */,
 				E8D483AF25BC58310046184D /* AppKit.framework */,
 				E8D483AB25BC56960046184D /* IOKit.framework */,
 				E8D483A825BC4E480046184D /* Kernel.framework */,
@@ -560,7 +559,6 @@
 				E8D4839E25BC4C450046184D /* libSystem.tbd */,
 				E8D4839C25BC4BD00046184D /* libmacho.tbd */,
 				E8D4839A25BC4BA10046184D /* libBSDPClient.tbd */,
-				E8E67C41234A7FE80015A403 /* libglfw.3.2.dylib */,
 				E8C1BA7822B6368A006EDA1E /* OpenGL.framework */,
 				E8C1BA7622B63658006EDA1E /* GLEW.framework */,
 			);
@@ -1052,6 +1050,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw/bin/Release",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1085,6 +1084,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw/bin/Release",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1224,6 +1224,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"XRRENDER_ENGINE=\\\"libXRRenderEngineGL.dylib\\\"",
 					XRFRAMEWORKBASE_EXPORTS,
 					"DEBUG=1",
 					"$(inherited)",
@@ -1239,6 +1240,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/system",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw/bin/Release",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1308,10 +1310,17 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ThirdParty/OSX/glew-2.1.0/bin/Release",
 				);
+				HEADER_SEARCH_PATHS = (
+					$PROJECT_DIR/ThirdParty/Common/glfw/include,
+					"$PROJECT_DIR/ThirdParty/Common/glew-2.1.0/include",
+					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
+					$PROJECT_DIR/ThirdParty/Common/glm,
+					$PROJECT_DIR,
+				);
 				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw/bin/Release",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1337,10 +1346,17 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					$PROJECT_DIR/ThirdParty/Common/glfw/include,
+					"$PROJECT_DIR/ThirdParty/Common/glew-2.1.0/include",
+					$PROJECT_DIR/ThirdParty/Common/rapidjson/include,
+					$PROJECT_DIR/ThirdParty/Common/glm,
+					$PROJECT_DIR,
+				);
 				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/ThirdParty/OSX/glfw-3.2.1/bin/Release",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw/bin/Release",
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1417,7 +1433,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				GCC_PREPROCESSOR_DEFINITIONS = XRFRAMEWORKBASE_EXPORTS;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"XRRENDER_ENGINE=\\\"libXRRenderEngineGL.dylib\\\"",
+					XRFRAMEWORKBASE_EXPORTS,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$PROJECT_DIR/ThirdParty/Common/glfw-3.2.1/include",
@@ -1429,6 +1448,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/system",
+					"$(PROJECT_DIR)/ThirdParty/OSX/glfw/bin/Release",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

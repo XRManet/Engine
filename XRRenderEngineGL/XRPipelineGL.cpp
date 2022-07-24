@@ -1,8 +1,6 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "XRPipelineGL.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
@@ -296,13 +294,13 @@ struct ProgramResourcesGLFallback : public ProgramResourcesGL
 
 bool XRPipelineGL::createBindingInformation()
 {
-	static int isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");
-	static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GLFW_TRUE)
-		|| (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
+	static int isProgramInterfaceQueriable = glewIsExtensionSupported("GL_ARB_program_interface_query");
+	static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GL_TRUE)
+		|| (glGetProgramInterfaceiv != nullptr);
 
-	static int isUniformBufferObjectQueriable = glfwExtensionSupported("GL_ARB_uniform_buffer_object");
-	static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GLFW_TRUE)
-		|| (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
+	static int isUniformBufferObjectQueriable = glewIsExtensionSupported("GL_ARB_uniform_buffer_object");
+	static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GL_TRUE)
+		|| (glGetActiveUniformsiv != nullptr);
 
 	ProgramResourcesGL* programResourcesGL = nullptr;
 	if (doQueryProgramInterface == true)

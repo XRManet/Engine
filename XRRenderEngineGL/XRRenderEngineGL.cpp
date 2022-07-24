@@ -124,15 +124,15 @@ struct RenderEngineGLInitializer
 	{
 		assert(glGetError() == GL_NO_ERROR);
 
-		if (glfwExtensionSupported("GL_KHR_debug") == GLFW_TRUE)
+		if (glewIsExtensionSupported("GL_KHR_debug") == GL_TRUE)
 		{
 			GL_CALL(glEnable(GL_DEBUG_OUTPUT));
 
-			if (glfwGetProcAddress("glDebugMessageCallback"))
+			if (glDebugMessageCallback != nullptr)
 				glDebugMessageCallback(MessageCallback, 0);
 		}
 
-		if (glfwExtensionSupported("GL_ARB_vertex_attrib_binding") == GLFW_TRUE)
+		if (glewIsExtensionSupported("GL_ARB_vertex_attrib_binding") == GL_TRUE)
 		{
 		}
 

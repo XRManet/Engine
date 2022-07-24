@@ -7,7 +7,8 @@
 
 //////////////////////////// Platform-independent headers
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+//#include <GLFW/glfw3.h>
+#include <glm/vec4.hpp>
 
 //////////////////////////// Platform-dependent headers
 #include <XRFrameworkBase/stdafx.h>
