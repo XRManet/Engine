@@ -1,4 +1,4 @@
-#include "XRPlatform.h"
+﻿#include "XRPlatform.h"
 
 #include "XRModel.h"
 XRInputLayout* (*xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize) = nullptr;
@@ -26,14 +26,23 @@ XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
 #endif
 
+#include "XRJson.h"
+#define XRRENDER_ENGINE_MANIFEST_NAME "Resources/RenderEngineSettings.json"
+
 static struct XRRenderEngineLinker
 {
 	XRPlatform::XRDSO* _dso;
 
 	XRRenderEngineLinker()
+		: _dso(nullptr)
 	{
-		constexpr static const char* renderEngineName = XRRENDER_ENGINE;
-		_dso = XRPlatform::LoadDSO(renderEngineName);
+		bool loadResult = LoadDSOFromManifest();
+		if (loadResult == false || _dso == nullptr)
+		{
+			constexpr static const char* renderEngineName = XRRENDER_ENGINE;
+			_dso = XRPlatform::LoadDSO(renderEngineName);
+		}
+
 		assert(_dso != nullptr);
 
 		// Todo) List up and check availability
@@ -63,4 +72,18 @@ private:
 		assert(outFunction != nullptr);
 	}
 
+private:
+	bool LoadDSOFromManifest()
+	{
+		JsonLoader sceneKeysLoader(XRRENDER_ENGINE_MANIFEST_NAME);
+		rapidjson::Document renderEngineSettingsJson;
+		sceneKeysLoader.GetParsedDocument(renderEngineSettingsJson);
+
+		auto& dsoName = renderEngineSettingsJson["dso_name"];
+		if (dsoName.IsString() == false)
+			return false;
+
+		_dso = XRPlatform::LoadDSO(dsoName.GetString());
+		return (_dso != nullptr);
+	}
 } EngineLinkerStarter;

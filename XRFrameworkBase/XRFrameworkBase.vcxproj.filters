@@ -81,6 +81,9 @@
     <Filter Include="소스 파일\Heterogeneous\SourceBuildSystem\Linker">
       <UniqueIdentifier>{292b8401-c4f9-4cee-a9ab-a3b45efda3e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Utility\Parser">
+      <UniqueIdentifier>{01296f5a-d18d-414b-89ad-7ef6602ed1af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XRWavefrontMaterial.h">
@@ -219,6 +222,8 @@
     <ClInclude Include="XRSourceBuildSystemLinker.hpp">
       <Filter>소스 파일\Heterogeneous\SourceBuildSystem\Linker</Filter>
     </ClInclude>
+    <ClInclude Include="XRBindCollector.h" />
+    <ClInclude Include="XRJson.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -304,6 +309,9 @@
     </ClCompile>
     <ClCompile Include="XRSourceBuildSystem.cpp">
       <Filter>소스 파일\Heterogeneous\SourceBuildSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="XRJson.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

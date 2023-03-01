@@ -90,7 +90,8 @@ constexpr int const PAGE_SIZE = 4'096;
 #include <errno.h>
 #include <stdio.h>
 
-
+#include <rapidjson/document.h>
+#include <rapidjson/filereadstream.h>
 
 namespace xr
 {

@@ -171,6 +171,7 @@
     <ClInclude Include="XRDeviceSystem.h" />
     <ClInclude Include="XRDXTC.h" />
     <ClInclude Include="XRFrameworkBase.h" />
+    <ClInclude Include="XRJson.h" />
     <ClInclude Include="XRReference.h" />
     <ClInclude Include="XRRenderEngine.h" />
     <ClInclude Include="XRGeometry.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="XRDXTC.cpp" />
     <ClCompile Include="XRFrameworkBase.cpp" />
     <ClCompile Include="XRIndexedString.cpp" />
+    <ClCompile Include="XRJson.cpp" />
     <ClCompile Include="XRLightNode.cpp" />
     <ClCompile Include="XRLoadable.cpp" />
     <ClCompile Include="XRLock.cpp" />
