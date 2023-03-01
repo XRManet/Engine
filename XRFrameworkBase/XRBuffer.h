@@ -1,12 +1,10 @@
 ﻿#pragma once
 
-#include "stdafx.h"
-
 struct XRBufferCreateInfo;
 class XRBuffer;
 class XRBufferRHI;
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRENDERENGINE_EXPORTS
 XRRenderExport XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo);
 #else
 extern XRBuffer* (*xrCreateBuffer)(XRBufferCreateInfo const* createInfo);
@@ -53,7 +51,7 @@ public:
 
 class XRBaseExport XRBuffer
 {
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRENDERENGINE_EXPORTS
 	/** @brief	Factory function */
 	friend XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo);
 #endif

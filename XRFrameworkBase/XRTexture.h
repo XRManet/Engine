@@ -1,6 +1,4 @@
-#pragma once
-
-#include "stdafx.h"
+﻿#pragma once
 
 #include "XRFrameworkBase/XRPrimitiveTypes.h"
 #include "XRFrameworkBase/XRRenderCommon.h"
@@ -14,7 +12,7 @@ public:
 	virtual ~XRTextureRHI() {}
 };
 
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRENDERENGINE_EXPORTS
 XRRenderExport XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
 XRRenderExport XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);
 #else
@@ -77,7 +75,7 @@ struct XRTextureCreateInfo
  */
 class XRBaseExport XRTexture
 {
-#ifdef XRRENDERENGINEGL_EXPORTS
+#ifdef XRRENDERENGINE_EXPORTS
 	/** @brief	Factory function */
 	friend XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
 	friend XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);

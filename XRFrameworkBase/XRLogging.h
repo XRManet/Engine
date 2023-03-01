@@ -1,6 +1,4 @@
-#pragma once
-
-#include "stdafx.h"
+﻿#pragma once
 
 // Todo) 디버그 로깅 분리
 #if defined(_DEBUG) || defined(DEBUG)

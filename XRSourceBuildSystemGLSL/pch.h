@@ -1,4 +1,4 @@
-// pch.h: This is a precompiled header file.
+﻿// pch.h: This is a precompiled header file.
 // Files listed below are compiled only once, improving build performance for future builds.
 // This also affects IntelliSense performance, including code completion and many code browsing features.
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <XRFrameworkBase/stdafx.h>
+#include <XRFrameworkBase/XRDefault.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

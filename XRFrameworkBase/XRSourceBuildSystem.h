@@ -127,7 +127,7 @@ class XRDeviceSystem;
 
 class XRBaseExport XRSourceBuildSystem : public XRDeviceSystemAttachment
 {
-#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
+#ifdef XRSOURCEBUILDSYSTEM_EXPORTS
 	friend XRSourceBuildSystem* xrLoadShaderBuildSystem();
 #endif
 

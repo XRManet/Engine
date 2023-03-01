@@ -1,6 +1,4 @@
-#pragma once
-
-#include "stdafx.h"
+﻿#pragma once
 
 #include "XRTextureData.h"
 

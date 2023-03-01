@@ -78,6 +78,9 @@
     <Filter Include="소스 파일\Heterogeneous\DeviceSystem">
       <UniqueIdentifier>{1dc3e832-9dfd-430b-afce-5f210d0a38ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Heterogeneous\SourceBuildSystem\Linker">
+      <UniqueIdentifier>{292b8401-c4f9-4cee-a9ab-a3b45efda3e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XRWavefrontMaterial.h">
@@ -214,7 +217,7 @@
     </ClInclude>
     <ClInclude Include="XRDefault.h" />
     <ClInclude Include="XRSourceBuildSystemLinker.hpp">
-      <Filter>소스 파일\Engine\Render\Linker</Filter>
+      <Filter>소스 파일\Heterogeneous\SourceBuildSystem\Linker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

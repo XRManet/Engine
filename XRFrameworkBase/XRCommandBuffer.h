@@ -64,6 +64,9 @@ public:
 		// Barrier 관련
 		AddBarrier,
 
+		// Bind 관련
+		SetResource,
+
 		// Draw
 		Draw,
 		DrawIndexed,

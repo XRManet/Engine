@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <XRFrameworkBase/XRDefault.h>
 
@@ -14,7 +14,7 @@ namespace xr
 struct DefaultStringCategory {};
 
 template<typename Category, typename Capacity = uint16_t>
-struct XRBaseExport IndexedStringContainer
+struct IndexedStringContainer
 {
 	IndexedStringContainer()
 		: _allStrings({ {"", 0 } })

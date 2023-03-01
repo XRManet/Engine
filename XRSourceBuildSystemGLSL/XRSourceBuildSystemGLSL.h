@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include <XRFrameworkBase/XRDefault.h>
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
 #include <XRFrameworkBase/XRIndexedString.h>
 
@@ -39,7 +38,7 @@ public:
 
 class XRCompilerGLSL : public XRCompiler
 {
-#ifdef XRSOURCEBUILDSYSTEMGLSL_EXPORTS
+#ifdef XRSOURCEBUILDSYSTEM_EXPORTS
 	friend XRSourceBuildSystem* xrLoadShaderBuildSystem();
 #endif
 

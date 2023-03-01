@@ -8,7 +8,7 @@
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(ThirdParty)Common\glfw-3.2.1\include;$(ThirdParty)Common\glew-2.1.0\include;$(ThirdParty)Common\glm;$(ThirdParty)Common\rapidjson\include;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(ThirdParty)Windows\glfw-3.2.1\lib\Release\$(PlatformTarget);$(ThirdParty)Windows\glew-2.1.0\lib\Release\$(PlatformTarget);$(LibraryPath)</LibraryPath>
-    <_PropertySheetDisplayName>XRPropertySheetThirdParty</_PropertySheetDisplayName>
+    <_PropertySheetDisplayName>XRPropertySheetGLLinkage</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>

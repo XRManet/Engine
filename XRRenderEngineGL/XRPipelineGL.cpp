@@ -1,11 +1,8 @@
 ﻿#include "stdafx.h"
 #include "XRPipelineGL.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 
-#include <XRFrameworkBase/XRSourceBuildSystem.h>
 #include <XRSourceBuildSystemGLSL/XRSourceBuildSystemGLSL.h>
 
 #define DEBUG_MESSAGE_REFLECT_SHADER

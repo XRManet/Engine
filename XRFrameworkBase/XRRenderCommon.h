@@ -1,6 +1,5 @@
-#pragma once
+﻿#pragma once
 
-#include "stdafx.h"
 #include <stdint.h>
 
 #include "XRFrameworkBase/XRPrimitiveTypes.h"

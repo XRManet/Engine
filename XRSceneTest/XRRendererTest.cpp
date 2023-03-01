@@ -218,7 +218,7 @@ void XRRendererTest::OnRender()
 	XRCommandFootprint commandFootprint;
 
 	static xr::IndexedString<XRCommandStep> sFistStep("firstStepAlways");
-	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands) {
+	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands, uint16_t step) {
 		static xr::IndexedString<XRWorkPassBase> renderPassSampleName = "XRWorkPassSample";
 		static XRWorkPassSample* workPassSample = static_cast<XRWorkPassSample*>(_workPassManager->GetWorkPass(renderPassSampleName));
 
@@ -270,7 +270,7 @@ void XRRendererTest::OnRender()
 		});
 
 	static xr::IndexedString<XRCommandStep> sPresentStep("Present");
-	commandFootprint.AddStep({ sPresentStep, 0 }, [this](XRCommandBuffer* secondCommands) {
+	commandFootprint.AddStep({ sPresentStep, 0 }, [this](XRCommandBuffer* secondCommands, uint16_t step) {
 		secondCommands->addBarrier();
 		});
 
