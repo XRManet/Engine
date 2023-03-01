@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <XRFrameworkBase/XRDefault.h>
 #include <XRFrameworkBase/XRPrimitiveTypes.h>
@@ -470,7 +470,7 @@ struct XRResourceBinder
 	std::unordered_map<std::string, StorageBindingInfo*>	_storageList;
 };
 
-class XRBaseExport XRResourceLayout
+class XRResourceLayout
 {
 	std::vector<XRResourceBinder*>			_resourceBinderStack;
 	XRResourceBinder*						_currentResourceBinder;
@@ -479,10 +479,10 @@ class XRBaseExport XRResourceLayout
 	std::vector<StorageBindingInfo>			_storageBindingInfo;
 
 public:
-	UniformBindingInfo const* bindingUniform(std::string uniformName, XRView<XRBuffer>* bufferView);
-	UniformBindingInfo const* bindingUniform(std::string uniformName, XRView<XRTexture>* textureView);
-	StorageBindingInfo const* bindingStorage(std::string storageName, XRView<XRBuffer>* bufferView);
-	StorageBindingInfo const* bindingStorage(std::string storageName, XRView<XRTexture>* textureView);
+	XRBaseExport UniformBindingInfo const* bindingUniform(std::string uniformName, XRView<XRBuffer>* bufferView);
+	XRBaseExport UniformBindingInfo const* bindingUniform(std::string uniformName, XRView<XRTexture>* textureView);
+	XRBaseExport StorageBindingInfo const* bindingStorage(std::string storageName, XRView<XRBuffer>* bufferView);
+	XRBaseExport StorageBindingInfo const* bindingStorage(std::string storageName, XRView<XRTexture>* textureView);
 };
 
 struct XRPipelineStateDescription
@@ -860,23 +860,53 @@ public:
 	XRWorkPassBase* GetWorkPass(xr::IndexedString<XRWorkPassBase> const& workPassName) const { return _workPasses.find(workPassName)->second._workPass; }
 };
 
+class XRCommandBuffer;
+
 struct XRCommandStep
 {
 	xr::IndexedString<XRCommandStep>	_name;
 	uint16_t							_step;
 };
 
-class XRCommandBuffer;
+using ConditionBlock = bool();
+using CommandBlock = void(XRCommandBuffer*, uint16_t);
+
+struct XRCommandStepDesc
+{
+	std::function<ConditionBlock>		_conditionBlock;
+	std::function<CommandBlock>			_commandBlock;
+};
+
 class XRCommandFootprint
 {
-	std::vector<XRCommandStep> _steps;
-	std::vector<std::function<void(XRCommandBuffer*)>> _capturedCommands;
+	std::vector<XRCommandStep>			_steps;
+	std::vector<XRCommandStepDesc>		_capturedBlocks;
+	std::vector<uint32_t>				_separatedStepPositions;
 
 public:
-	void AddStep(XRCommandStep&& step, std::function<void(XRCommandBuffer*)>&& capturedCommand)
+	void AddStep(XRCommandStep&& step, std::function<CommandBlock>&& commandBlock)
 	{
 		_steps.push_back(std::move(step));
-		_capturedCommands.push_back(std::move(capturedCommand));
+		_capturedBlocks.push_back({ {}, std::move(commandBlock) });
+	}
+
+	void AddConditionalStep(XRCommandStep&& step, std::function<ConditionBlock>&& condition, std::function<CommandBlock>&& commandBlock)
+	{
+		_steps.push_back(std::move(step));
+		_capturedBlocks.push_back({ std::move(condition), std::move(commandBlock) });
+	}
+
+	void AddIterationalStep(XRCommandStep&& step, std::function<CommandBlock>&& commandBlock)
+	{
+		_steps.push_back(std::move(step));
+		_capturedBlocks.push_back({ {}, std::move(commandBlock) });
+	}
+
+	void AddInstantStep(XRCommandStep&& step, std::function<CommandBlock>&& commandBlock)
+	{
+		_separatedStepPositions.push_back(_steps.size());
+		_steps.push_back(std::move(step));
+		_capturedBlocks.push_back({ {}, std::move(commandBlock) });
 	}
 
 public:

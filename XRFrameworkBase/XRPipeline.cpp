@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "XRHash.h"
 #include "XRPipeline.h"
@@ -200,9 +200,9 @@ uint32_t XRCommandFootprint::MakeHash() const
 
 void XRCommandFootprint::Transcribe(XRCommandBuffer* commandBuffer) const
 {
-	for (uint32_t c = 0; c < _capturedCommands.size(); ++c)
+	for (uint32_t c = 0; c < _capturedBlocks.size(); ++c)
 	{
-		_capturedCommands[c](commandBuffer);
+		_capturedBlocks[c]._commandBlock(commandBuffer, _steps[c]._step);
 	}
 }
 
