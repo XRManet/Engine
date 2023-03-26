@@ -5,8 +5,8 @@
     <ThirdParty>$(SolutionDir)ThirdParty\</ThirdParty>
   </PropertyGroup>
   <PropertyGroup>
-    <IncludePath>$(ThirdParty)Common\Vulkan\Include;$(ThirdParty)Common\glfw-3.2.1\include;$(ThirdParty)Common\glm;$(ThirdParty)Common\rapidjson\include;$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(ThirdParty)Windows\Vulkan\Lib;$(ThirdParty)Windows\glfw-3.2.1\lib\Release\$(PlatformTarget);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>$(VULKAN_SDK)\Include;$(ThirdParty)Common\Vulkan\Include;$(ThirdParty)Common\glfw-3.2.1\include;$(ThirdParty)Common\glm;$(ThirdParty)Common\rapidjson\include;$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(VULKAN_SDK)\Lib;$(ThirdParty)Windows\Vulkan\Lib;$(ThirdParty)Windows\glfw-3.2.1\lib\Release\$(PlatformTarget);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
