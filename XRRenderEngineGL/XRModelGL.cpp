@@ -5,27 +5,27 @@
 
 #include <glm/vec4.hpp>
 
-struct XRFormatGL : public XRFormat
+struct XRInputFormatGL : public XRFormat
 {
 public:
-	struct VertexAttribute
+	struct FormatDescription
 	{
 		GLuint _numComponents;
 		GLenum _type;
 	};
 
 public:
-	inline VertexAttribute getGLVertexAttribute() const
+	inline FormatDescription getGLFormatDescription() const
 	{
 		switch (getValue())
 		{
 		case R32G32B32_SFLOAT:
-			return VertexAttribute { 3, GL_FLOAT };
+			return FormatDescription { 3, GL_FLOAT };
 		case R32G32_SFLOAT:
-			return VertexAttribute { 2, GL_FLOAT };
+			return FormatDescription { 2, GL_FLOAT };
 		default:
 			assert(false);
-			return VertexAttribute{};
+			return FormatDescription{};
 		}
 	}
 };
@@ -60,20 +60,20 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 				auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
 				assert(attributeDesc.shaderLocation == attributeIndex);
 				
-				XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
-				XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
+				XRInputFormatGL const& formatGL = static_cast<XRInputFormatGL const&>(attributeDesc.format);
+				XRInputFormatGL::FormatDescription formatDescription = formatGL.getGLFormatDescription();
 				GL_CALL(glEnableVertexAttribArray(attributeIndex));
 
 				if (GLEW_ARB_vertex_attrib_binding)
 				{
 					/* GL_ARB_vertex_attrib_binding:
-						기존의 BindBuffer()와 VertexAttribute*()의 종속을 분리한다.
+						기존의 BindBuffer()와 FormatDescription*()의 종속을 분리한다.
 						기존 방식이 현재 state context에 bind된 buffer에 vertex attribute를 설정하는 방식인 반면,
 						현재 state에서 지칭된 buffer에는 영향없이 buffer binding index에 특정 attribute에 대한 설정 먼저 작성하고 VAO에 기록해둔다.
 						Buffer object는 나중에 적절한 binding index에 바인드해서 그에 설정된 attribute 설정을 따르도록 한다.
 					 */
 					GL_CALL(glVertexAttribBinding(attributeIndex, bindingIndex));
-					GL_CALL(glVertexAttribFormat(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset));
+					GL_CALL(glVertexAttribFormat(attributeIndex, formatDescription._numComponents, formatDescription._type, GL_FALSE, attributeDesc.offset));
 				}
 //				else if (GLEW_ARB_multi_bind)
 //				{
@@ -96,7 +96,7 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 //
 //					// Multi binding이 가능한 경우, 개별적인 attribute 설정을 위해 반복적인 bind 호출을 VAO에 등록하지 않아도 됨.
 //
-//					GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+//					GL_CALL(glVertexAttribPointer(attributeIndex, formatDescription._numComponents, formatDescription._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
 //				}
 				++attributeIndex;
 			}
@@ -119,8 +119,8 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 			for (uint32_t j = 0; j < numAttributes; ++j)
 			{
 				auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
-				XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
-				XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
+				XRInputFormatGL const& formatGL = static_cast<XRInputFormatGL const&>(attributeDesc.format);
+				XRInputFormatGL::FormatDescription formatDescription = formatGL.getGLFormatDescription();
 				/*
 				API 이름이 이렇게 생긴 게 맘에 안들지만,
 				glEnableVertexAttribArray() 가 아님에 주의
@@ -128,7 +128,7 @@ XRInputLayoutGL::XRInputLayoutGL(XRInputLayoutDesc&& in_inputLayoutDesc, uint32_
 				glEnableVertexArrayAttrib(_vao, attributeIndex);
 
 				glVertexArrayAttribBinding(_vao, attributeIndex, bindingIndex);
-				glVertexArrayAttribFormat(_vao, attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset);
+				glVertexArrayAttribFormat(_vao, attributeIndex, formatDescription._numComponents, formatDescription._type, GL_FALSE, attributeDesc.offset);
 				++attributeIndex;
 			}
 			++bindingIndex;
@@ -202,7 +202,7 @@ void XRInputLayoutGL::bind() const
 		
 		// Multi binding이 가능한 경우, 개별적인 attribute 설정을 위해 반복적인 bind 호출을 VAO에 등록하지 않아도 됨.
 		
-		//GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+		//GL_CALL(glVertexAttribPointer(attributeIndex, formatDescription._numComponents, formatDescription._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
 	}
 }
 
@@ -220,24 +220,24 @@ void XRInputLayoutGL::bindAttributes(uint32_t bindingIndex) const
 	{
 		auto& attributeDesc = static_cast<XRVertexAttributeDescGL const&>(bufferDesc.attributes[j]);
 		const uint32_t attributeIndex = attributeDesc.shaderLocation;
-		XRFormatGL const& formatGL = static_cast<XRFormatGL const&>(attributeDesc.format);
-		XRFormatGL::VertexAttribute vertexAttribute = formatGL.getGLVertexAttribute();
+		XRInputFormatGL const& formatGL = static_cast<XRInputFormatGL const&>(attributeDesc.format);
+		XRInputFormatGL::FormatDescription formatDescription = formatGL.getGLFormatDescription();
 		GL_CALL(glEnableVertexAttribArray(attributeIndex));
 
 		if (GLEW_ARB_vertex_attrib_binding)
 		{
 			/* GL_ARB_vertex_attrib_binding:
-				기존의 BindBuffer()와 VertexAttribute*()의 종속을 분리한다.
+				기존의 BindBuffer()와 FormatDescription*()의 종속을 분리한다.
 				기존 방식이 현재 state context에 bind된 buffer에 vertex attribute를 설정하는 방식인 반면,
 				현재 state에서 지칭된 buffer에는 영향없이 buffer binding index에 특정 attribute에 대한 설정 먼저 작성하고 VAO에 기록해둔다.
 				Buffer object는 나중에 적절한 binding index에 바인드해서 그에 설정된 attribute 설정을 따르도록 한다.
 				*/
 			GL_CALL(glVertexAttribBinding(attributeIndex, bindingIndex));
-			GL_CALL(glVertexAttribFormat(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, attributeDesc.offset));
+			GL_CALL(glVertexAttribFormat(attributeIndex, formatDescription._numComponents, formatDescription._type, GL_FALSE, attributeDesc.offset));
 		}
 		else
 		{
-			GL_CALL(glVertexAttribPointer(attributeIndex, vertexAttribute._numComponents, vertexAttribute._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
+			GL_CALL(glVertexAttribPointer(attributeIndex, formatDescription._numComponents, formatDescription._type, GL_FALSE, bufferDesc.stride, reinterpret_cast<void*>(attributeDesc.offset)));
 		}
 	}
 }

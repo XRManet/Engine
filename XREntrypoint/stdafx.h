@@ -24,8 +24,17 @@
 
 #include <utility>
 
+#define XR_VULKAN
+
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+#if defined(XR_OPENGL)
 #include <GL/glew.h>
+#endif // #if defined(XR_OPENGL)
+
+#if defined(XR_VULKAN)
+#define GLFW_INCLUDE_VULKAN
+#endif // #if defined(XR_VULKAN)
+
 #include <GLFW/glfw3.h>
 
 #include <XRFrameworkBase/XRUtility.h>

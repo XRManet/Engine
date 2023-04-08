@@ -66,6 +66,7 @@ private:
 public:
 	XRLoopManager(XRSize<float>&& size) : _out_size(size), _infra(size)
 	{
+		
 	}
 	~XRLoopManager() {}
 

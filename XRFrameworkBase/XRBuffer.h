@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "stdafx.h"
 
@@ -14,6 +14,7 @@ extern XRBuffer* (*xrCreateBuffer)(XRBufferCreateInfo const* createInfo);
 
 struct XRBufferCreateInfo
 {
+	void* _owner;
 	size_t _size;
 };
 
