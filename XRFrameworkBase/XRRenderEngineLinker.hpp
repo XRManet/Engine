@@ -20,7 +20,9 @@ XRCommandBuffer* (*xrCreateCommandBuffer)() = nullptr;
 #include "XRRenderGroup.h"
 XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 
-#define XRRENDER_ENGINE_DEFAULT     XR_DYNAMIC_LIBRARY(XRRenderEngineGL)
+#define XRRENDER_ENGINE_GL			XR_DYNAMIC_LIBRARY(XRRenderEngineGL)
+#define XRRENDER_ENGINE_VK			XR_DYNAMIC_LIBRARY(XRRenderEngineVK)
+#define XRRENDER_ENGINE_DEFAULT     XRRENDER_ENGINE_GL
 
 #ifndef XRRENDER_ENGINE
 #define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT

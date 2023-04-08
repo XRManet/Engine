@@ -5,6 +5,15 @@
 #include "XRFrameworkBase/XRPrimitiveTypes.h"
 #include "XRFrameworkBase/XRUtility.h"
 
+struct XRType
+{
+	enum : uint32_t {
+		Sint,
+		Uint,
+		Float,
+	} _value;
+};
+
 struct XRFormat
 {
 	enum {

@@ -4,12 +4,20 @@
 #include "stdafx.h"
 
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
+#include <XRFrameworkBase/XRRenderEngine.h>
 #include "XRLoopManager.h"
 #include "XRSceneManager.h"
 
+#define XRInfraAPI_GLFW		XRLoopManagerInfra::GLFW
+#define XRInfraAPI			XRInfraAPI_GLFW
+
+
+#include "XRRenderEnginePlatformBinder.hpp"
+
 int main(void)
 {
-	XRLoopManager<XRLoopManagerInfra::Default> loopManager({ 800.f, 600.f });
+	XRLoopManager<XRInfraAPI> loopManager({ 800.f, 600.f });
+	
 
 	XRSourceBuildSystem* shaderBuildSystem = xrGetShaderBuildSystem();
 

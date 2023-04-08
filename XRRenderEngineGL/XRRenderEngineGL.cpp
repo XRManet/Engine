@@ -2,6 +2,8 @@
 //
 
 #include "stdafx.h"
+#include <XRFrameworkBase/XRRenderEngine.h>
+
 #include "XRModelGL.h"
 #include "XRTextureGL.h"
 #include "XRBufferGL.h"
@@ -98,9 +100,10 @@ GLint MAX_TEXTURE_IMAGE_UNITS = 0;
 GLint MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0;
 GLint MAX_COMPUTE_TEXTURE_IMAGE_UNITS = 0;
 
-struct RenderEngineGLInitializer
+template<>
+struct RenderEngineInitializer<OpenGL>
 {
-	RenderEngineGLInitializer()
+	RenderEngineInitializer()
 	{
 		// glewInit() must be called after makeCurrent-like functions
 		glewExperimental = GL_TRUE;
@@ -114,9 +117,9 @@ struct RenderEngineGLInitializer
 		LogGLSystemInfo();
 	}
 
-	static RenderEngineGLInitializer& GetInitializer()
+	static RenderEngineInitializer& GetInitializer()
 	{
-		static RenderEngineGLInitializer __init;
+		static RenderEngineInitializer __init;
 		return __init;
 	}
 
@@ -164,19 +167,19 @@ struct RenderEngineGLInitializer
 
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	return new XRInputLayoutGL(std::move(inputLayoutDesc), preferredStrideSize);
 }
 
 XRModel* xrCreateModel(XRModelData const* loadable)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	return new XRModelGL(loadable);
 }
 
 XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	auto textureGL = new XRTextureGL;
 	auto textureHandle = new XRTexture(createInfo);
 	textureHandle->_rhi = textureGL;
@@ -185,7 +188,7 @@ XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 
 XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	auto textureGL = new XRTextureGL;
 	if (nullptr != loadable)
 		textureGL->upload(loadable);
@@ -197,7 +200,7 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 
 XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	auto bufferGL = new XRBufferGL;
 	auto bufferHandle = new XRBuffer(createInfo, bufferGL);
 
@@ -207,18 +210,18 @@ XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 
 XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	return new XRPipelineGL(description);
 }
 
 XRCommandBuffer* xrCreateCommandBuffer()
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	return new XRCommandBufferGL;
 }
 
 XRRenderGroup* xrCreateRenderGroup()
 {
-	RenderEngineGLInitializer::GetInitializer();
+	RenderEngineInitializer<OpenGL>::GetInitializer();
 	return new XRRenderGroupGL;
 }
