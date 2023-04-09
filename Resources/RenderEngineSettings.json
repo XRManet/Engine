@@ -1,4 +1,11 @@
 {
 	"version": "1.0.0",
-	"dso_name": "XRRenderEngineVK.dll"
+	"render_engine": {
+		"version": "1.0.0",
+		"dso_name": "XRRenderEngineVK"
+	},
+	"shader_build_system": {
+		"version": "1.0.0",
+		"dso_name": "XRSourceBuildSystemGLSL"
+	}
 }

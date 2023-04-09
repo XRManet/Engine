@@ -193,11 +193,11 @@
     <ResourceCompile Include="XREntrypoint.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\Shaders\OpenGL\XRResFrame.glsl" />
-    <None Include="..\Resources\Shaders\OpenGL\SimpleFragment.glsl" />
-    <None Include="..\Resources\Shaders\OpenGL\SimpleVertex.glsl" />
-    <None Include="..\Resources\Shaders\OpenGL\XRCommon.glsl" />
-    <None Include="..\Resources\Shaders\OpenGL\XRResObject1.glsl" />
+    <None Include="..\Resources\Shaders\GLSL\XRResFrame.glsl" />
+    <None Include="..\Resources\Shaders\GLSL\SimpleFragment.glsl" />
+    <None Include="..\Resources\Shaders\GLSL\SimpleVertex.glsl" />
+    <None Include="..\Resources\Shaders\GLSL\XRCommon.glsl" />
+    <None Include="..\Resources\Shaders\GLSL\XRResObject1.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XRFrameworkBase\XRFrameworkBase.vcxproj">

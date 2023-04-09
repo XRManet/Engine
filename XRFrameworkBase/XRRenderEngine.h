@@ -7,7 +7,7 @@
 #include <XRFrameworkBase/XRTexture.h>
 #include <XRFrameworkBase/XRBuffer.h>
 
-enum DeviceAPI : unsigned
+enum class DeviceAPI : unsigned
 {
 	Null,
 	OpenGL,

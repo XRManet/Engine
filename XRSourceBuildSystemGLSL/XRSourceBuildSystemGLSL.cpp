@@ -6,6 +6,8 @@
 #include "XRFrameworkBase/XRPipeline.h"
 #include "framework.h"
 
+#include <shaderc/shaderc.hpp>
+
 namespace xr
 {
 //EXPLICIT_GEN_INDEXED_STRING_SYMBOL(XRGLSL);
@@ -17,20 +19,28 @@ static XRBuildSystemAvailability g_buildSystemAvailability {
 	.compatibleObject = false,
 };
 
+static const bool g_useVulkan = true;
+
 XRSourceBuildSystemGLSL* g_lastShaderBuildSystem = nullptr;
 
 struct SourceBuildSystemGLSLInitializer
 {
 	SourceBuildSystemGLSLInitializer()
 	{
-		glewExperimental = GL_TRUE;
-		GLenum result = glewInit();
-		if (result != GLEW_OK)
+		if (g_useVulkan == false)
 		{
-			assert(false && "It must be called after make context current.");
-			throw;
+			glewExperimental = GL_TRUE;
+			GLenum result = glewInit();
+			if (result != GLEW_OK)
+			{
+				assert(false && "It must be called after make context current.");
+				throw;
+			}
 		}
-
+		else
+		{
+			_dsoGlslang = XRPlatform::LoadDSO("shaderc_shared");
+		}
 		g_lastShaderBuildSystem = new XRSourceBuildSystemGLSL;
 	}
 
@@ -39,9 +49,12 @@ struct SourceBuildSystemGLSLInitializer
 		static SourceBuildSystemGLSLInitializer __init;
 		return __init;
 	}
+
+private:
+	XRPlatform::XRDSO* _dsoGlslang;
 };
 
-#define DEFAULT_RESOURCE_PATH "Resources/Shaders/OpenGL/"
+#define DEFAULT_RESOURCE_PATH "Resources/Shaders/GLSL/"
 constexpr uint32_t lenResourcePath = sizeof(DEFAULT_RESOURCE_PATH) - 1;
 
 XRSourceBuildSystem* xrLoadShaderBuildSystem()
@@ -83,10 +96,18 @@ XRSourceBuildSystemGLSL::XRSourceBuildSystemGLSL()
 			int32_t lenFilename = filepath.length() - (lenResourcePath - 1);
 			const char* filename = filepath.c_str() + (lenResourcePath - 1);
 
-			glNamedStringARB(GL_SHADER_INCLUDE_ARB,
-				lenFilename, filename,
-				static_cast<int>(lenShaderSource), shaderSource);
-			
+			if (g_useVulkan == false)
+			{
+				glNamedStringARB(GL_SHADER_INCLUDE_ARB,
+					lenFilename, filename,
+					static_cast<int>(lenShaderSource), shaderSource);
+			}
+			else
+			{
+				_glslSources.insert({ filename, shaderSource });
+				delete[] shaderSource;
+			}
+
 			GLenum error = glGetError();
 			if (error != GL_NO_ERROR)
 			{
@@ -114,19 +135,23 @@ static int isShadingLanguageSupportInclude = 0;
 XRCompilerGLSL::XRCompilerGLSL(XRBuildSystemAvailability availability)
     : XRCompiler(availability)
 {
+	if (g_useVulkan == false)
+	{
+		isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");
+		static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GLFW_TRUE)
+			|| (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
 
-	isProgramInterfaceQueriable = glfwExtensionSupported("GL_ARB_program_interface_query");
-	static bool doQueryProgramInterface = (isProgramInterfaceQueriable == GLFW_TRUE)
-		|| (glfwGetProcAddress("glGetProgramInterfaceiv") != nullptr);
+		isUniformBufferObjectQueriable = glfwExtensionSupported("GL_ARB_uniform_buffer_object");
+		static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GLFW_TRUE)
+			|| (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
 
-	isUniformBufferObjectQueriable = glfwExtensionSupported("GL_ARB_uniform_buffer_object");
-	static bool doQueryUniformBuffer = (isUniformBufferObjectQueriable == GLFW_TRUE)
-		|| (glfwGetProcAddress("glGetActiveUniformsiv") != nullptr);
-
-	isShadingLanguageSupportInclude = glfwExtensionSupported("GL_ARB_shading_language_include");
-	static bool doQueryNamedString = (isShadingLanguageSupportInclude == GLFW_TRUE)
-		|| (glfwGetProcAddress("glNamedStringARB") != nullptr);
-	
+		isShadingLanguageSupportInclude = glfwExtensionSupported("GL_ARB_shading_language_include");
+		static bool doQueryNamedString = (isShadingLanguageSupportInclude == GLFW_TRUE)
+			|| (glfwGetProcAddress("glNamedStringARB") != nullptr);
+	}
+	else
+	{
+	}
     return;
 }
 
@@ -162,96 +187,111 @@ XRCompiledObject* XRCompilerGLSL::Compile(const char* cstrSourcePath, XRCompileO
 {
 	xr::IndexedString<XRGLSL> sourcePath = cstrSourcePath;
 
-	XRGLCompileOptions* glCompileOptions = static_cast<XRGLCompileOptions*>(compileOptions);
-	XRGLShaderObject* shaderObject = new XRGLShaderObject(glCompileOptions->_compileType, sourcePath);
-	GLenum error = glGetError();
-	assert(GL_NO_ERROR == error);
+	XRCompiledObject* shaderObject = nullptr;
 	
 	bool result = true;
-	if (isShadingLanguageSupportInclude == true)
+	if (g_useVulkan == false)
 	{
-		char RESOURCE_PATH[256] = "/";
-		char* resourcePath = RESOURCE_PATH;
-		strcpy_s(RESOURCE_PATH + 1, 255, cstrSourcePath);
-
-		GLint sourceLength = 0;
-		glGetNamedStringivARB(sourcePath.length() + 1, resourcePath, GL_NAMED_STRING_LENGTH_ARB, &sourceLength);
-		error = glGetError();
-		assert(GL_NO_ERROR == error);
-		
-		char* buffer = new char[sourceLength + 1]();
-		glGetNamedStringARB(sourcePath.length() + 1, resourcePath, sourceLength + 1, &sourceLength, buffer);
-		error = glGetError();
+		XRGLCompileOptions* glCompileOptions = static_cast<XRGLCompileOptions*>(compileOptions);
+		XRGLShaderObject* glShaderObject = new XRGLShaderObject(glCompileOptions->_compileType, sourcePath);
+		GLenum error = glGetError();
 		assert(GL_NO_ERROR == error);
 
-		glShaderSource(shaderObject->_shader, 1, &buffer, &sourceLength);
-		error = glGetError();
-		assert(GL_NO_ERROR == error);
-		
-		const char* includePaths[] = { "/", };
+		if (isShadingLanguageSupportInclude == true)
+		{
+			char RESOURCE_PATH[256] = "/";
+			char* resourcePath = RESOURCE_PATH;
+			strcpy_s(RESOURCE_PATH + 1, 255, cstrSourcePath);
+
+			GLint sourceLength = 0;
+			glGetNamedStringivARB(sourcePath.length() + 1, resourcePath, GL_NAMED_STRING_LENGTH_ARB, &sourceLength);
+			error = glGetError();
+			assert(GL_NO_ERROR == error);
+
+			char* buffer = new char[sourceLength + 1]();
+			glGetNamedStringARB(sourcePath.length() + 1, resourcePath, sourceLength + 1, &sourceLength, buffer);
+			error = glGetError();
+			assert(GL_NO_ERROR == error);
+
+			glShaderSource(glShaderObject->_shader, 1, &buffer, &sourceLength);
+			error = glGetError();
+			assert(GL_NO_ERROR == error);
+
+			const char* includePaths[] = { "/", };
 #if XR_PLATFORM == XR_PLATFORM_WINDOWS
-		int includePathLengths[] = { 1, };
+			int includePathLengths[] = { 1, };
 #elif XR_PLATFORM == XR_PLATFORM_OSX
-		int includePathLengths[] = { 2, };
+			int includePathLengths[] = { 2, };
 #endif // XR_PLATFORM
 
-		glCompileShaderIncludeARB(shaderObject->_shader, 1, includePaths, includePathLengths);
-		error = glGetError();
-		assert(GL_NO_ERROR == error);
-		
-		delete[] buffer;
-	}
-	else
-	{
-		char RESOURCE_PATH[256] = DEFAULT_RESOURCE_PATH;
-		char* shaderSource = nullptr;
-		int size = 0;
+			glCompileShaderIncludeARB(glShaderObject->_shader, 1, includePaths, includePathLengths);
+			error = glGetError();
+			assert(GL_NO_ERROR == error);
 
-		strcpy_s(RESOURCE_PATH + lenResourcePath, 256 - lenResourcePath, cstrSourcePath);
-		FILE* fp = nullptr;
-		errno_t error = xr::fopen(&fp, RESOURCE_PATH, "r");
-
-		assert(fp != nullptr);
-		if (error == 0 && fp != nullptr)
-		{
-			result = (fseek(fp, 0, SEEK_END) == 0);
-			if (result == true)
-			{
-				long filesize = ftell(fp);
-				rewind(fp);
-
-				char* buffer = new char[filesize + 1]();
-				fread(buffer, sizeof(char), filesize, fp);
-
-				shaderSource = buffer;
-				size = static_cast<int>(filesize);
-			}
-
-			if (result == true)
-			{
-				constexpr uint32_t numSourceFiles = 1;
-				glShaderSource(shaderObject->_shader, numSourceFiles, &shaderSource, &size);
-				glCompileShader(shaderObject->_shader);
-
-				delete[] shaderSource;
-			}
-
-			fclose(fp);
+			delete[] buffer;
 		}
 		else
 		{
-			result = false;
-		}
-	}
+			char RESOURCE_PATH[256] = DEFAULT_RESOURCE_PATH;
+			char* shaderSource = nullptr;
+			int size = 0;
 
-	if (result == true)
-		result = CheckShaderState(shaderObject->_shader);
+			strcpy_s(RESOURCE_PATH + lenResourcePath, 256 - lenResourcePath, cstrSourcePath);
+			FILE* fp = nullptr;
+			errno_t error = xr::fopen(&fp, RESOURCE_PATH, "r");
+
+			assert(fp != nullptr);
+			if (error == 0 && fp != nullptr)
+			{
+				result = (fseek(fp, 0, SEEK_END) == 0);
+				if (result == true)
+				{
+					long filesize = ftell(fp);
+					rewind(fp);
+
+					char* buffer = new char[filesize + 1]();
+					fread(buffer, sizeof(char), filesize, fp);
+
+					shaderSource = buffer;
+					size = static_cast<int>(filesize);
+				}
+
+				if (result == true)
+				{
+					constexpr uint32_t numSourceFiles = 1;
+					glShaderSource(glShaderObject->_shader, numSourceFiles, &shaderSource, &size);
+					glCompileShader(glShaderObject->_shader);
+
+					delete[] shaderSource;
+				}
+
+				fclose(fp);
+			}
+			else
+			{
+				result = false;
+			}
+		}
+
+		if (result == true)
+			result = CheckShaderState(glShaderObject->_shader);
+
+		shaderObject = glShaderObject;
+	}
+	else
+	{
+		shaderc::Compiler test_compiler;
+
+		auto glslBuildSystem = static_cast<XRSourceBuildSystemGLSL*>(_buildSystem);
+		auto& source = glslBuildSystem->getSource(cstrSourcePath);
+		test_compiler.CompileGlslToSpv(source, shaderc_shader_kind::shaderc_vertex_shader, cstrSourcePath);
+	}
 
 	if (result == true)
 	{
 		uint64_t compiledObjectId = 0
 			| (uint64_t(sourcePath.getIndex()) << 48ull)
-			| glCompileOptions->getOptionHash();
+			| compileOptions->getOptionHash();
 
 		_buildSystem->registerCompiledObject(compiledObjectId, shaderObject);
 	}

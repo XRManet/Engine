@@ -8,5 +8,4 @@
 
 #include "stdafx.h"
 
-#include "XRSourceBuildSystemLinker.hpp"
-#include "XRRenderEngineLinker.hpp"
+#include "XRSystemLinker.hpp"

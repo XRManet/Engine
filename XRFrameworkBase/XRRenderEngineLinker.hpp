@@ -24,12 +24,7 @@ XRRenderGroup* (*xrCreateRenderGroup)() = nullptr;
 #define XRRENDER_ENGINE_VK			XR_DYNAMIC_LIBRARY(XRRenderEngineVK)
 #define XRRENDER_ENGINE_DEFAULT     XRRENDER_ENGINE_GL
 
-#ifndef XRRENDER_ENGINE
-#define XRRENDER_ENGINE             XRRENDER_ENGINE_DEFAULT
-#endif
-
-#include "XRJson.h"
-#define XRRENDER_ENGINE_MANIFEST_NAME "Resources/RenderEngineSettings.json"
+const char* g_xrRenderEngineNameDso = nullptr;
 
 static struct XRRenderEngineLinker
 {
@@ -38,13 +33,7 @@ static struct XRRenderEngineLinker
 	XRRenderEngineLinker()
 		: _dso(nullptr)
 	{
-		bool loadResult = LoadDSOFromManifest();
-		if (loadResult == false || _dso == nullptr)
-		{
-			constexpr static const char* renderEngineName = XRRENDER_ENGINE;
-			_dso = XRPlatform::LoadDSO(renderEngineName);
-		}
-
+		_dso = XRPlatform::LoadDSO(g_xrRenderEngineNameDso);
 		assert(_dso != nullptr);
 
 		// Todo) List up and check availability
@@ -72,20 +61,5 @@ private:
 	{
 		outFunction = reinterpret_cast<func>(XRPlatform::GetProcAddress(_dso, name));
 		assert(outFunction != nullptr);
-	}
-
-private:
-	bool LoadDSOFromManifest()
-	{
-		JsonLoader sceneKeysLoader(XRRENDER_ENGINE_MANIFEST_NAME);
-		rapidjson::Document renderEngineSettingsJson;
-		sceneKeysLoader.GetParsedDocument(renderEngineSettingsJson);
-
-		auto& dsoName = renderEngineSettingsJson["dso_name"];
-		if (dsoName.IsString() == false)
-			return false;
-
-		_dso = XRPlatform::LoadDSO(dsoName.GetString());
-		return (_dso != nullptr);
 	}
 } EngineLinkerStarter;

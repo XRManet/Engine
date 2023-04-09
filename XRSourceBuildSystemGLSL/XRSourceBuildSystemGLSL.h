@@ -65,4 +65,12 @@ public:
 
 public:
 	void registerCompiledObject(uint64_t uniqueKey, XRCompiledObject* compiledObject) override final;
+
+	const std::string& getSource(const std::string& key) {
+		auto result = _glslSources.find(key);
+		return result->second;
+	}
+
+private:
+	std::unordered_map<std::string, std::string> _glslSources;
 };

@@ -1,10 +1,6 @@
 ﻿#include "stdafx.h"
 
-#define XRRENDER_ENGINE			XR_DYNAMIC_LIBRARY(XRRenderEngineGL)
-#include <XRFrameworkBase/XRRenderEngineLinker.hpp>
-
-#define XRSHADER_BUILD_SYSTEM	XR_DYNAMIC_LIBRARY(XRSourceBuildSystemGLSL)
-#include <XRFrameworkBase/XRSourceBuildSystemLinker.hpp>
+#include <XRFrameworkBase/XRSystemLinker.hpp>
 
 #include <unordered_set>
 

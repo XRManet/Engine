@@ -96,7 +96,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>XRRENDER_ENGINE="XRRenderEngineGL.dll";XRSHADER_BUILD_SYSTEM="XRSourceBuildSystemGLSL.dll";_DEBUG;XRFRAMEWORKBASE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;XRFRAMEWORKBASE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -201,6 +201,7 @@
     <ClInclude Include="XRSceneNode.h" />
     <ClInclude Include="XRSourceBuildSystem.h" />
     <ClInclude Include="XRSourceBuildSystemLinker.hpp" />
+    <ClInclude Include="XRSystemLinker.hpp" />
     <ClInclude Include="XRTexture.h" />
     <ClInclude Include="XRTextureData.h" />
     <ClInclude Include="XRTransformNode.h" />

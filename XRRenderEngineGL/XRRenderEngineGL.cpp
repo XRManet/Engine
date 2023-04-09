@@ -101,7 +101,7 @@ GLint MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0;
 GLint MAX_COMPUTE_TEXTURE_IMAGE_UNITS = 0;
 
 template<>
-struct RenderEngineInitializer<OpenGL>
+struct RenderEngineInitializer<DeviceAPI::OpenGL>
 {
 	RenderEngineInitializer()
 	{
@@ -167,19 +167,19 @@ struct RenderEngineInitializer<OpenGL>
 
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	return new XRInputLayoutGL(std::move(inputLayoutDesc), preferredStrideSize);
 }
 
 XRModel* xrCreateModel(XRModelData const* loadable)
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	return new XRModelGL(loadable);
 }
 
 XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	auto textureGL = new XRTextureGL;
 	auto textureHandle = new XRTexture(createInfo);
 	textureHandle->_rhi = textureGL;
@@ -188,7 +188,7 @@ XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 
 XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	auto textureGL = new XRTextureGL;
 	if (nullptr != loadable)
 		textureGL->upload(loadable);
@@ -200,7 +200,7 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 
 XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	auto bufferGL = new XRBufferGL;
 	auto bufferHandle = new XRBuffer(createInfo, bufferGL);
 
@@ -210,18 +210,18 @@ XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 
 XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	return new XRPipelineGL(description);
 }
 
 XRCommandBuffer* xrCreateCommandBuffer()
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	return new XRCommandBufferGL;
 }
 
 XRRenderGroup* xrCreateRenderGroup()
 {
-	RenderEngineInitializer<OpenGL>::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	return new XRRenderGroupGL;
 }

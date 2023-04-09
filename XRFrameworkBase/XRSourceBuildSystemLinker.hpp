@@ -7,9 +7,7 @@ XRSourceBuildSystem* (*xrLoadShaderBuildSystem)() = nullptr;
 
 #define XRSHADER_BUILD_SYSTEM_DEFAULT    XR_DYNAMIC_LIBRARY(XRSourceBuildSystemGLSL)
 
-#ifndef XRSHADER_BUILD_SYSTEM
-#define XRSHADER_BUILD_SYSTEM             XRSHADER_BUILD_SYSTEM_DEFAULT
-#endif
+const char* g_xrShaderBuildSystemNameDso = nullptr;
 
 static struct XRShaderBuildSystemLinker
 {
@@ -17,8 +15,7 @@ static struct XRShaderBuildSystemLinker
 
 	XRShaderBuildSystemLinker()
 	{
-		constexpr static const char* shaderBuildSystemName = XRSHADER_BUILD_SYSTEM;
-		_dso = XRPlatform::LoadDSO(shaderBuildSystemName);
+		_dso = XRPlatform::LoadDSO(g_xrShaderBuildSystemNameDso);
 		assert(_dso != nullptr);
 
 		// Todo) List up and check availability

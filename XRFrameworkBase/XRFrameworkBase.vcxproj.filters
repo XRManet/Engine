@@ -27,9 +27,6 @@
     <Filter Include="소스 파일\Engine\Render">
       <UniqueIdentifier>{5c950f1f-bdd2-415e-a72c-e92660524da8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Heterogeneous">
-      <UniqueIdentifier>{9aa3936d-479c-465d-a395-2cad97d22a38}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Resource\Material">
       <UniqueIdentifier>{75fbaaaf-afc4-44b6-93f1-61584068342b}</UniqueIdentifier>
     </Filter>
@@ -38,15 +35,6 @@
     </Filter>
     <Filter Include="Win32">
       <UniqueIdentifier>{242f1aaf-3f06-4ae1-88c7-99e822f61c04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Heterogeneous\GPU">
-      <UniqueIdentifier>{744fa485-baf7-4e62-97ac-6c4b7e5593bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Heterogeneous\GPU\Pipeline">
-      <UniqueIdentifier>{be32a507-8bf8-4365-9ef4-54c7f51b818a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Heterogeneous\GPU\Permutation">
-      <UniqueIdentifier>{f5c16d4f-2ce1-41b5-a1ba-df558f1695bd}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Platform">
       <UniqueIdentifier>{4bd694c2-2bac-4996-b444-11985e8d125b}</UniqueIdentifier>
@@ -72,17 +60,29 @@
     <Filter Include="소스 파일\Engine\Render\Backends">
       <UniqueIdentifier>{c80694cf-502d-4500-83ae-b58e4cd6c580}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Heterogeneous\SourceBuildSystem">
-      <UniqueIdentifier>{268da5eb-40a9-47e7-a9ad-94f23d359b43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Heterogeneous\DeviceSystem">
-      <UniqueIdentifier>{1dc3e832-9dfd-430b-afce-5f210d0a38ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Heterogeneous\SourceBuildSystem\Linker">
-      <UniqueIdentifier>{292b8401-c4f9-4cee-a9ab-a3b45efda3e2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Utility\Parser">
       <UniqueIdentifier>{01296f5a-d18d-414b-89ad-7ef6602ed1af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous">
+      <UniqueIdentifier>{9aa3936d-479c-465d-a395-2cad97d22a38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous\GPU">
+      <UniqueIdentifier>{744fa485-baf7-4e62-97ac-6c4b7e5593bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous\GPU\Pipeline">
+      <UniqueIdentifier>{be32a507-8bf8-4365-9ef4-54c7f51b818a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous\GPU\Permutation">
+      <UniqueIdentifier>{f5c16d4f-2ce1-41b5-a1ba-df558f1695bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous\SourceBuildSystem">
+      <UniqueIdentifier>{268da5eb-40a9-47e7-a9ad-94f23d359b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous\SourceBuildSystem\Linker">
+      <UniqueIdentifier>{292b8401-c4f9-4cee-a9ab-a3b45efda3e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Heterogeneous\DeviceSystem">
+      <UniqueIdentifier>{1dc3e832-9dfd-430b-afce-5f210d0a38ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -210,20 +210,21 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="XRSourceBuildSystem.h">
-      <Filter>소스 파일\Heterogeneous\SourceBuildSystem</Filter>
+      <Filter>소스 파일\Engine\Heterogeneous\SourceBuildSystem</Filter>
     </ClInclude>
     <ClInclude Include="XRDeviceSystem.h">
-      <Filter>소스 파일\Heterogeneous\DeviceSystem</Filter>
+      <Filter>소스 파일\Engine\Heterogeneous\DeviceSystem</Filter>
     </ClInclude>
     <ClInclude Include="XRRenderEngineLinker.hpp">
       <Filter>소스 파일\Engine\Render\Linker</Filter>
     </ClInclude>
     <ClInclude Include="XRDefault.h" />
     <ClInclude Include="XRSourceBuildSystemLinker.hpp">
-      <Filter>소스 파일\Heterogeneous\SourceBuildSystem\Linker</Filter>
+      <Filter>소스 파일\Engine\Heterogeneous\SourceBuildSystem\Linker</Filter>
     </ClInclude>
     <ClInclude Include="XRBindCollector.h" />
     <ClInclude Include="XRJson.h" />
+    <ClInclude Include="XRSystemLinker.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -308,7 +309,7 @@
       <Filter>소스 파일\Engine\Render\Backends</Filter>
     </ClCompile>
     <ClCompile Include="XRSourceBuildSystem.cpp">
-      <Filter>소스 파일\Heterogeneous\SourceBuildSystem</Filter>
+      <Filter>소스 파일\Engine\Heterogeneous\SourceBuildSystem</Filter>
     </ClCompile>
     <ClCompile Include="XRJson.cpp">
       <Filter>소스 파일</Filter>

@@ -2,6 +2,8 @@
 //
 
 #include "stdafx.h"
+#include <XRFrameworkBase/XRRenderEngine.h>
+
 #include "XRModelVK.h"
 #include "XRTextureVK.h"
 #include "XRBufferVK.h"
@@ -11,16 +13,17 @@
 
 #include <assert.h>
 
-struct RenderEngineVKInitializer
+template<>
+struct RenderEngineInitializer<DeviceAPI::Vulkan>
 {
-	RenderEngineVKInitializer()
+	RenderEngineInitializer()
 	{
 		LogVKSystemInfo();
 	}
 
-	static RenderEngineVKInitializer& GetInitializer()
+	static RenderEngineInitializer& GetInitializer()
 	{
-		static RenderEngineVKInitializer __init;
+		static RenderEngineInitializer __init;
 		return __init;
 	}
 
@@ -32,19 +35,19 @@ struct RenderEngineVKInitializer
 
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	return new XRInputLayoutVK(std::move(inputLayoutDesc), preferredStrideSize);
 }
 
 XRModel* xrCreateModel(XRModelData const* loadable)
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	return new XRModelVK(loadable);
 }
 
 XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	auto textureVK = new XRTextureVK;
 	auto textureHandle = new XRTexture(createInfo);
 	textureHandle->_rhi = textureVK;
@@ -53,7 +56,7 @@ XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
 
 XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	auto textureVK = new XRTextureVK;
 	if (nullptr != loadable)
 		textureVK->upload(loadable);
@@ -65,7 +68,7 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 
 XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	auto bufferVK = new XRBufferVK;
 	auto bufferHandle = new XRBuffer(createInfo, bufferVK);
 
@@ -75,18 +78,18 @@ XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
 
 XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	return new XRPipelineVK(description);
 }
 
 XRCommandBuffer* xrCreateCommandBuffer()
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	return new XRCommandBufferVK;
 }
 
 XRRenderGroup* xrCreateRenderGroup()
 {
-	RenderEngineVKInitializer::GetInitializer();
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	return new XRRenderGroupVK;
 }
