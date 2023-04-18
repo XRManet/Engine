@@ -59,7 +59,7 @@ protected:
 	 * @author	Jiman Jeong
 	 * @date	2022-02-22
 	 */
-	XRCommandBuffer* EvaluateCommands(XRCommandFootprint& commandFootprint);
+	bool EvaluateCommands(XRCommandFootprint& commandFootprint, std::vector<XRCommandBuffer*>& commandBuffers);
 
 public:
 	/**
@@ -80,6 +80,7 @@ public:
 	void Render();
 
 	uint64_t GetRenderCounter() const { return _renderCounter; }
+	uint32_t GetAvailableBackBufferIndex();
 
 public:
 	/**

@@ -4,4 +4,5 @@
 
 void XRBufferVK::Initialize(XRBuffer* bufferHandle)
 {
+	_handle = bufferHandle;
 }

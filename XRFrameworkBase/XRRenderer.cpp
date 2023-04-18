@@ -76,9 +76,18 @@ bool XRRenderer::Bind(XRPlatform::XRDSO* dso)
 	return true;
 }
 
-XRCommandBuffer* XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootprint)
+bool XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootprint, std::vector<XRCommandBuffer*>& commandBuffers)
 {
+	// Idea:
+	// Preprocess를 통해 dependency graph를 선행 분석
+	// 분석된 flow 마다 분리된 command buffer를 할당하고 기록하도록 처리
+	// 해당은 충분히 병렬 처리할 수 있을 것.
+	// 병렬화된 pass 실행까지 여기서 정리.
+	commandFootprint.Preprocess();
+
 	uint32_t currentFootprintHash = commandFootprint.MakeHash();
+	
+	// dependency graph가 마련되기 전까진 n개 출력 처리해둘 것.
 	XRCommandBuffer* commandBuffer = nullptr;
 
 	auto found = _bakedCommandBuffers.find(currentFootprintHash);
@@ -99,7 +108,8 @@ XRCommandBuffer* XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootpri
 		_bakedCommandBuffers.insert({ currentFootprintHash, commandBuffer });
 	}
 
-	return commandBuffer;
+	commandBuffers.push_back(commandBuffer);
+	return true;
 }
 
 void XRRenderer::Update(XRScene* scene)
@@ -129,6 +139,12 @@ void XRRenderer::Render()
 	OnRender();
 
 	++_renderCounter;
+}
+
+uint32_t XRRenderer::GetAvailableBackBufferIndex()
+{
+	// Todo(jiman): Swapchain 과의 연결 관계 설정 필요. #Todo_Swapchain
+	return 0;
 }
 
 struct XRPrimitiveBuffer

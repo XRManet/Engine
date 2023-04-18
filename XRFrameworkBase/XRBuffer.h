@@ -75,6 +75,5 @@ public:
 	virtual ~XRBuffer() {}
 
 public:
-	XRBufferCreateInfo const* getBufferCreateInfo() const { return &_bufferCreateInfo; }
-
+	inline XRBufferCreateInfo const* getBufferCreateInfo() const { return &_bufferCreateInfo; }
 };

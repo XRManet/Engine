@@ -38,6 +38,10 @@ void XRCommandBufferVK::begin()
 
 	_commandMemoryPool->ready(1 << 12);
 
+	{
+		_currentState = XRCommandBuffer::CommandBufferState::Reset;
+	}
+
 	// Move to common layer
 	{
 		_resourceLayoutStack.clear();
@@ -53,11 +57,19 @@ void XRCommandBufferVK::end()
 
 void XRCommandBufferVK::executeCommands()
 {
-	uint32_t numCommands = _commandMemoryPool->getCommandList().size();
-	for (uint32_t i = 0; i < numCommands; ++i)
+	if (_currentState != XRCommandBuffer::CommandBufferState::Recorded)
 	{
-		XRCommandVK* const commandGL = _commandMemoryPool->getCommandList()[i];
-		commandGL->execute();
+		assert(_currentState == XRCommandBuffer::CommandBufferState::Reset);
+		_currentState = XRCommandBuffer::CommandBufferState::Recording;
+
+		uint32_t numCommands = _commandMemoryPool->getCommandList().size();
+		for (uint32_t i = 0; i < numCommands; ++i)
+		{
+			XRCommandVK* const command = _commandMemoryPool->getCommandList()[i];
+			command->execute();
+		}
+
+		_currentState = XRCommandBuffer::CommandBufferState::Recorded;
 	}
 }
 
@@ -183,7 +195,7 @@ void XRCommandVK_BeginRenderPass::execute()
 	//renderPassBeginInfo.renderPass = _beginRenderPassInfo._renderPass;
 	//renderPassBeginInfo.framebuffer = _beginRenderPassInfo._framebuffer;
 
-	vkCmdBeginRenderPass(VK_NULL_HANDLE, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+	//vkCmdBeginRenderPass(VK_NULL_HANDLE, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
 void XRCommandVK_NextSubPass::execute()
@@ -247,11 +259,11 @@ void XRCommandMemoryPoolVK::validateCommands()
 		_commands[i] = reinterpret_cast<XRCommandVK*>(&_commandMemory[_commandLocations[i]]);
 }
 
-template<typename CommandGL, typename ...Args>
+template<typename CommandType, typename ...Args>
 void XRCommandMemoryPoolVK::emplaceCommand(Args&&... args)
 {
 	uint64_t const& current = _commandLocations.back();
-	uint64_t required = current + sizeof(CommandGL);
+	uint64_t required = current + sizeof(CommandType);
 
 	if (required > _commandMemory.size())
 	{
@@ -259,7 +271,7 @@ void XRCommandMemoryPoolVK::emplaceCommand(Args&&... args)
 		_commandMemory.resize(APPROX_ONE_HALF);
 	}
 
-	new (&_commandMemory[current]) CommandGL( std::forward<Args>(args)... );
+	new (&_commandMemory[current]) CommandType( std::forward<Args>(args)... );
 
 	_commandLocations.push_back(required);
 }

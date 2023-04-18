@@ -85,6 +85,15 @@ public:
 		NumAllCommands,
 	};
 
+	enum class CommandBufferState
+	{
+		Invalid,
+		Reset,
+		Recording,
+		Recorded,
+		NumStates,
+	};
+
 public:
 	XRCommandBuffer() {}
 	virtual ~XRCommandBuffer() {}
@@ -156,4 +165,6 @@ protected:
 	XRWorkPassBase*		_currentWorkPass;
 	XRPipelineGroup*	_currentPipelineGroup;
 	XRPipeline*			_currentPipeline;
+
+	CommandBufferState	_currentState;
 };

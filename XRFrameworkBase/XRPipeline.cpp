@@ -193,6 +193,15 @@ bool XRWorkPassManager::RegisterWorkPassGenerator(std::string&& string, void* fp
 
 #pragma region XRCommandFootprint
 
+void XRCommandFootprint::Preprocess()
+{
+	for (auto& stepModifier : _stepModifiers)
+	{
+		uint16_t& prev = _steps[stepModifier._stepPosition]._step;
+		prev = stepModifier._stepModifier(prev);
+	}
+}
+
 uint32_t XRCommandFootprint::MakeHash() const
 {
 	return GetHash(_steps.data(), _steps.size() * sizeof(_steps[0]));

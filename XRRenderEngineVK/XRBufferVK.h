@@ -6,7 +6,7 @@ class XRBufferVK : public XRBufferRHI
 {
 public:
 	XRBufferVK() : _buffer(VK_NULL_HANDLE) {}
-	virtual ~XRBufferVK() {};
+	virtual ~XRBufferVK() {}
 
 public:
 	inline VkBuffer getVkBuffer() const { return _buffer; }

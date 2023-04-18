@@ -218,65 +218,77 @@ void XRRendererTest::OnRender()
 	XRCommandFootprint commandFootprint;
 
 	static xr::IndexedString<XRCommandStep> sFistStep("firstStepAlways");
-	commandFootprint.AddStep({ sFistStep, frameIndex }, [this](XRCommandBuffer* secondCommands, uint16_t step) {
-		static xr::IndexedString<XRWorkPassBase> renderPassSampleName = "XRWorkPassSample";
-		static XRWorkPassSample* workPassSample = static_cast<XRWorkPassSample*>(_workPassManager->GetWorkPass(renderPassSampleName));
+	commandFootprint.AddStep(
+		{ sFistStep, frameIndex },
+		[this](XRCommandBuffer* secondCommands, uint16_t step) {
+			static xr::IndexedString<XRWorkPassBase> renderPassSampleName = "XRWorkPassSample";
+			static XRWorkPassSample* workPassSample = static_cast<XRWorkPassSample*>(_workPassManager->GetWorkPass(renderPassSampleName));
 
-		XRBeginPassInfo beginPassInfo{
-			._workPass = workPassSample
-		};
+			XRBeginPassInfo beginPassInfo{
+				._workPass = workPassSample
+			};
 
-		secondCommands->beginPass(beginPassInfo);
+			secondCommands->beginPass(beginPassInfo);
 
-		static xr::IndexedString<XRPipeline> samplePipelineName = "SampleFirstPipeline";
-		XRPipelineGroup* pipelineGroup = _pipelineManager->GetPipelineGroup(samplePipelineName);
+			static xr::IndexedString<XRPipeline> samplePipelineName = "SampleFirstPipeline";
+			XRPipelineGroup* pipelineGroup = _pipelineManager->GetPipelineGroup(samplePipelineName);
 
-		static uint32_t permutationThis = [pipelineGroup]() {
-			std::vector<XRPermutationElementArgument> permutation;
-			permutation.emplace_back(SamplePermutation::AlphaTest, 0);
-			permutation.emplace_back(SamplePermutation::Lod, 0);
-			return pipelineGroup->CalcPermutationHash(permutation);
-		} ();
+			static uint32_t selectPermutation = [pipelineGroup]() {
+				std::vector<XRPermutationElementArgument> permutation;
+				permutation.emplace_back(SamplePermutation::AlphaTest, 0);
+				permutation.emplace_back(SamplePermutation::Lod, 0);
+				return pipelineGroup->CalcPermutationHash(permutation);
+			} ();
 
-		XRPipeline* pipeline = pipelineGroup->GetPipeline(permutationThis);
-		secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
+			XRPipeline* pipeline = pipelineGroup->GetPipeline(selectPermutation);
+			secondCommands->bindPipeline(XRBindPoint::Graphics, pipeline);
 
-		//secondCommands->bindResource("", );
+			//secondCommands->bindResource("", );
 
-		XRClearValue color = xr::vec4<float_t>{ 1.f, 1.f, 1.f, 1.f };
-		XRClearValue depth = XRClearValue(1.f, 0u);
+			XRClearValue color = xr::vec4<float_t>{ 1.f, 1.f, 1.f, 1.f };
+			XRClearValue depth = XRClearValue(1.f, 0u);
 
-		XRBeginRenderPassInfo beginRenderPassInfo{
-			._renderPass = nullptr,
-			._framebuffer = nullptr,
-			._extent = { 1024, 768, 1 },
-			._clearValues = { color, depth }
-		};
-		XRBeginSubPassInfo beginSubPassInfo{
-			._secondaryCommandBuffer = false
-		};
+			XRBeginRenderPassInfo beginRenderPassInfo{
+				._renderPass = nullptr,
+				._framebuffer = nullptr,
+				._extent = { 1024, 768, 1 },
+				._clearValues = { color, depth }
+			};
+			XRBeginSubPassInfo beginSubPassInfo{
+				._secondaryCommandBuffer = false
+			};
 
-		secondCommands->beginRenderPass(beginRenderPassInfo, beginSubPassInfo);
+			secondCommands->beginRenderPass(beginRenderPassInfo, beginSubPassInfo);
 
-		for (auto& i : _objectGroups)
-		{
-			XRObjectGroup const* objectGroup = i.second;
-			objectGroup->draw(secondCommands);
-		}
+			for (auto& i : _objectGroups)
+			{
+				XRObjectGroup const* objectGroup = i.second;
+				objectGroup->draw(secondCommands);
+			}
 
-		secondCommands->endRenderPass();
+			secondCommands->endRenderPass();
 
-		secondCommands->endPass();
+			secondCommands->endPass();
 		});
 
 	static xr::IndexedString<XRCommandStep> sPresentStep("Present");
-	commandFootprint.AddStep({ sPresentStep, 0 }, [this](XRCommandBuffer* secondCommands, uint16_t step) {
-		secondCommands->addBarrier();
+	commandFootprint.AddStep(
+		{ sPresentStep, 0 },
+		[this](uint16_t) {
+			return uint16_t(GetAvailableBackBufferIndex());
+		},
+		[this](XRCommandBuffer* secondCommands, uint16_t step) {
+			secondCommands->addBarrier();
 		});
 
-	XRCommandBuffer* commandBuffer = EvaluateCommands(commandFootprint);
+	std::vector<XRCommandBuffer*> commandBuffers;
+	bool result = EvaluateCommands(commandFootprint, commandBuffers);
+	assert(result);
 
-	commandBuffer->executeCommands();
+	for (auto& commandBuffer : commandBuffers)
+	{
+		commandBuffer->executeCommands();
+	}
 
 	//commandBuffer->begin();
 	//commandBuffer->end();

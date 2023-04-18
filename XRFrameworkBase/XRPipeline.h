@@ -877,10 +877,19 @@ struct XRCommandStepDesc
 	std::function<CommandBlock>			_commandBlock;
 };
 
+using StepModifier = uint16_t(uint16_t);
+
+struct XRCommandStepModifierDesc
+{
+	uint32_t							_stepPosition;
+	std::function<StepModifier>			_stepModifier;
+};
+
 class XRCommandFootprint
 {
 	std::vector<XRCommandStep>			_steps;
 	std::vector<XRCommandStepDesc>		_capturedBlocks;
+	std::vector<XRCommandStepModifierDesc> _stepModifiers;
 	std::vector<uint32_t>				_separatedStepPositions;
 
 public:
@@ -888,6 +897,20 @@ public:
 	{
 		_steps.push_back(std::move(step));
 		_capturedBlocks.push_back({ {}, std::move(commandBlock) });
+	}
+
+	void AddStep(XRCommandStep&& step, std::function<StepModifier>&& stepModifier, std::function<CommandBlock>&& commandBlock)
+	{
+		_stepModifiers.push_back({ uint32_t(_steps.size()), std::move(stepModifier) });
+
+		AddStep(std::move(step), std::move(commandBlock));
+	}
+
+	void AddStepWithForceSeparate(XRCommandStep&& step, std::function<CommandBlock>&& commandBlock)
+	{
+		_separatedStepPositions.push_back(_steps.size());
+
+		AddStep(std::move(step), std::move(commandBlock));
 	}
 
 	void AddConditionalStep(XRCommandStep&& step, std::function<ConditionBlock>&& condition, std::function<CommandBlock>&& commandBlock)
@@ -905,11 +928,12 @@ public:
 	void AddInstantStep(XRCommandStep&& step, std::function<CommandBlock>&& commandBlock)
 	{
 		_separatedStepPositions.push_back(_steps.size());
-		_steps.push_back(std::move(step));
-		_capturedBlocks.push_back({ {}, std::move(commandBlock) });
+		
+		AddStep(std::move(step), std::move(commandBlock));
 	}
 
 public:
+	void Preprocess();
 	uint32_t MakeHash() const;
 	void Transcribe(XRCommandBuffer* commandBuffer) const;
 };
