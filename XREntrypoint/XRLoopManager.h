@@ -9,21 +9,22 @@ enum XRLoopManagerInfra : unsigned {
 };
 
 template<XRLoopManagerInfra Infra>
-class XRRenderingInfra
+class XRWindowSystem
 {
-	XRRenderingInfra(XRSize<float> const& size) {}
+	XRWindowSystem(XRSize<float> const& size) {}
 };
 
 struct GLFWwindow;
 
 template<>
-class XRRenderingInfra<GLFW>
+class XRWindowSystem<GLFW>
 {
 public:
-	XRRenderingInfra(XRSize<float> const& size);
-	~XRRenderingInfra();
+	XRWindowSystem(XRSize<float> const& size);
+	~XRWindowSystem();
 
 private:
+	XRSize<float> _defaultSize;
 	GLFWwindow * _window;
 
 private: // GLFW Events
@@ -59,7 +60,7 @@ class XRLoopManager
 {
 private:
 	XRSize<float> _out_size;
-	XRRenderingInfra<Infra> _infra;
+	XRWindowSystem<Infra> _infra;
 	XRFrameWalker _frame_walker;
 
 public:

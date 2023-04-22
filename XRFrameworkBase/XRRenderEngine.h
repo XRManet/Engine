@@ -19,7 +19,7 @@ enum class DeviceAPI : unsigned
 
 enum XRLoopManagerInfra : unsigned;
 template<XRLoopManagerInfra Infra>
-class XRRenderingInfra;
+class XRWindowSystem;
 
 template<DeviceAPI API = DeviceAPI::Null>
 struct RenderEngineInitializer
@@ -29,5 +29,5 @@ public:
 	
 public:
 	template<XRLoopManagerInfra Infra>
-	void initialize(XRRenderingInfra<Infra> const& infra);
+	void initialize(XRWindowSystem<Infra> const& infra);
 };

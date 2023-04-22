@@ -31,6 +31,9 @@
     <Filter Include="Resource files\Shaders\GLSL">
       <UniqueIdentifier>{7bfe0a2d-1447-4aa7-afbb-fa94c62266b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source files\MainApplication">
+      <UniqueIdentifier>{2eef5e80-08c4-4988-aa44-c9cf422b6ed8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -48,6 +51,9 @@
     <ClInclude Include="XRSceneManager.h">
       <Filter>Source files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="MainApplication.h">
+      <Filter>Source files\MainApplication</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -61,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApplication.cpp">
+      <Filter>Source files\MainApplication</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

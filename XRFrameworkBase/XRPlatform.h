@@ -1,4 +1,4 @@
-//
+﻿//
 //  XRPlatform.h
 //  Engine
 //
@@ -8,11 +8,6 @@
 
 #ifndef XRPlatform_h
 #define XRPlatform_h
-
-#include <XRFrameworkBase/XRDefault.h>
-
-#include <vector>
-#include <string>
 
 namespace XRPlatform
 {

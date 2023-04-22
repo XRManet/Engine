@@ -75,6 +75,7 @@ constexpr int const PAGE_SIZE = 4'096;
 
 #include <vector>
 #include <map>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 

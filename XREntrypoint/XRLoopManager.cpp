@@ -8,7 +8,7 @@
 XRInputLinkage g_input;
 
 
-XRRenderingInfra<GLFW>::XRRenderingInfra(XRSize<float> const& size)
+XRWindowSystem<GLFW>::XRWindowSystem(XRSize<float> const& size)
 {
 	static const uint32_t versions[][2] = {
 		{4, 6}, {4, 5}, {4, 3}, {4, 1}, {4, 0},
@@ -95,14 +95,14 @@ XRRenderingInfra<GLFW>::XRRenderingInfra(XRSize<float> const& size)
 	glfwSetScrollCallback(_window, ScrollMouse);
 }
 
-XRRenderingInfra<GLFW>::~XRRenderingInfra()
+XRWindowSystem<GLFW>::~XRWindowSystem()
 {
 	if (!_window) {
 		glfwTerminate();
 	}
 }
 
-void XRRenderingInfra<GLFW>::PollEvents()
+void XRWindowSystem<GLFW>::PollEvents()
 {
 	/* Swap front and back buffers */
 	glfwSwapBuffers(_window);
@@ -111,9 +111,9 @@ void XRRenderingInfra<GLFW>::PollEvents()
 	glfwPollEvents();
 }
 
-void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void XRWindowSystem<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	auto _this = static_cast<XRRenderingInfra<GLFW>*>(glfwGetWindowUserPointer(window));
+	auto _this = static_cast<XRWindowSystem<GLFW>*>(glfwGetWindowUserPointer(window));
 
 	if (key < 256)
 		g_input.keyboardPressed[key] = (action == GLFW_REPEAT || action == GLFW_PRESS) ? 1 : 0;
@@ -133,7 +133,7 @@ void XRRenderingInfra<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scan
 	}
 }
 
-void XRRenderingInfra<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
+void XRWindowSystem<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
 	{
@@ -150,7 +150,7 @@ void XRRenderingInfra<GLFW>::InputMouse(GLFWwindow* window, int button, int acti
 	}
 }
 
-void XRRenderingInfra<GLFW>::PositionMouse(GLFWwindow* window, double xpos, double ypos)
+void XRWindowSystem<GLFW>::PositionMouse(GLFWwindow* window, double xpos, double ypos)
 {
 	int32_t windowSizeX = 0, windowSizeY = 0;
 	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
@@ -159,7 +159,7 @@ void XRRenderingInfra<GLFW>::PositionMouse(GLFWwindow* window, double xpos, doub
 	g_input.curY = double(windowSizeY) - ypos;
 }
 
-void XRRenderingInfra<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, double yoffset)
+void XRWindowSystem<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, double yoffset)
 {
 	printf("%lf\n", yoffset);
 	g_input.cameraStep += float(yoffset * .1f) ;

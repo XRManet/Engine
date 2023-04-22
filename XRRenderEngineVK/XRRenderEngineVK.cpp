@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include <XRFrameworkBase/XRRenderEngine.h>
 
+#include "XRSwapchainVK.h"
+
 #include "XRModelVK.h"
 #include "XRTextureVK.h"
 #include "XRBufferVK.h"
@@ -32,6 +34,16 @@ struct RenderEngineInitializer<DeviceAPI::Vulkan>
 		
 	}
 };
+
+XRSwapchain* xrCreateSwapchain(XRSwapchainCreateInfo const* createInfo)
+{
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
+	auto swapchainVK = new XRSwapchainVK;
+	auto swapchainHandle = new XRSwapchain(createInfo, swapchainVK);
+
+	swapchainVK->initialize(swapchainHandle);
+	return swapchainHandle;
+}
 
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
