@@ -3,16 +3,11 @@
 #include <XRFrameworkBase/Application.h>
 #include <XRFrameworkBase/ApplicationChild.h>
 #include <XRFrameworkBase/Thread.h>
+#include <XRFrameworkBase/XRGeometry.h>
 
 #include "Profiler.h"
 
-#include "DeviceD3D11.h"
 #include "Window.h"
-
-#if defined(USE_IMGUI)
-#include "ImguiBinder.h"
-#endif // #if defined(USE_IMGUI)
-import Render;
 
 #include <queue>
 
@@ -27,7 +22,7 @@ namespace xr
 	Application::Application(PlatformType platformType, ThreadExecution threadExecution)
 		: _platformType(platformType)
 	{
-		_applicationPlatform = std::move(createApplicationPlatform(platformType));
+		_applicationPlatform = std::move(createApplicationPlatform(this, platformType));
 		_mainThread = Thread::bindThreadFromCurrent("Main Thread", threadExecution);
 	}
 
@@ -86,32 +81,25 @@ namespace xr
 {
 	uint32_t Application::defaultMainThreadRun()
 	{
-#if defined(USE_IMGUI)
-		// Setup Dear ImGui context
-		IMGUI_CHECKVERSION();
-#endif // #if defined(USE_IMGUI)
-
-		auto fetcher = createEventFetcher(_mainThread.get());
+		auto fetcher = createEventFetcher(getMainThread());
 		auto resizeKey = fetcher->eventResize.registerEvent(
 			[](Window* window, bool minimized, bool maximized, uint32_t width, uint32_t height) {
-				render::Swapchain* swapchain = window->getSwapchain();
-				if (swapchain != nullptr)
-				{
-					swapchain->resize();
-				}
+				printf("Resize event occurred.");
 			});
-		auto resizeKey2 = fetcher->eventResize.registerEvent(&render::Renderer::Resize);
 
-		InputManager* inputManager = new InputManager();
-		auto keyboardKey = fetcher->eventKeyboard.registerEvent(inputManager->GetKeyCallback());
-		auto mouseKey = fetcher->eventMouse.registerEvent(inputManager->GetMouseCallback());
+		auto keyboardKey = fetcher->eventKeyboard.registerEvent(
+			[](Window* /*window*/, bool /*ctrl*/, bool /*alt*/, bool /*shift*/, bool /*currentPressed*/, bool /*previousPressed*/, uint32_t /*keyPressedCount*/, uint32_t /*key*/) {
+				printf("Keyboard event occurred.");
+			});
+		auto mouseKey = fetcher->eventMouse.registerEvent(
+			[](Window* /*window*/, const unsigned /*left*/, const unsigned /*middle*/, const unsigned /*right*/, const unsigned /*xButton*/, const int /*windowX*/, const int /*windowY*/) {
+				printf("Mouse event occurred.");
+			});
 
-		auto imguiBinder = ImguiBinder::getImguiBinder(render::SupportingAPIs::D3D11);
-
-		auto window = [this, &fetcher, &imguiBinder]()
+		auto window = [this, &fetcher]()
 		{
 			WindowDescription windowDescription = {};
-			windowDescription._title = "RealityProjector";
+			windowDescription._title = "XRDefault";
 			windowDescription._width = 1920;
 			windowDescription._height = 1080;
 			auto window = createWindow(fetcher.get(), _mainThread.get(), windowDescription);
@@ -119,9 +107,9 @@ namespace xr
 			return window;
 		} ();
 
-		Window* projectorWindow = window.get();
+		Window* mainWindow = window.get();
 
-		fetcher->processEventQueue([&, this]() {
+		fetcher->processLoop([&, this]() {
 
 			if (profiler::g_traceCurrent != profiler::g_traceEnabled)
 			{
@@ -139,73 +127,20 @@ namespace xr
 			std::vector<render::Renderable*> renderablesForProjector;
 			{
 				profiler::scopeTracer("app", "update");
-
 			}
 
 			// Render
 			{
 				profiler::scopeTracer("app", "render");
 
-				// Projector Window
+				// Scene rendering
 				{
-					// Scene rendering
-					{
-						profiler::scopeTracer("main", "Renderer::Render");
+					profiler::scopeTracer("main", "Renderer::Render");
 
-						render::Renderer::SetGlobalRenderTarget(projectorWindow->getSwapchain()->getBackBufferView());
-
-						glm::ivec2 renderTargetSize = {
-							projectorWindow->getWindowDescription()._width,
-							projectorWindow->getWindowDescription()._height
-						};
-
-						glm::vec4 clearColor = getClearColor();
-						render::Renderer::ClearRenderTarget(clearColor);
-						render::Renderer::ClearDepthStencil(1.0f, 0);
-
-						if (_stage->GetEffectType() == 0)
-						{
-							render::Renderer::Render(projector->GetCamera(), renderTargetSize, renderablesForProjector);
-						}
-
-						auto actors = _stage->GetActors();
-
-						if (_stage->GetEffectType() == 1)
-						{
-							render::Renderer::RenderCenterLight(projector->GetCamera(), renderTargetSize, actors);
-						}
-
-						if (_stage->GetEffectType() == 2)
-						{
-							render::Renderer::RenderPointCloud(projector->GetCamera(), renderTargetSize, _stage->GetPointCloudSize(), sensor->getLastPointCloudVertexBuffer(), sensor->getPointCount(), actors);
-						}
-					}
-
-
-					// Start the Dear ImGui frame
-					{
-						profiler::scopeTracer("main", "ImGui prepare");
-						imguiBinder->prepare(projectorWindow);
-						ImGui::NewFrame();
-					}
-
-					{
-						profiler::scopeTracer("main", "ImGui render");
-						ImGui::Render();
-						imguiBinder->render(render::Renderer::GetRenderTarget());
-					}
-
-					// After-UI rendering test
-					{
-						// render::Renderer::RenderLeftImage(glm::vec2(0, 0), glm::vec2(400, 300), sensor->getLastLeftImageAsTexture());
-					}
-
-					// Present
-					{
-						profiler::scopeTracer("main", "present");
-						render::Renderer::Present();
-					}
-
+					glm::ivec2 renderTargetSize = {
+						mainWindow->getWindowDescription()._width,
+						mainWindow->getWindowDescription()._height
+					};
 				}
 			}
 			});

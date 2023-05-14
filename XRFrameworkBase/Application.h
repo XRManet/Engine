@@ -42,19 +42,19 @@ namespace xr
 
 	public:
 		Thread*									getMainThread() { return _mainThread.get(); }
-
-	protected:
 		const std::vector<Thread*>&				getAllThreads() const { return _allThreads; }
 
+		ApplicationPlatform*					getApplicationPlatform() const { return _applicationPlatform.get(); }
+
 
 	private:
-		static std::unique_ptr<ApplicationPlatform>	createApplicationPlatform(PlatformType platformType);
+		static std::unique_ptr<ApplicationPlatform>	createApplicationPlatform(Application* application, PlatformType platformType);
 
-	private:
-		inline std::unique_ptr<Thread>			createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution) { return _applicationPlatform->createThread(threadName, launchImmediatly, threadExecution); }
+	protected:
+		inline std::unique_ptr<Thread>&&		createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution) { return std::move(_applicationPlatform->createThread(threadName, launchImmediatly, threadExecution)); }
 
-		inline std::unique_ptr<EventFetcher>	createEventFetcher(Thread* ownerThread) { return _applicationPlatform->createEventFetcher(ownerThread); }
-		inline std::unique_ptr<Window>			createWindow(EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription) { return _applicationPlatform->createWindow(eventFetcher, ownerThread, windowDescription); }
+		inline std::unique_ptr<EventFetcher>&&	createEventFetcher(Thread* ownerThread) { return std::move(_applicationPlatform->createEventFetcher(ownerThread)); }
+		inline std::unique_ptr<Window>&&		createWindow(EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription) { return std::move(_applicationPlatform->createWindow(eventFetcher, ownerThread, windowDescription)); }
 
 	public:
 		void									addThread(ApplicationChild* child);

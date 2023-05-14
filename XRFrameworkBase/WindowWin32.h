@@ -24,7 +24,7 @@ namespace xr
 		virtual ~EventFetcherWin32();
 
 	public:
-		virtual void processEventQueue(std::function<void()> loopWorks) override final;
+		virtual bool processEventQueue() override final;
 	};
 
 	class WindowWin32 : public Window

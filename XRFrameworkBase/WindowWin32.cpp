@@ -11,9 +11,6 @@
 namespace xr
 {
 
-	// InputWin32.cpp에 hWnd를 전달해주고싶어서 임시로 선언한 변수. 이거 어케해결하지...
-	HWND hWnd;
-
 	class WindowEventExecutor : public WindowBindingInfo
 	{
 	public:
@@ -129,28 +126,21 @@ namespace xr
 	{
 	}
 
-	void EventFetcherWin32::processEventQueue(std::function<void()> loopWorks)
+	bool EventFetcherWin32::processEventQueue()
 	{
-		bool done = false;
-		while (!done)
+		// Poll and handle messages (inputs, window resize, etc.)
+		// See the WndProc() function below for our to dispatch events to the Win32 backend.
+		MSG msg;
+		while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
-			// Poll and handle messages (inputs, window resize, etc.)
-			// See the WndProc() function below for our to dispatch events to the Win32 backend.
-			MSG msg;
-			while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessage(&msg);
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
 
-				if (msg.message == WM_QUIT)
-					done = true;
-			}
-
-			loopWorks();
-
-			if (done)
-				break;
+			if (msg.message == WM_QUIT)
+				return false;
 		}
+
+		return true;
 	}
 } // namespace xr
 
@@ -278,7 +268,7 @@ namespace xr
 
 	void WindowWin32::constructorCommon()
 	{
-		ApplicationWin32* applicationWin32 = static_cast<ApplicationWin32*>(getApplication());
+		ApplicationWin32* applicationWin32 = static_cast<ApplicationWin32*>(getApplicationPlatform());
 		const WindowDescription& description = getWindowDescription();
 		const WNDCLASSEX& defaultWindowClass = applicationWin32->getDefaultWindowClass();
 
@@ -295,7 +285,7 @@ namespace xr
 		windowBindingInfo._window = this;
 		windowBindingInfo._eventFetcher = static_cast<EventFetcherWin32*>(getEventFetcher());
 
-		hWnd = _hWnd = ::CreateWindowEx(0, defaultWindowClass.lpszClassName, wcWindowTitle, borderlessWindowStyle, 0, 0, description._width, description._height, NULL, NULL, defaultWindowClass.hInstance, &windowBindingInfo);
+		_hWnd = ::CreateWindowEx(0, defaultWindowClass.lpszClassName, wcWindowTitle, borderlessWindowStyle, 0, 0, description._width, description._height, NULL, NULL, defaultWindowClass.hInstance, &windowBindingInfo);
 
 		// Show the window
 		::ShowWindow(_hWnd, SW_SHOWDEFAULT);

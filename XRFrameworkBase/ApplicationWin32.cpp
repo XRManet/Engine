@@ -3,6 +3,8 @@
 #include <XRFrameworkBase/ApplicationWin32.h>
 #include <XRFrameworkBase/ThreadWin32.h>
 
+#include <XRFrameworkBase/Application.h>
+
 #include "WindowWin32.h"
 
 namespace xr
@@ -19,7 +21,8 @@ namespace xr
 
 	LRESULT WINAPI DefaultWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-	ApplicationWin32::ApplicationWin32()
+	ApplicationWin32::ApplicationWin32(Application* application)
+		: ApplicationPlatform(application)
 	{
 		// Create application window
 		//ImGui_ImplWin32_EnableDpiAwareness();
@@ -35,7 +38,7 @@ namespace xr
 
 	void ApplicationWin32::waitForAllThreads()
 	{
-		const auto& allThreads = getAllThreads();
+		const auto& allThreads = getApplication()->getAllThreads();
 		std::vector<HANDLE> threadHandles;
 		threadHandles.reserve(allThreads.size());
 

@@ -3,9 +3,11 @@
 #include <XRFrameworkBase/ApplicationChild.h>
 #include <XRFrameworkBase/ThreadChild.h>
 
+
+class XRSwapchain;
+
 namespace xr
 {
-
 	class Application;
 	class Window;
 	struct WindowUserContext;
@@ -44,7 +46,10 @@ namespace xr
 		virtual ~EventFetcher();
 
 	public:
-		virtual void processEventQueue(std::function<void()> loopWorks) = 0;
+		void processLoop(std::function<void()> loopWorks);
+
+	private:
+		virtual bool processEventQueue() = 0;
 
 	public:
 		EventCaller<void, Window* /*window*/, bool /*minimized*/, bool /*maximized*/, uint32_t /*width*/, uint32_t /*height*/> eventResize;
@@ -59,11 +64,6 @@ namespace xr
 		uint32_t _height = 0;
 	};
 
-	namespace render
-	{
-		class Swapchain;
-	} // namespace xr::render
-
 	class Window : public ApplicationChild, public ThreadChild
 	{
 	public:
@@ -74,7 +74,7 @@ namespace xr
 	public:
 		EventFetcher* getEventFetcher() const { return _boundEventFetcher; }
 		WindowDescription& getWindowDescription() { return _windowDescription; }
-		render::Swapchain* getSwapchain() const { return _boundSwapchain.get(); }
+		XRSwapchain* getSwapchain() const { return _boundSwapchain.get(); }
 
 	public:
 		void attachUserContext(const std::string& key, std::unique_ptr<WindowUserContext>&& context);
@@ -82,14 +82,14 @@ namespace xr
 
 
 	protected:
-		void setSwapchain(render::Swapchain* swapchain);
+		void setSwapchain(XRSwapchain* swapchain);
 		void setWindowSize(uint32_t width, uint32_t height) { _windowDescription._width = width; _windowDescription._height = height; }
 
 	private:
 		EventFetcher* _boundEventFetcher;
 		WindowDescription _windowDescription;
 
-		std::unique_ptr<render::Swapchain> _boundSwapchain;
+		std::unique_ptr<XRSwapchain> _boundSwapchain;
 		std::unordered_map<std::string, std::unique_ptr<WindowUserContext>> _userContexts;
 	};
 

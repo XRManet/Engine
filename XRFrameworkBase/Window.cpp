@@ -5,7 +5,7 @@
 #include <XRFrameworkBase/Application.h>
 #include <XRFrameworkBase/Thread.h>
 
-import Render;
+#include <XRFrameworkBase/XRSwapchain.h>
 
 namespace xr
 {
@@ -17,6 +17,17 @@ namespace xr
 
 	EventFetcher::~EventFetcher()
 	{
+	}
+
+	void EventFetcher::processLoop(std::function<void()> loopWorks)
+	{
+		bool continueLoop = true;
+		while (continueLoop)
+		{
+			continueLoop = processEventQueue();
+
+			loopWorks();
+		}
 	}
 
 	Window::Window(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription)
@@ -42,9 +53,9 @@ namespace xr
 		_userContexts.emplace(key, std::move(context));
 	}
 
-	void Window::setSwapchain(render::Swapchain* swapchain)
+	void Window::setSwapchain(XRSwapchain* swapchain)
 	{
-		_boundSwapchain = std::move(std::unique_ptr<render::Swapchain>(swapchain));
+		_boundSwapchain = std::move(std::unique_ptr<XRSwapchain>(swapchain));
 	}
 
 } // namespace xr

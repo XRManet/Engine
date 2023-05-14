@@ -2,24 +2,25 @@
 
 namespace xr
 {
+	class Application;
+	class ApplicationPlatform;
 
-class Application;
+	class ApplicationChild
+	{
+	public:
+		ApplicationChild();
+		ApplicationChild(Application* ownerApplication, void(Application::* fpOnChildAdded)(ApplicationChild*), void(Application::* fpOnChildRemoved)(ApplicationChild*));
+		virtual ~ApplicationChild();
 
-class ApplicationChild
-{
-public:
-	ApplicationChild();
-	ApplicationChild(Application* ownerApplication, void(Application::* fpOnChildAdded)(ApplicationChild*), void(Application::* fpOnChildRemoved)(ApplicationChild*));
-	virtual ~ApplicationChild();
+	public:
+		void bindApplication(Application* ownerApplication, void(Application::* fpOnChildAdded)(ApplicationChild*), void(Application::* fpOnChildRemoved)(ApplicationChild*));
+		Application* getApplication() const { return _ownerApplication; }
+		ApplicationPlatform* getApplicationPlatform() const;
 
-public:
-	void bindApplication(Application* ownerApplication, void(Application::* fpOnChildAdded)(ApplicationChild*), void(Application::* fpOnChildRemoved)(ApplicationChild*));
-	Application* getApplication() { return _ownerApplication; }
-
-private:
-	Application* _ownerApplication;
-	void(Application::* _fpOnChildRemoved)(ApplicationChild*);
-};
+	private:
+		Application* _ownerApplication;
+		void(Application::* _fpOnChildRemoved)(ApplicationChild*);
+	};
 
 
 } // namespace xr

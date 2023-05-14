@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
 #include "XRRenderEnginePlatformBinder.hpp"
 
-int main(void)
+int main2(void)
 {
 	XRLoopManager<XRInfraAPI> loopManager({ 800.f, 600.f });
 	

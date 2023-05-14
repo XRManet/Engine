@@ -12,18 +12,20 @@ namespace xr
 {
 
 
-	std::unique_ptr<ApplicationPlatform> Application::createApplicationPlatform(PlatformType platformType)
+	std::unique_ptr<ApplicationPlatform> Application::createApplicationPlatform(Application* application, PlatformType platformType)
 	{
 		switch (platformType)
 		{
 		case PlatformType::GLFW:
-			return std::unique_ptr<ApplicationPlatform>(new ApplicationGLFW);
-#if XR_PLATFORM == XR_PLATFORM_WINDOWS
+			return std::unique_ptr<ApplicationPlatform>(new ApplicationGLFW(application));
 		case PlatformType::Win32:
-			return std::unique_ptr<ApplicationPlatform>(new ApplicationWin32);
-#endif
+			#if XR_PLATFORM == XR_PLATFORM_WINDOWS
+			return std::unique_ptr<ApplicationPlatform>(new ApplicationWin32(application));
+			#else // XR_PLATFORM == XR_PLATFORM_WINDOWS
+			break;
+			#endif // XR_PLATFORM == XR_PLATFORM_WINDOWS
 		}
 		assert(false);
-		return std::make_unique<ApplicationPlatform>(nullptr);
+		return std::unique_ptr<ApplicationPlatform>();
 	}
 }

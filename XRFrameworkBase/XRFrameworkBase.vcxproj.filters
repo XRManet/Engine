@@ -287,6 +287,9 @@
     <ClInclude Include="ApplicationGLFW.h">
       <Filter>소스 파일\Application</Filter>
     </ClInclude>
+    <ClInclude Include="WindowGLFW.h">
+      <Filter>소스 파일\Application\WindowSubsystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -408,6 +411,15 @@
     </ClCompile>
     <ClCompile Include="ApplicationGLFW.cpp">
       <Filter>소스 파일\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationChild.cpp">
+      <Filter>소스 파일\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationGLFWFactory.cpp">
+      <Filter>소스 파일\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowGLFW.cpp">
+      <Filter>소스 파일\Application\WindowSubsystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
