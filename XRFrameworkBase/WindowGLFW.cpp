@@ -1,5 +1,9 @@
 ﻿#include "stdafx.h"
+
+#define GLFW_DLL
 #include <GLFW/glfw3.h>
+
+#pragma comment(lib, "glfw3dll.lib")
 
 #include <XRFrameworkBase/WindowGLFW.h>
 #include <XRFrameworkBase/ApplicationGLFW.h>

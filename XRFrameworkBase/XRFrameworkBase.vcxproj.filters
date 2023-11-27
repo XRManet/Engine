@@ -99,6 +99,9 @@
     <Filter Include="소스 파일\Utility\Profiler">
       <UniqueIdentifier>{1e0b7bd1-63b9-4b59-82f2-a4050a7356b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Application\Backend">
+      <UniqueIdentifier>{bb87c696-9316-4284-b750-d6961e58314e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XRWavefrontMaterial.h">
@@ -236,9 +239,6 @@
     <ClInclude Include="Application.h">
       <Filter>소스 파일\Application</Filter>
     </ClInclude>
-    <ClInclude Include="ApplicationWin32.h">
-      <Filter>소스 파일\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>소스 파일\Application\WindowSubsystem</Filter>
     </ClInclude>
@@ -281,14 +281,17 @@
     <ClInclude Include="XRSystemLinker.hpp">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ApplicationPlatform.h">
-      <Filter>소스 파일\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="ApplicationGLFW.h">
-      <Filter>소스 파일\Application</Filter>
-    </ClInclude>
     <ClInclude Include="WindowGLFW.h">
       <Filter>소스 파일\Application\WindowSubsystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationGLFW.h">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationPlatform.h">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationWin32.h">
+      <Filter>소스 파일\Application\Backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -388,12 +391,6 @@
     <ClCompile Include="Application.cpp">
       <Filter>소스 파일\Application</Filter>
     </ClCompile>
-    <ClCompile Include="ApplicationWin32.cpp">
-      <Filter>소스 파일\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="ApplicationWin32Factory.cpp">
-      <Filter>소스 파일\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>소스 파일\Application\WindowSubsystem</Filter>
     </ClCompile>
@@ -406,20 +403,26 @@
     <ClCompile Include="XRJson.cpp">
       <Filter>소스 파일\Utility\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="ApplicationPlatform.cpp">
-      <Filter>소스 파일\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="ApplicationGLFW.cpp">
-      <Filter>소스 파일\Application</Filter>
-    </ClCompile>
     <ClCompile Include="ApplicationChild.cpp">
-      <Filter>소스 파일\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="ApplicationGLFWFactory.cpp">
       <Filter>소스 파일\Application</Filter>
     </ClCompile>
     <ClCompile Include="WindowGLFW.cpp">
       <Filter>소스 파일\Application\WindowSubsystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationGLFW.cpp">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationGLFWFactory.cpp">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationPlatform.cpp">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationWin32.cpp">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationWin32Factory.cpp">
+      <Filter>소스 파일\Application\Backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@ namespace xr
 			windowDescription._title = "Main";
 			windowDescription._width = 1920;
 			windowDescription._height = 1080;
-			auto window = createWindow(fetcher.get(), getMainThread(), windowDescription);
+			auto window = createWindow(fetcher.get(), windowDescription);
 
 			return window;
 		} ();

@@ -76,7 +76,7 @@
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(ProjectDir);$(SolutionDir);$(ThirdParty)Common\glfw-3.2.1\include;$(ThirdParty)Common\glm;$(ThirdParty)Common\rapidjson\include;$(ThirdParty)Common\minitrace;$(IncludePath)</IncludePath>
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(ThirdParty)Windows\glfw-3.2.1\lib\Release\$(PlatformTarget);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>

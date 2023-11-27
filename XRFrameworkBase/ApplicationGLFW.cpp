@@ -45,22 +45,4 @@ namespace xr
 		::WaitForMultipleObjects(static_cast<DWORD>(threadHandles.size()), threadHandles.data(), TRUE, INFINITE);
 	}
 
-	std::unique_ptr<Thread>&& ApplicationGLFW::createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
-	{
-		std::unique_ptr<Thread> temp;
-		return std::move(temp);
-	}
-
-	std::unique_ptr<EventFetcher>&& ApplicationGLFW::createEventFetcher(Thread* ownerThread)
-	{
-		std::unique_ptr<EventFetcher> temp;
-		return std::move(temp);
-	}
-
-	std::unique_ptr<Window>&& ApplicationGLFW::createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription)
-	{
-		std::unique_ptr<Window> temp;
-		return std::move(temp);
-	}
-
 } // namespace xr
