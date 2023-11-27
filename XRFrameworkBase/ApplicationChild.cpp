@@ -24,7 +24,7 @@ namespace xr
 
 	ApplicationChild::~ApplicationChild()
 	{
-		if (_ownerApplication)
+		if (_ownerApplication && _fpOnChildRemoved)
 		{
 			(_ownerApplication->*_fpOnChildRemoved)(this);
 		}

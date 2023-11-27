@@ -116,8 +116,8 @@ namespace xr
 		}
 	}
 
-	EventFetcherWin32::EventFetcherWin32(Thread* ownerThread)
-		: EventFetcher(ownerThread)
+	EventFetcherWin32::EventFetcherWin32(Application* application, Thread* ownerThread)
+		: EventFetcher(application, ownerThread)
 	{
 
 	}
@@ -190,7 +190,7 @@ namespace xr
 			const uint32_t width = (uint32_t)LOWORD(lParam);
 			const uint32_t height = (uint32_t)HIWORD(lParam);
 			executor._window->setWindowSize((uint32_t)LOWORD(lParam), (uint32_t)HIWORD(lParam));
-			executor._eventFetcher->eventResize(executor._window, wParam == SIZE_MINIMIZED, wParam == SIZE_MAXIMIZED, (uint32_t)LOWORD(lParam), (uint32_t)HIWORD(lParam));
+			executor._eventFetcher->_eventResize(executor._window, wParam == SIZE_MINIMIZED, wParam == SIZE_MAXIMIZED, (uint32_t)LOWORD(lParam), (uint32_t)HIWORD(lParam));
 			return 0;
 		}
 		case WM_SYSCOMMAND:
@@ -213,7 +213,7 @@ namespace xr
 
 			WORD keyPressedCount = LOWORD(lParam);
 
-			executor._eventFetcher->eventKeyboard(executor._window, controlKeyPressed, altKeyPressed, shiftKeyPressed, curKeyPressed, prevKeyPressed, keyPressedCount, virtualKeyCode);
+			executor._eventFetcher->_eventKeyboard(executor._window, controlKeyPressed, altKeyPressed, shiftKeyPressed, curKeyPressed, prevKeyPressed, keyPressedCount, virtualKeyCode);
 			break;
 		}
 		case WM_MOUSEMOVE:
@@ -235,7 +235,7 @@ namespace xr
 			const unsigned right = ((msg == WM_RBUTTONDOWN) ? 0x1 : ((msg == WM_RBUTTONDBLCLK) ? 0x2 : ((msg == WM_RBUTTONUP) ? 0x4 : 0)));
 			const unsigned xButton = ((msg == WM_XBUTTONDOWN) ? 0x1 : ((msg == WM_XBUTTONDBLCLK) ? 0x2 : ((msg == WM_XBUTTONUP) ? 0x4 : 0)));
 
-			executor._eventFetcher->eventMouse(executor._window, left, middle, right, xButton, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			executor._eventFetcher->_eventMouse(executor._window, left, middle, right, xButton, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 			break;
 		}
 		case WM_DESTROY:
@@ -257,16 +257,10 @@ namespace xr
 	WindowWin32::WindowWin32(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription)
 		: Window(application, eventFetcher, windowDescription)
 	{
-		constructorCommon();
+		commonConstructor();
 	}
 
-	WindowWin32::WindowWin32(Application* application, EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription)
-		: Window(application, eventFetcher, ownerThread, windowDescription)
-	{
-		constructorCommon();
-	}
-
-	void WindowWin32::constructorCommon()
+	void WindowWin32::commonConstructor()
 	{
 		ApplicationWin32* applicationWin32 = static_cast<ApplicationWin32*>(getApplicationPlatform());
 		const WindowDescription& description = getWindowDescription();
@@ -294,7 +288,8 @@ namespace xr
 
 	WindowWin32::~WindowWin32()
 	{
-		::DestroyWindow(_hWnd);
+		if (_hWnd != NULL)
+			::DestroyWindow(_hWnd);
 	}
 
 } // namespace xr

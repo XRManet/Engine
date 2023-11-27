@@ -10,7 +10,7 @@ namespace xr
 	class EventFetcherGLFW : public EventFetcher
 	{
 	public:
-		EventFetcherGLFW(Thread* ownerThread);
+		EventFetcherGLFW(Application* application, Thread* ownerThread);
 		virtual ~EventFetcherGLFW();
 
 	public:
@@ -27,10 +27,9 @@ namespace xr
 	{
 	public:
 		WindowGLFW(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription);
-		WindowGLFW(Application* application, EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription);
 		virtual ~WindowGLFW();
 
-		void constructorCommon(EventFetcher* eventFetcher);
+		void commonConstructor();
 
 	public:
 		using Window::setSwapchain;

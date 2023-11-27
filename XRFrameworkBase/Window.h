@@ -42,7 +42,7 @@ namespace xr
 	class EventFetcher : public ApplicationChild, public ThreadChild
 	{
 	public:
-		EventFetcher(Thread* ownerThread);
+		EventFetcher(Application* application, Thread* ownerThread);
 		virtual ~EventFetcher();
 
 	public:
@@ -52,9 +52,18 @@ namespace xr
 		virtual bool processEventQueue() = 0;
 
 	public:
-		EventCaller<void, Window* /*window*/, bool /*minimized*/, bool /*maximized*/, uint32_t /*width*/, uint32_t /*height*/> eventResize;
-		EventCaller<void, Window* /*window*/, bool /*ctrl*/, bool /*alt*/, bool /*shift*/, bool /*currentPressed*/, bool /*previousPressed*/, uint32_t /*keyPressedCount*/, uint32_t /*key*/> eventKeyboard;
-		EventCaller<void, Window* /*window*/, const unsigned /*left*/, const unsigned /*middle*/, const unsigned /*right*/, const unsigned /*xButton*/, const int /*windowX*/, const int /*windowY*/> eventMouse;
+		void bindWindow(Window* window);
+		void unbindWindow(Window* window);
+
+		std::vector<Window*> const& getBoundWindows() const { return _boundWindows; }
+
+	public:
+		EventCaller<void, Window* /*window*/, bool /*minimized*/, bool /*maximized*/, uint32_t /*width*/, uint32_t /*height*/> _eventResize;
+		EventCaller<void, Window* /*window*/, bool /*ctrl*/, bool /*alt*/, bool /*shift*/, bool /*currentPressed*/, bool /*previousPressed*/, uint32_t /*keyPressedCount*/, uint32_t /*key*/> _eventKeyboard;
+		EventCaller<void, Window* /*window*/, const unsigned /*left*/, const unsigned /*middle*/, const unsigned /*right*/, const unsigned /*xButton*/, const int /*windowX*/, const int /*windowY*/> _eventMouse;
+
+	private:
+		std::vector<Window*> _boundWindows;
 	};
 
 	struct WindowDescription
@@ -64,11 +73,10 @@ namespace xr
 		uint32_t _height = 0;
 	};
 
-	class Window : public ApplicationChild, public ThreadChild
+	class Window : public ApplicationChild
 	{
 	public:
 		Window(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription);
-		Window(Application* application, EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription);
 		virtual ~Window();
 
 	public:

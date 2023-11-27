@@ -54,17 +54,17 @@ namespace xr
 		inline std::unique_ptr<Thread>&&		createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution) { return std::move(_applicationPlatform->createThread(threadName, launchImmediatly, threadExecution)); }
 
 		inline std::unique_ptr<EventFetcher>&&	createEventFetcher(Thread* ownerThread) { return std::move(_applicationPlatform->createEventFetcher(ownerThread)); }
-		inline std::unique_ptr<Window>&&		createWindow(EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription) { return std::move(_applicationPlatform->createWindow(eventFetcher, ownerThread, windowDescription)); }
+		inline std::unique_ptr<Window>&&		createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription) { return std::move(_applicationPlatform->createWindow(eventFetcher, windowDescription)); }
 
 	public:
-		void									addThread(ApplicationChild* child);
-		void									removeThread(ApplicationChild* child);
+		virtual void							addThread(ApplicationChild* child);
+		virtual void							removeThread(ApplicationChild* child);
 
-		void									addEventFetcher(ApplicationChild* child);
-		void									removeEventFetcher(ApplicationChild* child);
+		virtual void							addEventFetcher(ApplicationChild* child);
+		virtual void							removeEventFetcher(ApplicationChild* child);
 
-		void									addWindow(ApplicationChild* child);
-		void									removeWindow(ApplicationChild* child);
+		virtual void							addWindow(ApplicationChild* child);
+		virtual void							removeWindow(ApplicationChild* child);
 
 	private:
 		std::unique_ptr<Thread>					_mainThread;

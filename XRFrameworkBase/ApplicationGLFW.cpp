@@ -57,7 +57,7 @@ namespace xr
 		return std::move(temp);
 	}
 
-	std::unique_ptr<Window>&& ApplicationGLFW::createWindow(EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription)
+	std::unique_ptr<Window>&& ApplicationGLFW::createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription)
 	{
 		std::unique_ptr<Window> temp;
 		return std::move(temp);

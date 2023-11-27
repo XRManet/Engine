@@ -9,6 +9,10 @@ namespace xr
 	{
 	public:
 		ThreadWin32(bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId);
+		ThreadWin32(Application* ownerApplication, bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId);
+
+	private:
+		void commonConstructor(bool createOnCurrentThrad, ThreadExecution threadExecution, uint32_t& outThreadId);
 
 	public:
 		virtual void setThreadName_inner(const char* threadName) override;

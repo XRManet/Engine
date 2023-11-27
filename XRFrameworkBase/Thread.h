@@ -13,13 +13,16 @@ namespace xr
 	{
 	public:
 		Thread(ThreadExecution threadExecution);
+		Thread(Application* application, ThreadExecution threadExecution);
 		virtual ~Thread();
 
 	public:
 		static std::unique_ptr<Thread> createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution);
+		static std::unique_ptr<Thread> createThread(Application* ownerApplication, const char* threadName, bool launchImmediatly, ThreadExecution threadExecution);
 		static std::unique_ptr<Thread> bindThreadFromCurrent(const char* threadName, ThreadExecution threadExecution);
 
 	public:
+		static bool hasThread();
 		static Thread* getCurrentThread();
 
 	public:
@@ -42,12 +45,13 @@ namespace xr
 		virtual uint32_t getExitCode() = 0;
 
 	private:
-		static std::unique_ptr<Thread> createThread(bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId);
+		static std::unique_ptr<Thread> createThreadPlatform(bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId);
+		static std::unique_ptr<Thread> createThreadPlatform(Application* ownerApplication, bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId);
 
 	private:
 		ThreadExecution _threadExecution;
 		std::string _threadName;
-		uint32_t _threadId;
+		uint32_t _threadId = 0;
 	};
 
 } // namespace xr

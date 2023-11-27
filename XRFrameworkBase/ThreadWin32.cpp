@@ -11,13 +11,29 @@ namespace xr
 		return 0;
 	}
 
-	std::unique_ptr<Thread> Thread::createThread(bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId)
+	std::unique_ptr<Thread> Thread::createThreadPlatform(bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId)
 	{
 		return std::unique_ptr<Thread>(new ThreadWin32(createOnCurrentThread, threadExecution, outThreadId));
 	}
 
+	std::unique_ptr<Thread> Thread::createThreadPlatform(Application* ownerApplication, bool createOnCurrentThread, ThreadExecution threadExecution, uint32_t& outThreadId)
+	{
+		return std::unique_ptr<Thread>(new ThreadWin32(ownerApplication, createOnCurrentThread, threadExecution, outThreadId));
+	}
+
 	ThreadWin32::ThreadWin32(bool createOnCurrentThrad, ThreadExecution threadExecution, uint32_t& outThreadId)
 		: Thread(threadExecution)
+	{
+		commonConstructor(createOnCurrentThrad, threadExecution, outThreadId);
+	}
+
+	ThreadWin32::ThreadWin32(Application* ownerApplication, bool createOnCurrentThrad, ThreadExecution threadExecution, uint32_t& outThreadId)
+		: Thread(ownerApplication, threadExecution)
+	{
+		commonConstructor(createOnCurrentThrad, threadExecution, outThreadId);
+	}
+
+	void ThreadWin32::commonConstructor(bool createOnCurrentThrad, ThreadExecution threadExecution, uint32_t& outThreadId)
 	{
 		if (createOnCurrentThrad)
 		{
@@ -30,6 +46,9 @@ namespace xr
 			DWORD					defaultStackSize = 0;
 			DWORD					defaultCreationFlags = 0;
 			_hThread = ::CreateThread(defaultSecurityAttributes, defaultStackSize, threadMain, this, defaultCreationFlags, (LPDWORD)&outThreadId);
+			
+			if (_hThread == NULL)
+				throw;
 		}
 	}
 

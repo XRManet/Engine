@@ -3,10 +3,22 @@
 
 namespace xr
 {
+	std::unique_ptr<Thread> Thread::createThread(Application* ownerApplication, const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
+	{
+		uint32_t threadId = 0;
+		std::unique_ptr<Thread> thread = createThreadPlatform(ownerApplication, false, threadExecution, threadId);
+		thread->_threadId = threadId;
+
+		if (threadName != nullptr)
+			thread->setThreadName(threadName);
+
+		return thread;
+	}
+
 	std::unique_ptr<Thread> Thread::createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
 	{
 		uint32_t threadId = 0;
-		std::unique_ptr<Thread> thread = createThread(false, threadExecution, threadId);
+		std::unique_ptr<Thread> thread = createThreadPlatform(false, threadExecution, threadId);
 		thread->_threadId = threadId;
 
 		if (threadName != nullptr)
@@ -17,8 +29,10 @@ namespace xr
 
 	std::unique_ptr<Thread> Thread::bindThreadFromCurrent(const char* threadName, ThreadExecution threadExecution)
 	{
+		assert(hasThread() == false);
+
 		uint32_t threadId = 0;
-		std::unique_ptr<Thread> thread = createThread(true, threadExecution, threadId);
+		std::unique_ptr<Thread> thread = createThreadPlatform(true, threadExecution, threadId);
 		thread->_threadId = threadId;
 
 		if (threadName != nullptr)
@@ -57,6 +71,11 @@ namespace xr
 		return g_currentThreadContext._thread;
 	}
 
+	bool Thread::hasThread()
+	{
+		return g_currentThreadContext._thread != nullptr;
+	}
+
 	Thread::Thread(ThreadExecution threadExecution)
 		: _threadExecution(threadExecution)
 	{
@@ -72,4 +91,15 @@ namespace xr
 		_threadExecution();
 	}
 
+} // namespace xr
+
+#include <XRFrameworkBase/Application.h>
+
+namespace xr
+{
+	Thread::Thread(Application* ownerApplication, ThreadExecution threadExecution)
+		: ApplicationChild(ownerApplication, &Application::addThread, &Application::removeThread)
+		, _threadExecution(threadExecution)
+	{
+	}
 } // namespace xr

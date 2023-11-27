@@ -82,27 +82,27 @@ namespace xr
 	uint32_t Application::defaultMainThreadRun()
 	{
 		auto fetcher = createEventFetcher(getMainThread());
-		auto resizeKey = fetcher->eventResize.registerEvent(
+		auto resizeKey = fetcher->_eventResize.registerEvent(
 			[](Window* window, bool minimized, bool maximized, uint32_t width, uint32_t height) {
 				printf("Resize event occurred.");
 			});
 
-		auto keyboardKey = fetcher->eventKeyboard.registerEvent(
+		auto keyboardKey = fetcher->_eventKeyboard.registerEvent(
 			[](Window* /*window*/, bool /*ctrl*/, bool /*alt*/, bool /*shift*/, bool /*currentPressed*/, bool /*previousPressed*/, uint32_t /*keyPressedCount*/, uint32_t /*key*/) {
 				printf("Keyboard event occurred.");
 			});
-		auto mouseKey = fetcher->eventMouse.registerEvent(
+		auto mouseKey = fetcher->_eventMouse.registerEvent(
 			[](Window* /*window*/, const unsigned /*left*/, const unsigned /*middle*/, const unsigned /*right*/, const unsigned /*xButton*/, const int /*windowX*/, const int /*windowY*/) {
 				printf("Mouse event occurred.");
 			});
 
-		auto window = [this, &fetcher]()
+		auto mainWindow = [this, &fetcher]()
 		{
 			WindowDescription windowDescription = {};
 			windowDescription._title = "XRDefault";
 			windowDescription._width = 1920;
 			windowDescription._height = 1080;
-			auto window = createWindow(fetcher.get(), _mainThread.get(), windowDescription);
+			auto window = createWindow(fetcher.get(), windowDescription);
 
 			return window;
 		} ();
@@ -143,7 +143,8 @@ namespace xr
 					};
 				}
 			}
-			});
+			}
+		);
 
 		return 0;
 	}

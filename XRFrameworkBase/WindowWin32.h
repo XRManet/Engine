@@ -20,7 +20,7 @@ namespace xr
 	class EventFetcherWin32 : public EventFetcher
 	{
 	public:
-		EventFetcherWin32(Thread* ownerThread);
+		EventFetcherWin32(Application* application, Thread* ownerThread);
 		virtual ~EventFetcherWin32();
 
 	public:
@@ -31,10 +31,9 @@ namespace xr
 	{
 	public:
 		WindowWin32(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription);
-		WindowWin32(Application* application, EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription);
 		virtual ~WindowWin32();
 
-		void constructorCommon();
+		void commonConstructor();
 
 	public:
 		using Window::setSwapchain;

@@ -10,9 +10,11 @@
 namespace xr
 {
 
-	EventFetcher::EventFetcher(Thread* ownerThread)
-		: ThreadChild(ownerThread)
+	EventFetcher::EventFetcher(Application* application, Thread* ownerThread)
+		: ApplicationChild(application, &Application::addEventFetcher, &Application::removeEventFetcher)
+		, ThreadChild(ownerThread)
 	{
+		assert(ownerThread->getApplication() == application && "A given ownerThread must be owned by the application that also owns this event fetcher.");
 	}
 
 	EventFetcher::~EventFetcher()
@@ -21,27 +23,31 @@ namespace xr
 
 	void EventFetcher::processLoop(std::function<void()> loopWorks)
 	{
-		bool continueLoop = true;
-		while (continueLoop)
+		while (processEventQueue())
 		{
-			continueLoop = processEventQueue();
-
 			loopWorks();
 		}
 	}
 
-	Window::Window(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription)
-		: Window(application, eventFetcher, Thread::getCurrentThread(), windowDescription)
+	void EventFetcher::bindWindow(Window* window)
 	{
+		_boundWindows.emplace_back(window);
 	}
 
-	Window::Window(Application* application, EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription)
+	void EventFetcher::unbindWindow(Window* window)
+	{
+		std::erase_if(_boundWindows, [window](Window* elem) { return (window == elem); });
+	}
+
+	Window::Window(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription)
 		: ApplicationChild(application, &Application::addWindow, &Application::removeWindow)
-		, ThreadChild(ownerThread)
 		, _boundEventFetcher(eventFetcher)
 		, _windowDescription(windowDescription)
 		, _boundSwapchain(nullptr)
 	{
+		assert(eventFetcher->getApplication() == application && "A given eventFetcher must be owned by the application that also owns this window.");
+		assert(eventFetcher->getOwnerThread() == Thread::getCurrentThread() && "Creating a window must be called in a thread that owns a eventFetcher.");
+		_boundEventFetcher->bindWindow(this);
 	}
 
 	Window::~Window()

@@ -23,7 +23,7 @@ namespace xr
 		virtual std::unique_ptr<Thread>&&		createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution) = 0;
 
 		virtual std::unique_ptr<EventFetcher>&&	createEventFetcher(Thread* ownerThread) = 0;
-		virtual std::unique_ptr<Window>&&		createWindow(EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription) = 0;
+		virtual std::unique_ptr<Window>&&		createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription) = 0;
 
 	protected:
 		Application const*	getApplication() const { return _application; }

@@ -10,21 +10,19 @@ namespace xr
 {
 	std::unique_ptr<Thread>&& ApplicationWin32::createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
 	{
-		auto thread = Thread::createThread(threadName, launchImmediatly, threadExecution);
-		thread->bindApplication(getApplication(), &Application::addThread, &Application::removeThread);
+		auto thread = Thread::createThread(getApplication(), threadName, launchImmediatly, threadExecution);
 		return std::move(thread);
 	}
 
 	std::unique_ptr<EventFetcher>&& ApplicationWin32::createEventFetcher(Thread* ownerThread)
 	{
-		auto eventFetcher = std::unique_ptr<EventFetcher>(new EventFetcherWin32(ownerThread));
-		eventFetcher->bindApplication(getApplication(), &Application::addEventFetcher, &Application::removeEventFetcher);
+		auto eventFetcher = std::unique_ptr<EventFetcher>(new EventFetcherWin32(getApplication(), ownerThread));
 		return std::move(eventFetcher);
 	}
 
-	std::unique_ptr<Window>&& ApplicationWin32::createWindow(EventFetcher* eventFetcher, Thread* ownerThread, WindowDescription& windowDescription)
+	std::unique_ptr<Window>&& ApplicationWin32::createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription)
 	{
-		auto window = std::unique_ptr<Window>(new WindowWin32(getApplication(), eventFetcher, ownerThread, windowDescription));
+		auto window = std::unique_ptr<Window>(new WindowWin32(getApplication(), eventFetcher, windowDescription));
 		return std::move(window);
 	}
 
