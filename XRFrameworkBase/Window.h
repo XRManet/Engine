@@ -39,7 +39,7 @@ namespace xr
 		EventKey _eventKeyGenerator;
 	};
 
-	class EventFetcher : public ApplicationChild, public ThreadChild
+	class XRBaseExport EventFetcher : public ApplicationChild, public ThreadChild
 	{
 	public:
 		EventFetcher(Application* application, Thread* ownerThread);
@@ -61,6 +61,8 @@ namespace xr
 		EventCaller<void, Window* /*window*/, bool /*minimized*/, bool /*maximized*/, uint32_t /*width*/, uint32_t /*height*/> _eventResize;
 		EventCaller<void, Window* /*window*/, bool /*ctrl*/, bool /*alt*/, bool /*shift*/, bool /*currentPressed*/, bool /*previousPressed*/, uint32_t /*keyPressedCount*/, uint32_t /*key*/> _eventKeyboard;
 		EventCaller<void, Window* /*window*/, const unsigned /*left*/, const unsigned /*middle*/, const unsigned /*right*/, const unsigned /*xButton*/, const int /*windowX*/, const int /*windowY*/> _eventMouse;
+		EventCaller<void, Window* /*window*/> _eventOnClose;
+		EventCaller<void, Window* /*window*/> _eventOnDestroy;
 
 	private:
 		std::vector<Window*> _boundWindows;
@@ -73,7 +75,7 @@ namespace xr
 		uint32_t _height = 0;
 	};
 
-	class Window : public ApplicationChild
+	class XRBaseExport Window : public ApplicationChild
 	{
 	public:
 		Window(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription);

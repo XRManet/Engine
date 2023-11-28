@@ -293,6 +293,9 @@
     <ClInclude Include="ApplicationWin32.h">
       <Filter>소스 파일\Application\Backend</Filter>
     </ClInclude>
+    <ClInclude Include="GLFWBinder.h">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">
@@ -422,6 +425,9 @@
       <Filter>소스 파일\Application\Backend</Filter>
     </ClCompile>
     <ClCompile Include="ApplicationWin32Factory.cpp">
+      <Filter>소스 파일\Application\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFWBinder.cpp">
       <Filter>소스 파일\Application\Backend</Filter>
     </ClCompile>
   </ItemGroup>

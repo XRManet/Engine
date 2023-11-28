@@ -1,171 +1,9 @@
 ﻿#include "stdafx.h"
-#include "XRLoopManager.h"
+#include "XRFrameProcessor.h"
 
 #include <XRFrameworkBase/XRObject.h>
 #include <XRFrameworkBase/XRScene.h>
 #include "XRSceneManager.h"
-
-XRInputLinkage g_input;
-
-
-XRWindowSystem<GLFW>::XRWindowSystem(XRSize<float> const& size)
-{
-	static const uint32_t versions[][2] = {
-		{4, 6}, {4, 5}, {4, 3}, {4, 1}, {4, 0},
-		{3, 3}, {3, 0},
-		{2, 1}, {2, 0},
-		{1, 1}, {1, 0}
-	};
-	uint32_t version_try = 0;
-
-	if (glfwInit() == 0)
-		throw;
-
-	if (glfwVulkanSupported())
-	{
-		printf("Vulkan available after getInstanceProcAddress(vkCreateInstance)\n");
-	}
-	
-	const bool useOpenGL = false;
-	if (useOpenGL)
-	{
-		while (1)
-		{
-			static const uint32_t max_try = static_cast<uint32_t>(sizeof(versions) / sizeof(versions[0]));
-			if (version_try < max_try)
-			{
-				// Todo: Query for each platform
-				glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, versions[version_try][0]);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, versions[version_try][1]);
-				// Note: Use compatible profile because there is a bug in GLEW for Windows
-	#if XR_PLATFORM == XR_PLATFORM_WINDOWS
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	#elif XR_PLATFORM == XR_PLATFORM_OSX
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	#endif
-				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-				glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_LOSE_CONTEXT_ON_RESET);
-				// Note: To control with EGL may not be available.
-				//glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-				glfwWindowHint(GLFW_CONTEXT_RELEASE_BEHAVIOR, GLFW_RELEASE_BEHAVIOR_FLUSH);
-				glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	#if defined(_DEBUG) || defined(DEBUG)
-				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-	#endif
-			}
-			else
-			{
-				glfwDefaultWindowHints();
-			}
-
-			_window = glfwCreateWindow(size._width, size._height,
-				"Hello world!", NULL, NULL);
-
-			if (_window != nullptr)
-			{
-				printf("OpenGL version: ");
-				if (version_try <= max_try)
-					printf("%d.%d\n", versions[version_try][0], versions[version_try][1]);
-				else
-					printf("system-default\n");
-
-				glfwSetWindowUserPointer(_window, this);
-				glfwMakeContextCurrent(_window);
-				break;
-			}
-			else
-			{
-				++version_try;
-			}
-		}
-	}
-	else
-	{
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-		
-		_window = glfwCreateWindow(size._width, size._height, "Hello world!", NULL, NULL);
-
-	}
-
-	glfwSetKeyCallback(_window, InputKeyboard);
-	glfwSetMouseButtonCallback(_window, InputMouse);
-	glfwSetCursorPosCallback(_window, PositionMouse);
-	glfwSetScrollCallback(_window, ScrollMouse);
-}
-
-XRWindowSystem<GLFW>::~XRWindowSystem()
-{
-	if (!_window) {
-		glfwTerminate();
-	}
-}
-
-void XRWindowSystem<GLFW>::PollEvents()
-{
-	/* Swap front and back buffers */
-	glfwSwapBuffers(_window);
-
-	/* Poll for and process events */
-	glfwPollEvents();
-}
-
-void XRWindowSystem<GLFW>::InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	auto _this = static_cast<XRWindowSystem<GLFW>*>(glfwGetWindowUserPointer(window));
-
-	if (key < 256)
-		g_input.keyboardPressed[key] = (action == GLFW_REPEAT || action == GLFW_PRESS) ? 1 : 0;
-
-	switch (key)
-	{
-	case GLFW_KEY_W:
-	case GLFW_KEY_S:
-	case GLFW_KEY_A:
-	case GLFW_KEY_D:
-	case GLFW_KEY_Q:
-	case GLFW_KEY_E:
-		if (action == GLFW_PRESS);
-		else if (action == GLFW_RELEASE);
-		else if (action == GLFW_REPEAT);
-		break;
-	}
-}
-
-void XRWindowSystem<GLFW>::InputMouse(GLFWwindow* window, int button, int action, int mods)
-{
-	if (button == GLFW_MOUSE_BUTTON_RIGHT)
-	{
-		if (action == GLFW_PRESS)
-		{
-			g_input.anchorX = g_input.curX;
-			g_input.anchorY = g_input.curY;
-			g_input.anchored = true;
-		}
-		else if (action == GLFW_RELEASE)
-		{
-			g_input.anchored = false;
-		}
-	}
-}
-
-void XRWindowSystem<GLFW>::PositionMouse(GLFWwindow* window, double xpos, double ypos)
-{
-	int32_t windowSizeX = 0, windowSizeY = 0;
-	glfwGetWindowSize(window, &windowSizeX, &windowSizeY);
-
-	g_input.curX = xpos;
-	g_input.curY = double(windowSizeY) - ypos;
-}
-
-void XRWindowSystem<GLFW>::ScrollMouse(GLFWwindow* window, double xoffset, double yoffset)
-{
-	printf("%lf\n", yoffset);
-	g_input.cameraStep += float(yoffset * .1f) ;
-	if (g_input.cameraStep <= .1f)
-		g_input.cameraStep = .1f;
-}
 
 #if TEST_CODE// TEST_CODE
 
@@ -396,13 +234,15 @@ void XRRendererTest::Render()
 
 #include <XRFrameworkBase/XRRenderer.h>
 
-XRFrameWalker::XRFrameWalker()
+XRInputLinkage g_input;
+
+XRFrameProcessor::XRFrameProcessor()
 {
     // TODO) select a strategy by reading from manifest.
     //_renderer = new XRRenderer();
 }
 
-void XRFrameWalker::Initialize()
+void XRFrameProcessor::Initialize()
 {
 	auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();
@@ -414,7 +254,7 @@ void XRFrameWalker::Initialize()
 	renderer->Initialize(resourceManager);
 }
 
-void XRFrameWalker::UpdateFrame()
+void XRFrameProcessor::UpdateFrame()
 {
     auto scene = XRSceneManager::GetInstance()->GetPrimaryScene();
 	auto renderer = XRSceneManager::GetInstance()->GetCurrentRenderer();

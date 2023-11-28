@@ -76,7 +76,8 @@ namespace xr
 	}
 
 
-	LRESULT WindowEventExecutor::hitTest(const POINT& cursor) const {
+	LRESULT WindowEventExecutor::hitTest(const POINT& cursor) const
+	{
 		const POINT border{
 			::GetSystemMetrics(SM_CXFRAME) + ::GetSystemMetrics(SM_CXPADDEDBORDER),
 			::GetSystemMetrics(SM_CYFRAME) + ::GetSystemMetrics(SM_CXPADDEDBORDER)
@@ -179,9 +180,9 @@ namespace xr
 			}
 			break;
 		}
-		case WM_NCHITTEST:
+		case WM_NCHITTEST: {
 			return executor.hitTest(POINT{ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) });
-			break;
+		}
 		case WM_NCACTIVATE: {
 			// Note(jiman): DWM이 처리하는 과정에 대한 파악 이후 추가 처리 필요.
 			break;
@@ -193,11 +194,11 @@ namespace xr
 			executor._eventFetcher->_eventResize(executor._window, wParam == SIZE_MINIMIZED, wParam == SIZE_MAXIMIZED, (uint32_t)LOWORD(lParam), (uint32_t)HIWORD(lParam));
 			return 0;
 		}
-		case WM_SYSCOMMAND:
+		case WM_SYSCOMMAND: {
 			if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
 				return 0;
 			break;
-
+		}
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 		case WM_SYSKEYDOWN:
@@ -238,9 +239,15 @@ namespace xr
 			executor._eventFetcher->_eventMouse(executor._window, left, middle, right, xButton, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 			break;
 		}
-		case WM_DESTROY:
+		case WM_CLOSE: {
+			executor._eventFetcher->_eventOnClose(executor._window);
+			break;
+		}
+		case WM_DESTROY: {
+			executor._eventFetcher->_eventOnDestroy(executor._window);
 			::PostQuitMessage(0);
 			return 0;
+		}
 		}
 
 		return ::DefWindowProc(hWnd, msg, wParam, lParam);

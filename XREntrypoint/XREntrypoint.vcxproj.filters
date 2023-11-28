@@ -45,7 +45,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="XRLoopManager.h">
+    <ClInclude Include="XRFrameProcessor.h">
       <Filter>Source files\Platform</Filter>
     </ClInclude>
     <ClInclude Include="XRSceneManager.h">
@@ -62,7 +62,7 @@
     <ClCompile Include="XRSceneManager.cpp">
       <Filter>Source files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="XRLoopManager.cpp">
+    <ClCompile Include="XRFrameProcessor.cpp">
       <Filter>Source files\Platform</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">

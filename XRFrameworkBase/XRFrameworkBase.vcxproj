@@ -163,6 +163,7 @@
     <ClInclude Include="ApplicationGLFW.h" />
     <ClInclude Include="ApplicationPlatform.h" />
     <ClInclude Include="ApplicationWin32.h" />
+    <ClInclude Include="GLFWBinder.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="ApplicationWin32.cpp" />
     <ClCompile Include="ApplicationWin32Factory.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="GLFWBinder.cpp" />
     <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -4,6 +4,13 @@
 #include <XRFrameworkBase/Thread.h>
 #include <XRFrameworkBase/Window.h>
 
+#include <XRFrameworkBase/XRSourceBuildSystem.h>
+#include <XRFrameworkBase/XRRenderEngine.h>
+
+#include "XRFrameProcessor.h"
+#include "XRSceneManager.h"
+#include "XRRenderEnginePlatformBinder.hpp"
+
 namespace xr
 {
 	MainApplication::MainApplication(PlatformType platformType)
@@ -26,7 +33,16 @@ namespace xr
 			return window;
 		} ();
 
+		XRSourceBuildSystem* shaderBuildSystem = xrGetShaderBuildSystem();
+
+		XRFrameProcessor frameProcessor;
+		frameProcessor.Initialize();
+
+		auto sceneManager = XRSceneManager::GetInstance();
+		sceneManager->BindPrimaryScene("main");
+
 		fetcher->processLoop([&, this]() {
+			frameProcessor.UpdateFrame();
 			});
 
 		return 0;

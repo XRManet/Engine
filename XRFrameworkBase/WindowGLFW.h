@@ -16,6 +16,12 @@ namespace xr
 	public:
 		virtual bool processEventQueue() override final;
 
+	public:
+		static void InputKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void InputMouse(GLFWwindow* window, int button, int action, int mods);
+		static void PositionMouse(GLFWwindow* window, double xpos, double ypos);
+		static void ScrollMouse(GLFWwindow* window, double xoffset, double yoffset);
+
 	private:
 		struct {
 			std::vector<GLFWwindow*>	_glfw;

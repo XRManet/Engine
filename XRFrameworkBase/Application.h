@@ -23,7 +23,7 @@ namespace xr
 
 	namespace render { class Renderable; }
 
-	class Application
+	class XRBaseExport Application
 	{
 	public:
 		Application(PlatformType platformType);
