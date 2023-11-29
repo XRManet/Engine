@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+namespace xr
+{
+	class Window;
+} // namespace xr
+
 struct XRSwapchainCreateInfo;
 class XRSwapchain;
 
@@ -11,7 +16,7 @@ extern XRSwapchain* (*xrCreateSwapchain)(XRSwapchainCreateInfo const* createInfo
 
 struct XRSwapchainCreateInfo
 {
-
+	xr::Window* _window;
 };
 
 class XRSwapchainRHI

@@ -40,6 +40,7 @@ namespace xr
 		using Window::setWindowSize;
 
 	public:
+		void* getPlatformNativeHandle() const override;
 		HWND getHwnd() const { return _hWnd; }
 
 	private:

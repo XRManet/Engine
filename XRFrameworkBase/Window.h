@@ -90,6 +90,7 @@ namespace xr
 		void attachUserContext(const std::string& key, std::unique_ptr<WindowUserContext>&& context);
 		auto& getUserContexts() const { return _userContexts; }
 
+		virtual void* getPlatformNativeHandle() const = 0;
 
 	protected:
 		void setSwapchain(XRSwapchain* swapchain);

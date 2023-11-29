@@ -299,4 +299,9 @@ namespace xr
 			::DestroyWindow(_hWnd);
 	}
 
+	void* WindowWin32::getPlatformNativeHandle() const
+	{
+		return getHwnd();
+	}
+
 } // namespace xr

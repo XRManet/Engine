@@ -143,4 +143,9 @@ namespace xr
 		}
 	}
 
+	void* WindowGLFW::getPlatformNativeHandle() const
+	{
+		return glfwGetWin32Window(_window);
+	}
+
 } // namespace xr

@@ -42,6 +42,7 @@ namespace xr
 		using Window::setWindowSize;
 
 	public:
+		void* getPlatformNativeHandle() const override;
 		GLFWwindow* getGlfwWindow() const { return _window; }
 
 	private:

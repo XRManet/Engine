@@ -15,5 +15,6 @@ public:
 	void initialize(XRSwapchain* swapchainHandle);
 
 private:
+	VkSurfaceKHR _surface;
 	VkSwapchainKHR _swapchain;
 };
