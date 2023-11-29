@@ -26,8 +26,8 @@ namespace xr
 	class XRBaseExport Application
 	{
 	public:
-		Application(PlatformType platformType);
-		Application(PlatformType platformType, ThreadExecution threadExecution);
+		Application(std::string&& name, PlatformType platformType);
+		Application(std::string&& name, PlatformType platformType, ThreadExecution threadExecution);
 		virtual ~Application();
 
 	public:
@@ -41,6 +41,8 @@ namespace xr
 		uint32_t								defaultMainThreadRun();
 
 	public:
+		const std::string&						getName() const { return _name; }
+
 		Thread*									getMainThread() { return _mainThread.get(); }
 		const std::vector<Thread*>&				getAllThreads() const { return _allThreads; }
 
@@ -66,12 +68,16 @@ namespace xr
 		virtual void							addWindow(ApplicationChild* child);
 		virtual void							removeWindow(ApplicationChild* child);
 
+		virtual void							addRenderEngine(ApplicationChild* child);
+		virtual void							removeRenderEngine(ApplicationChild* child);
+
 	private:
 		std::unique_ptr<Thread>					_mainThread;
 		std::vector<Thread*>					_allThreads;
 
 		std::unique_ptr<ApplicationPlatform>	_applicationPlatform;
 		PlatformType							_platformType;
+		std::string								_name;
 	};
 
 } // namespace xr

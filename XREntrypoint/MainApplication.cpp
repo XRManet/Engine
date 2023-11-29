@@ -14,7 +14,7 @@
 namespace xr
 {
 	MainApplication::MainApplication(PlatformType platformType)
-		: Application(platformType, bindThreadExecution(&MainApplication::main, this))
+		: Application("XRManet", platformType, bindThreadExecution(&MainApplication::main, this))
 	{
 	}
 
@@ -28,9 +28,8 @@ namespace xr
 			windowDescription._title = "Main";
 			windowDescription._width = 1920;
 			windowDescription._height = 1080;
-			auto window = createWindow(fetcher.get(), windowDescription);
-
-			return window;
+			
+			return createWindow(fetcher.get(), windowDescription);
 		} ();
 
 		XRSourceBuildSystem* shaderBuildSystem = xrGetShaderBuildSystem();

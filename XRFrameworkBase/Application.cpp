@@ -14,13 +14,14 @@
 namespace xr
 {
 
-	Application::Application(PlatformType platformType)
-		: Application(platformType, bindThreadExecution(&Application::defaultMainThreadRun, this))
+	Application::Application(std::string&& name, PlatformType platformType)
+		: Application(std::move(name), platformType, bindThreadExecution(&Application::defaultMainThreadRun, this))
 	{
 	}
 
-	Application::Application(PlatformType platformType, ThreadExecution threadExecution)
+	Application::Application(std::string&& name, PlatformType platformType, ThreadExecution threadExecution)
 		: _platformType(platformType)
+		, _name(move(name))
 	{
 		_applicationPlatform = std::move(createApplicationPlatform(this, platformType));
 		_mainThread = Thread::bindThreadFromCurrent("Main Thread", threadExecution);
@@ -73,6 +74,13 @@ namespace xr
 	{
 	}
 	void Application::removeWindow(ApplicationChild* child)
+	{
+	}
+
+	void Application::addRenderEngine(ApplicationChild* child)
+	{
+	}
+	void Application::removeRenderEngine(ApplicationChild* child)
 	{
 	}
 } // namespace xr
