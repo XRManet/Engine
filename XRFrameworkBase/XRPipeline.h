@@ -9,7 +9,7 @@
 struct XRPipelineStateDescription;
 class XRPipeline;
 
-XRRenderAPI(XRPipeline*, xrCreatePipeline)(XRPipelineStateDescription const* createInfo);
+XRRenderAPI(xrCreatePipeline)(XRPipelineStateDescription const* createInfo)->XRPipeline*;
 
 /******************************************************************************
   GL State to Vulkan State Mapping
@@ -908,7 +908,7 @@ public:
 
 	void AddStepWithForceSeparate(XRCommandStep&& step, std::function<CommandBlock>&& commandBlock)
 	{
-		_separatedStepPositions.push_back(_steps.size());
+		_separatedStepPositions.push_back(static_cast<uint32_t>(_steps.size()));
 
 		AddStep(std::move(step), std::move(commandBlock));
 	}

@@ -4,6 +4,7 @@
 #include <XRFrameworkBase/Thread.h>
 #include <XRFrameworkBase/Window.h>
 
+#include <XRFrameworkBase/XRSystemLinker.hpp>
 #include <XRFrameworkBase/XRSourceBuildSystem.h>
 #include <XRFrameworkBase/XRRenderEngine.h>
 
@@ -33,6 +34,8 @@ namespace xr
 		} ();
 
 		XRSourceBuildSystem* shaderBuildSystem = xrGetShaderBuildSystem();
+
+		auto renderEngine = std::unique_ptr<IRenderEngine>(createRenderEngine(this));
 
 		XRFrameProcessor frameProcessor;
 		frameProcessor.Initialize();

@@ -4,11 +4,7 @@ struct XRBufferCreateInfo;
 class XRBuffer;
 class XRBufferRHI;
 
-#ifdef XRRENDERENGINE_EXPORTS
-XRRenderExport XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo);
-#else
-extern XRBuffer* (*xrCreateBuffer)(XRBufferCreateInfo const* createInfo);
-#endif
+XRRenderAPI(xrCreateBuffer)(XRBufferCreateInfo const* createInfo)->XRBuffer*;
 
 struct XRBufferCreateInfo
 {

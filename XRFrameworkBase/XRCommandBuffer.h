@@ -7,7 +7,7 @@
 
 class XRCommandBuffer;
 
-XRRenderAPI(XRCommandBuffer*, xrCreateCommandBuffer)();
+XRRenderAPI(xrCreateCommandBuffer)()->XRCommandBuffer*;
 
 enum class XRBindPoint
 {

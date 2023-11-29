@@ -12,13 +12,8 @@ public:
 	virtual ~XRTextureRHI() {}
 };
 
-#ifdef XRRENDERENGINE_EXPORTS
-XRRenderExport XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
-XRRenderExport XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);
-#else
-extern XRTexture* (*xrCreateTexture)(XRTextureCreateInfo const* createInfo);
-extern XRTexture* (*xrCreateTextureFromData)(XRTextureData const* loadable);
-#endif
+XRRenderAPI(xrCreateTexture)(XRTextureCreateInfo const* createInfo)->XRTexture*;
+XRRenderAPI(xrCreateTextureFromData)(XRTextureData const* loadable)->XRTexture*;
 
 /**
  * @struct	XRTextureProperties

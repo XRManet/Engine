@@ -9,8 +9,8 @@ class XRModelData;
 class XRInputLayout;
 class XRInputLayoutDesc;
 
-XRRenderAPI(XRInputLayout*, xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize);
-XRRenderAPI(XRModel*, xrCreateModel)(XRModelData const* loadable);
+XRRenderAPI(xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)->XRInputLayout*;
+XRRenderAPI(xrCreateModel)(XRModelData const* loadable)->XRModel*;
 
 struct XRMaterialParameter
 {
@@ -27,7 +27,7 @@ class XRMaterial
 
 // #include "ModelDataRepresentation.h"
 
-struct XRVertexAttributeDesc
+struct XRBaseExport XRVertexAttributeDesc
 {
 	friend XRInputLayoutDesc;
 	
@@ -40,6 +40,7 @@ public:
 	XRFormat format = XRFormat::UNKNOWN;
 };
 
+template class XRBaseExport std::vector<XRVertexAttributeDesc>;
 struct XRBaseExport XRVertexBufferDesc
 {
 	friend XRInputLayoutDesc;

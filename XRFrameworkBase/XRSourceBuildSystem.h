@@ -8,7 +8,7 @@ class XRSourceBuildSystem;
 
 XRBaseExport XRSourceBuildSystem* xrGetShaderBuildSystem();
 
-XRShaderBuildAPI(XRSourceBuildSystem*, xrLoadShaderBuildSystem)();
+XRShaderBuildAPI(xrLoadShaderBuildSystem)()->XRSourceBuildSystem*;
 
 
 struct XRBuildSystemAvailability

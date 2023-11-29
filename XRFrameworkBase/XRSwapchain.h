@@ -8,11 +8,7 @@ namespace xr
 struct XRSwapchainCreateInfo;
 class XRSwapchain;
 
-#ifdef XRRENDERENGINE_EXPORTS
-XRRenderExport XRSwapchain* xrCreateSwapchain(XRSwapchainCreateInfo const* createInfo);
-#else
-extern XRSwapchain* (*xrCreateSwapchain)(XRSwapchainCreateInfo const* createInfo);
-#endif
+XRRenderAPI(xrCreateSwapchain)(XRSwapchainCreateInfo const* createInfo)->XRSwapchain*;
 
 struct XRSwapchainCreateInfo
 {

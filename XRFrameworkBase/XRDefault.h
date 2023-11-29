@@ -23,18 +23,18 @@
 
 #ifdef XRRENDERENGINE_EXPORTS
 #define XRRenderExport extern "C" __declspec(dllexport)
-#define XRRenderAPI(ReturnType, ApiName) extern "C" __declspec(dllexport) ReturnType ApiName
+#define XRRenderAPI(ApiName) XRRenderExport auto ApiName
 #else
 #define XRRenderExport extern "C" __declspec(dllimport)
-#define XRRenderAPI(ReturnType, ApiName) extern ReturnType (*ApiName)
+#define XRRenderAPI(ApiName) extern auto (*ApiName)
 #endif
 
 #ifdef XRSOURCEBUILDSYSTEM_EXPORTS
 #define XRShaderBuildExport __declspec(dllexport)
-#define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __declspec(dllexport) ReturnType ApiName
+#define XRShaderBuildAPI(ApiName) XRShaderBuildExport auto ApiName
 #else
 #define XRShaderBuildExport __declspec(dllimport)
-#define XRShaderBuildAPI(ReturnType, ApiName) extern ReturnType (*ApiName)
+#define XRShaderBuildAPI(ApiName) extern auto (*ApiName)
 #endif
 
 #elif defined(__APPLE__)
@@ -54,16 +54,16 @@
 
 #define XRRenderExport extern "C" __attribute__((visibility("default")))
 #ifdef XRRENDERENGINE_EXPORTS
-#define XRRenderAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType ApiName
+#define XRRenderAPI(ApiName) XRRenderExport auto ApiName
 #else
-#define XRRenderAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType (*ApiName)
+#define XRRenderAPI(ApiName) extern auto (*ApiName)
 #endif
 
-#define XRShaderBuildExport extern "C" __attribute__((visibility("default")))
+#define XRShaderBuildExport __attribute__((visibility("default")))
 #ifdef XRSOURCEBUILDSYSTEM_EXPORTS
-#define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType ApiName
+#define XRShaderBuildAPI(ApiName) XRShaderBuildExport auto ApiName
 #else
-#define XRShaderBuildAPI(ReturnType, ApiName) extern "C" __attribute__((visibility("default"))) ReturnType (*ApiName)
+#define XRShaderBuildAPI(ApiName) extern auto (*ApiName)
 #endif
 
 #else

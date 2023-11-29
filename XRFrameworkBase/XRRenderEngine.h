@@ -31,3 +31,6 @@ class XRBaseExport IRenderEngine : public xr::ApplicationChild
 public:
 	IRenderEngine(xr::Application* application);
 	~IRenderEngine() override;
+};
+
+XRRenderAPI(createRenderEngine)(xr::Application* application)->IRenderEngine*;

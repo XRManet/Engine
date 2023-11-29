@@ -6,7 +6,7 @@
 class XRRenderGroup;
 class XRRenderGroupManager;
 
-XRRenderAPI(XRRenderGroup*, xrCreateRenderGroup)();
+XRRenderAPI(xrCreateRenderGroup)()->XRRenderGroup*;
 
 // Referenced by here
 class XRInputLayout;
