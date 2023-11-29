@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include <XRFrameworkBase/XRRenderEngine.h>
+#include <XRFrameworkBase/ApplicationChild.h>
+#include <XRFrameworkBase/Application.h>
 
 #include "XRSwapchainVK.h"
 
@@ -14,6 +16,36 @@
 #include "XRRenderGroupVK.h"
 
 #include <assert.h>
+
+class RenderEngineVulkan : public IRenderEngine
+{
+public:
+	RenderEngineVulkan(xr::Application* application);
+
+public:
+	vk::Instance					_instance;
+	std::vector<vk::PhysicalDevice>	_physicalDevices;
+};
+
+RenderEngineVulkan::RenderEngineVulkan(xr::Application* application)
+	: IRenderEngine(application)
+{
+	const char* enableLayerNames[] = {""};
+	const char* enableExtensionNames[] = {
+		VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+	};
+
+	auto appInfo = vk::ApplicationInfo(application->getName().c_str(), 0, "XRManetEngine", 0, VK_API_VERSION_1_3);
+	auto instanceInfo = vk::InstanceCreateInfo();// 0u, & appInfo, enableLayerNames, enableLayerNames);
+
+	_instance = vk::createInstance(instanceInfo);
+	_physicalDevices = _instance.enumeratePhysicalDevices();
+}
+
+XRRenderAPI(createRenderEngine)(xr::Application* application)->IRenderEngine*
+{
+	return new RenderEngineVulkan(application);
+}
 
 template<>
 struct RenderEngineInitializer<DeviceAPI::Vulkan>
@@ -27,6 +59,11 @@ struct RenderEngineInitializer<DeviceAPI::Vulkan>
 	{
 		static RenderEngineInitializer __init;
 		return __init;
+	}
+
+	void setupStatics()
+	{
+		
 	}
 
 	void LogVKSystemInfo()

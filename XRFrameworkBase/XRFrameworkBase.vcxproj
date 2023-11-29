@@ -263,6 +263,7 @@
     <ClCompile Include="XRObjectManager.cpp" />
     <ClCompile Include="XRPipeline.cpp" />
     <ClCompile Include="XRPlatform.cpp" />
+    <ClCompile Include="XRRenderEngine.cpp" />
     <ClCompile Include="XRRenderer.cpp" />
     <ClCompile Include="XRRenderCommon.cpp" />
     <ClInclude Include="XRRenderEngineLinker.hpp" />

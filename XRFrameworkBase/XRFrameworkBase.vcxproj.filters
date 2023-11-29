@@ -430,6 +430,9 @@
     <ClCompile Include="GLFWBinder.cpp">
       <Filter>소스 파일\Application\Backend</Filter>
     </ClCompile>
+    <ClCompile Include="XRRenderEngine.cpp">
+      <Filter>소스 파일\Engine\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="XRFrameworkBase.natvis" />

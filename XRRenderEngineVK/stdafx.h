@@ -10,6 +10,7 @@
 // add headers that you want to pre-compile here
 #include <XRFrameworkBase/XRDefault.h>
 
-#include <vulkan/vulkan.h>
+#define VK_USE_PLATFORM_WIN32_KHR
+#include <vulkan/vulkan.hpp>
 
 #endif //PCH_H
