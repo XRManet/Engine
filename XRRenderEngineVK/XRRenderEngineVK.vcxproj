@@ -177,6 +177,7 @@
     </ClCompile>
     <ClCompile Include="XRBufferVK.cpp" />
     <ClCompile Include="XRCommandBufferVK.cpp" />
+    <ClCompile Include="XRDebugVK.cpp" />
     <ClCompile Include="XRModelVK.cpp" />
     <ClCompile Include="XRPipelineVK.cpp" />
     <ClCompile Include="XRRenderEngineVK.cpp" />

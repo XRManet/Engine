@@ -89,5 +89,8 @@
     <ClCompile Include="XRVulkanCommon.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="XRDebugVK.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
