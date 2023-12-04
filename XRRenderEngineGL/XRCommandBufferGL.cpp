@@ -24,8 +24,9 @@ static GLenum ConvertIndexType(XRIndexType indexType);
 
 }
 
-XRCommandBufferGL::XRCommandBufferGL()
-	: _commandMemoryPool(nullptr)
+XRCommandBufferGL::XRCommandBufferGL(XRRenderDevice* ownerRenderDevice)
+	: XRCommandBuffer(ownerRenderDevice)
+	, _commandMemoryPool(nullptr)
 {
 
 }

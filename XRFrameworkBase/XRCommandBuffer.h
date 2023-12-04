@@ -5,9 +5,12 @@
 #include <XRFrameworkBase/XRReference.h>
 #include <XRFrameworkBase/XRRenderCommon.h>
 
-class XRCommandBuffer;
+#include <XRFrameworkBase/RenderEngineChild.h>
 
-XRRenderAPI(xrCreateCommandBuffer)()->XRCommandBuffer*;
+class XRCommandBuffer;
+class XRRenderDevice;
+
+XRRenderAPI(xrCreateCommandBuffer)(XRRenderDevice* ownerRenderDevice)->XRCommandBuffer*;
 
 enum class XRBindPoint
 {
@@ -45,7 +48,7 @@ struct XRBeginSubPassInfo
 };
 
 class XRModel;
-class XRBaseExport XRCommandBuffer
+class XRBaseExport XRCommandBuffer : public xr::RenderDeviceChild
 {
 public:
 	enum CommandName
@@ -95,7 +98,7 @@ public:
 	};
 
 public:
-	XRCommandBuffer() {}
+	XRCommandBuffer(XRRenderDevice* ownerRenderDevice) : xr::RenderDeviceChild(ownerRenderDevice) {}
 	virtual ~XRCommandBuffer() {}
 
 public:

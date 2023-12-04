@@ -5,7 +5,8 @@
 class XRSwapchainVK : public XRSwapchainRHI
 {
 public:
-	XRSwapchainVK() : _swapchain(VK_NULL_HANDLE) {}
+	XRSwapchainVK(XRRenderDevice* ownerRenderDevice)
+		: XRSwapchainRHI(ownerRenderDevice), _swapchain(VK_NULL_HANDLE) {}
 	virtual ~XRSwapchainVK() {}
 
 public:

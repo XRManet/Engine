@@ -13,25 +13,25 @@ namespace xr
 class Application;
 }
 
-class IRenderEngine;
+class XRRenderEngine;
+class XRRenderDevice;
 
-XRRenderAPI(createRenderEngine)(xr::Application* application)->IRenderEngine* = nullptr;
+XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine* = nullptr;
 
 XRRenderAPI(xrCreateInputLayout)(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)->XRInputLayout* = nullptr;
 XRRenderAPI(xrCreateModel)(XRModelData const* loadable)->XRModel* = nullptr;
-
-XRRenderAPI(xrCreateTexture)(XRTextureCreateInfo const* createInfo)->XRTexture* = nullptr;
-XRRenderAPI(xrCreateTextureFromData)(XRTextureData const* loadable)->XRTexture* = nullptr;
-
-XRRenderAPI(xrCreateBuffer)(XRBufferCreateInfo const* createInfo)->XRBuffer* = nullptr;
-
-XRRenderAPI(xrCreatePipeline)(XRPipelineStateDescription const* createInfo)->XRPipeline* = nullptr;
-
-XRRenderAPI(xrCreateCommandBuffer)()->XRCommandBuffer* = nullptr;
-
 XRRenderAPI(xrCreateRenderGroup)()->XRRenderGroup* = nullptr;
 
-XRRenderAPI(xrCreateSwapchain)(XRSwapchainCreateInfo const* createInfo)->XRSwapchain* = nullptr;
+XRRenderAPI(xrCreateTexture)(XRRenderDevice* ownerRenderDevice, XRTextureCreateInfo const* createInfo)->XRTexture* = nullptr;
+XRRenderAPI(xrCreateTextureFromData)(XRRenderDevice* ownerRenderDevice, XRTextureData const* loadable)->XRTexture* = nullptr;
+
+XRRenderAPI(xrCreateBuffer)(XRRenderDevice* ownerRenderDevice, XRBufferCreateInfo const* createInfo)->XRBuffer* = nullptr;
+
+XRRenderAPI(xrCreatePipeline)(XRRenderDevice* ownerRenderDevice, XRPipelineStateDescription const* createInfo)->XRPipeline* = nullptr;
+
+XRRenderAPI(xrCreateCommandBuffer)(XRRenderDevice* ownerRenderDevice)->XRCommandBuffer* = nullptr;
+
+XRRenderAPI(xrCreateSwapchain)(XRRenderDevice* ownerRenderDevice, XRSwapchainCreateInfo const* createInfo)->XRSwapchain* = nullptr;
 
 #define XRRENDER_ENGINE_GL			XR_DYNAMIC_LIBRARY(XRRenderEngineGL)
 #define XRRENDER_ENGINE_VK			XR_DYNAMIC_LIBRARY(XRRenderEngineVK)
@@ -53,15 +53,15 @@ static struct XRRenderEngineLinker
 		std::vector<std::string> dllLists;
 		XRPlatform::ListDLLFunctions(_dso, dllLists);
 
-		GetProcAddress(createRenderEngine,		"createRenderEngine");
+		GetProcAddress(xrCreateRenderEngine,	"xrCreateRenderEngine");
 		GetProcAddress(xrCreateInputLayout,		"xrCreateInputLayout");
 		GetProcAddress(xrCreateModel,			"xrCreateModel");
+		GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");
 		GetProcAddress(xrCreateTexture,			"xrCreateTexture");
 		GetProcAddress(xrCreateTextureFromData,	"xrCreateTextureFromData");
 		GetProcAddress(xrCreateBuffer,			"xrCreateBuffer");
 		GetProcAddress(xrCreatePipeline,		"xrCreatePipeline");
 		GetProcAddress(xrCreateCommandBuffer,	"xrCreateCommandBuffer");
-		GetProcAddress(xrCreateRenderGroup,		"xrCreateRenderGroup");
 		GetProcAddress(xrCreateSwapchain,		"xrCreateSwapchain");
 	}
 

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include <XRFrameworkBase/XRRenderEngine.h>
+#include <XRFrameworkBase/XRRenderEngineBase.h>
 #include <XRFrameworkBase/ApplicationChild.h>
 #include <XRFrameworkBase/Application.h>
 
@@ -17,34 +17,147 @@
 
 #include <assert.h>
 
-class RenderEngineVulkan : public IRenderEngine
+vk::DebugUtilsMessengerCreateInfoEXT xrGetDefaultDebugUtilsMessengerCreateInfo();
+
+class XRRenderEngineVulkan : public XRRenderEngineBase
 {
 public:
-	RenderEngineVulkan(xr::Application* application);
+	XRRenderEngineVulkan(xr::Application* application);
+	~XRRenderEngineVulkan() override;
+
+public:
+	XRRenderDevice*		createRenderDevice() override final { return nullptr; }
+	XRRenderDevice*		createDefaultRenderDevice() override final;
 
 public:
 	vk::Instance					_instance;
 	std::vector<vk::PhysicalDevice>	_physicalDevices;
 };
 
-RenderEngineVulkan::RenderEngineVulkan(xr::Application* application)
-	: IRenderEngine(application)
+class XRRenderDeviceVulkan : public XRRenderDeviceBase
 {
-	const char* enableLayerNames[] = {""};
-	const char* enableExtensionNames[] = {
-		VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
-	};
+public:
+	XRRenderDeviceVulkan(XRRenderEngine* ownerRenderEngine, vk::PhysicalDevice physicalDevice, vk::Device device)
+		: XRRenderDeviceBase(ownerRenderEngine), _physicalDevice(physicalDevice), _device(device) {}
 
-	auto appInfo = vk::ApplicationInfo(application->getName().c_str(), 0, "XRManetEngine", 0, VK_API_VERSION_1_3);
-	auto instanceInfo = vk::InstanceCreateInfo();// 0u, & appInfo, enableLayerNames, enableLayerNames);
 
-	_instance = vk::createInstance(instanceInfo);
+public:
+	XRBuffer*			createBuffer(XRBufferCreateInfo const* createInfo) override final;
+	XRTexture*			createTexture(XRTextureCreateInfo const* createInfo) override final;
+	XRTexture*			createTextureFromData(XRTextureData const* loadable) override final;
+	XRPipeline*			createPipeline(XRPipelineStateDescription const* description) override final;
+	XRCommandBuffer*	createCommandBuffer() override final;
+	XRSwapchain*		createSwapchain(XRSwapchainCreateInfo const* createInfo) override final;
+
+private:
+	vk::PhysicalDevice	_physicalDevice;
+	vk::Device			_device;
+};
+
+XRRenderEngineVulkan::XRRenderEngineVulkan(xr::Application* application)
+	: XRRenderEngineBase(application)
+{
+	auto instanceInfo = [](xr::Application* application)
+	{
+		const char* enableLayerNames[] = { "" };
+		const char* enableExtensionNames[] = {
+			VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+			VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+		};
+
+		auto appInfo = vk::ApplicationInfo(
+			application->getName().c_str(), VK_MAKE_VERSION(1, 0, 0),
+			"XRManetEngine", VK_MAKE_VERSION(1, 0, 0),
+			VK_API_VERSION_1_3);
+
+		auto instanceInfo = vk::InstanceCreateInfo({}, &appInfo, enableLayerNames, enableExtensionNames);
+#if XR_PLATFORM == XR_PLATFORM_OSX
+		instanceInfo.flags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
+#endif
+
+		auto debugUtilsMessengerCreateInfo = xrGetDefaultDebugUtilsMessengerCreateInfo();
+
+		return vk::StructureChain<
+			vk::InstanceCreateInfo,
+			vk::DebugUtilsMessengerCreateInfoEXT>
+		{	instanceInfo,
+			debugUtilsMessengerCreateInfo,
+		};
+	}(application);
+
+	_instance = vk::createInstance(instanceInfo.get());
 	_physicalDevices = _instance.enumeratePhysicalDevices();
 }
 
-XRRenderAPI(createRenderEngine)(xr::Application* application)->IRenderEngine*
+XRRenderEngineVulkan::~XRRenderEngineVulkan()
 {
-	return new RenderEngineVulkan(application);
+	_physicalDevices.clear();
+	_instance.destroy();
+}
+
+XRRenderDevice* XRRenderEngineVulkan::createDefaultRenderDevice()
+{
+	auto [physicalDevice, device] = [this]() {
+		auto getProperPhysicalDevice = [](auto const& physicalDevices) {
+			auto getScoreForPhysicalDevice = [](vk::PhysicalDevice physicalDevice) {
+				auto physicalDeviceProperty = physicalDevice.getProperties();
+
+				auto getScoreByPhysicalDeviceType = [](auto physicalDeviceType) {
+					switch (physicalDeviceType)
+					{
+					case vk::PhysicalDeviceType::eOther:			return 0;
+					case vk::PhysicalDeviceType::eIntegratedGpu:	return 2;
+					case vk::PhysicalDeviceType::eDiscreteGpu:		return 4;
+					case vk::PhysicalDeviceType::eVirtualGpu:		return 3;
+					case vk::PhysicalDeviceType::eCpu:				return 1;
+					default:										return 0;
+					}
+				};
+
+				return getScoreByPhysicalDeviceType(physicalDeviceProperty.deviceType);
+			};
+
+			int32_t maxScore = getScoreForPhysicalDevice(physicalDevices.front());
+			int32_t maxIndex = 0;
+			for (int32_t i = 1; i < physicalDevices.size(); ++i)
+			{
+				int32_t score = getScoreForPhysicalDevice(physicalDevices[i]);
+				if (maxScore < score)
+				{
+					maxScore = score;
+					maxIndex = i;
+				}
+			}
+
+			return physicalDevices[maxIndex];
+		};
+
+		auto physicalDevice = getProperPhysicalDevice(_physicalDevices);
+		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+
+		auto foundProperty = std::find_if(queueFamilyProperties.begin(), queueFamilyProperties.end(),
+			[](auto const& queueFamilyProperty) {
+				return queueFamilyProperty.queueFlags & vk::QueueFlagBits::eGraphics;
+			});
+
+		size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(), foundProperty);
+		assert(graphicsQueueFamilyIndex < queueFamilyProperties.size());
+
+		float queuePriority = 0.0f;
+		auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
+		auto device = physicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), deviceQueueCreateInfo));
+
+		return std::make_tuple(physicalDevice, device);
+	} ();
+	
+	return new XRRenderDeviceVulkan(this, physicalDevice, device);
+}
+
+XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine*
+{
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
+	return new XRRenderEngineVulkan(application);
 }
 
 template<>
@@ -72,16 +185,6 @@ struct RenderEngineInitializer<DeviceAPI::Vulkan>
 	}
 };
 
-XRSwapchain* xrCreateSwapchain(XRSwapchainCreateInfo const* createInfo)
-{
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	auto swapchainVK = new XRSwapchainVK;
-	auto swapchainHandle = new XRSwapchain(createInfo, swapchainVK);
-
-	swapchainVK->initialize(swapchainHandle);
-	return swapchainHandle;
-}
-
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
 	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
@@ -94,19 +197,27 @@ XRModel* xrCreateModel(XRModelData const* loadable)
 	return new XRModelVK(loadable);
 }
 
-XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
+XRRenderGroup* xrCreateRenderGroup()
 {
 	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	auto textureVK = new XRTextureVK;
+	return new XRRenderGroupVK;
+}
+
+XRTexture* XRRenderDeviceVulkan::createTexture(XRTextureCreateInfo const* createInfo)
+{
+	auto textureVK = new XRTextureVK(this);
 	auto textureHandle = new XRTexture(createInfo);
 	textureHandle->_rhi = textureVK;
 	return textureHandle;
 }
 
-XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
+XRTexture* xrCreateTexture(XRRenderDevice* ownerRenderDevice, XRTextureCreateInfo const* createInfo) {
+	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createTexture(createInfo);
+}
+
+XRTexture* XRRenderDeviceVulkan::createTextureFromData(XRTextureData const* loadable)
 {
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	auto textureVK = new XRTextureVK;
+	auto textureVK = new XRTextureVK(this);
 	if (nullptr != loadable)
 		textureVK->upload(loadable);
 
@@ -115,30 +226,51 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 	return textureHandle;
 }
 
-XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
+XRTexture* xrCreateTextureFromData(XRRenderDevice* ownerRenderDevice, XRTextureData const* loadable) {
+	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createTextureFromData(loadable);
+}
+
+XRBuffer* XRRenderDeviceVulkan::createBuffer(XRBufferCreateInfo const* createInfo)
 {
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	auto bufferVK = new XRBufferVK;
+	auto bufferVK = new XRBufferVK(this);
 	auto bufferHandle = new XRBuffer(createInfo, bufferVK);
 
 	bufferVK->Initialize(bufferHandle);
 	return bufferHandle;
 }
 
-XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
+
+XRBuffer* xrCreateBuffer(XRRenderDevice* ownerRenderDevice, XRBufferCreateInfo const* createInfo) {
+	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createBuffer(createInfo);
+}
+
+XRPipeline* XRRenderDeviceVulkan::createPipeline(XRPipelineStateDescription const* description)
 {
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
 	return new XRPipelineVK(description);
 }
 
-XRCommandBuffer* xrCreateCommandBuffer()
-{
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	return new XRCommandBufferVK;
+XRPipeline* xrCreatePipeline(XRRenderDevice* ownerRenderDevice, XRPipelineStateDescription const* description) {
+	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createPipeline(description);
 }
 
-XRRenderGroup* xrCreateRenderGroup()
+XRCommandBuffer* XRRenderDeviceVulkan::createCommandBuffer()
 {
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	return new XRRenderGroupVK;
+	return new XRCommandBufferVK(this);
+}
+
+XRCommandBuffer* xrCreateCommandBuffer(XRRenderDevice* ownerRenderDevice) {
+	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createCommandBuffer();
+}
+
+XRSwapchain* XRRenderDeviceVulkan::createSwapchain(XRSwapchainCreateInfo const* createInfo)
+{
+	auto swapchainVK = new XRSwapchainVK(this);
+	auto swapchainHandle = new XRSwapchain(createInfo, swapchainVK);
+
+	swapchainVK->initialize(swapchainHandle);
+	return swapchainHandle;
+}
+
+XRSwapchain* xrCreateSwapchain(XRRenderDevice* ownerRenderDevice, XRSwapchainCreateInfo const* createInfo) {
+	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createSwapchain(createInfo);
 }

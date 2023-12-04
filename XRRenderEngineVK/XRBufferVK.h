@@ -5,7 +5,7 @@
 class XRBufferVK : public XRBufferRHI
 {
 public:
-	XRBufferVK() : _buffer(VK_NULL_HANDLE) {}
+	XRBufferVK(XRRenderDevice* ownerRenderDevice) : XRBufferRHI(ownerRenderDevice), _buffer(VK_NULL_HANDLE) {}
 	virtual ~XRBufferVK() {}
 
 public:

@@ -18,7 +18,7 @@
 
 static XRPipelineManager* GetDefaultPipelineManager()
 {
-	static XRPipelineManager _default;
+	static XRPipelineManager _default(nullptr);
 	return &_default;
 }
 
@@ -97,7 +97,7 @@ bool XRRenderer::EvaluateCommands(XRCommandFootprint& commandFootprint, std::vec
 	}
 	else
 	{
-		commandBuffer = xrCreateCommandBuffer();
+		commandBuffer = xrCreateCommandBuffer(nullptr);
 
 		commandBuffer->begin();
 		{
@@ -123,7 +123,7 @@ void XRRenderer::Update(XRScene* scene)
 		XRObjectGroup* objectGroup = i.second;
 	}
 
-	XRCommandBuffer* commandBuffer = xrCreateCommandBuffer();
+	XRCommandBuffer* commandBuffer = xrCreateCommandBuffer(nullptr);
 	commandBuffer->begin();
 
 	didUpdateRenderGraph(commandBuffer);

@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include <XRFrameworkBase/ApplicationChild.h>
+#include <XRFrameworkBase/RenderEngineChild.h>
 
 #include <XRFrameworkBase/XRRenderCommon.h>
 
@@ -26,11 +27,30 @@ public:
 	static RenderEngineInitializer& GetInitializer();
 };
 
-class XRBaseExport IRenderEngine : public xr::ApplicationChild
+class XRBaseExport XRRenderEngine : public xr::ApplicationChild
 {
 public:
-	IRenderEngine(xr::Application* application);
-	~IRenderEngine() override;
+	XRRenderEngine(xr::Application* application);
+	~XRRenderEngine() override;
+
+public:
+	virtual XRRenderDevice*		createRenderDevice() = 0;
+	virtual XRRenderDevice*		createDefaultRenderDevice() = 0;
 };
 
-XRRenderAPI(createRenderEngine)(xr::Application* application)->IRenderEngine*;
+XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine*;
+
+class XRBaseExport XRRenderDevice : public xr::RenderEngineChild
+{
+public:
+	XRRenderDevice(XRRenderEngine* ownerRenderEngine);
+	~XRRenderDevice() override;
+
+public:
+	virtual XRBuffer*			createBuffer(XRBufferCreateInfo const* createInfo) = 0;
+	virtual XRTexture*			createTexture(XRTextureCreateInfo const* createInfo) = 0;
+	virtual XRTexture*			createTextureFromData(XRTextureData const* loadable) = 0;
+	virtual XRPipeline*			createPipeline(XRPipelineStateDescription const* description) = 0;
+	virtual XRCommandBuffer*	createCommandBuffer() = 0;
+	virtual XRSwapchain*		createSwapchain(XRSwapchainCreateInfo const* createInfo) = 0;
+};

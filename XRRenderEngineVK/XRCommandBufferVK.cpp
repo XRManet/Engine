@@ -19,8 +19,9 @@ static VkPrimitiveTopology ConvertPrimitiveTopology(XRPrimitiveTopology topology
 
 }
 
-XRCommandBufferVK::XRCommandBufferVK()
-	: _commandMemoryPool(nullptr)
+XRCommandBufferVK::XRCommandBufferVK(XRRenderDevice* ownerRenderDevice)
+	: XRCommandBuffer(ownerRenderDevice)
+	, _commandMemoryPool(nullptr)
 {
 
 }

@@ -8,7 +8,7 @@ private:
 	VkImage _texture;
 
 public:
-	XRTextureVK() {}
+	XRTextureVK(XRRenderDevice* ownerRenderDevice) : XRTextureRHI(ownerRenderDevice) {}
 	virtual ~XRTextureVK();
 
 public:

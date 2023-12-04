@@ -296,6 +296,12 @@
     <ClInclude Include="GLFWBinder.h">
       <Filter>소스 파일\Application\Backend</Filter>
     </ClInclude>
+    <ClInclude Include="XRRenderEngineBase.h">
+      <Filter>소스 파일\Engine\Render\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngineChild.h">
+      <Filter>소스 파일\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XRFrameworkBase.cpp">

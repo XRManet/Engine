@@ -35,7 +35,7 @@ namespace xr
 
 		XRSourceBuildSystem* shaderBuildSystem = xrGetShaderBuildSystem();
 
-		auto renderEngine = std::unique_ptr<IRenderEngine>(createRenderEngine(this));
+		auto renderEngine = std::unique_ptr<XRRenderEngine>(xrCreateRenderEngine(this));
 
 		XRFrameProcessor frameProcessor;
 		frameProcessor.Initialize();

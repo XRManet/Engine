@@ -165,6 +165,7 @@
     <ClInclude Include="ApplicationWin32.h" />
     <ClInclude Include="GLFWBinder.h" />
     <ClInclude Include="Profiler.h" />
+    <ClInclude Include="RenderEngineChild.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Thread.h" />
@@ -205,6 +206,7 @@
     </ClInclude>
     <ClInclude Include="XRPlatformWindows.hpp" />
     <ClInclude Include="XRPrimitiveTypes.h" />
+    <ClInclude Include="XRRenderEngineBase.h" />
     <ClInclude Include="XRRenderer.h" />
     <ClInclude Include="XRRenderCommon.h" />
     <ClInclude Include="XRRenderGroup.h" />

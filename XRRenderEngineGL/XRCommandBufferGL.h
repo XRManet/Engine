@@ -11,7 +11,7 @@ class XRCommandMemoryPoolGL;
 class XRCommandBufferGL : public XRCommandBuffer
 {
 public:
-	XRCommandBufferGL();
+	XRCommandBufferGL(XRRenderDevice* ownerRenderDevice);
 	virtual ~XRCommandBufferGL();
 
 public:

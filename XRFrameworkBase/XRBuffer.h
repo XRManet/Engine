@@ -1,10 +1,12 @@
 ﻿#pragma once
 
+#include <XRFrameworkBase/RenderEngineChild.h>
+
 struct XRBufferCreateInfo;
 class XRBuffer;
 class XRBufferRHI;
 
-XRRenderAPI(xrCreateBuffer)(XRBufferCreateInfo const* createInfo)->XRBuffer*;
+XRRenderAPI(xrCreateBuffer)(XRRenderDevice* ownerRenderDevice, XRBufferCreateInfo const* createInfo)->XRBuffer*;
 
 struct XRBufferCreateInfo
 {
@@ -37,12 +39,13 @@ public:
 	inline ResourceType* getResource() { return _resource; }
 };
 
-class XRBufferRHI
+class XRBufferRHI : public xr::RenderDeviceChild
 {
 protected:
 	XRBuffer* _handle;
 
 public:
+	XRBufferRHI(XRRenderDevice* ownerRenderDevice) : xr::RenderDeviceChild(ownerRenderDevice) {}
 	virtual ~XRBufferRHI() {}
 };
 
@@ -50,7 +53,7 @@ class XRBaseExport XRBuffer
 {
 #ifdef XRRENDERENGINE_EXPORTS
 	/** @brief	Factory function */
-	friend XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo);
+	friend XRBuffer* xrCreateBuffer(XRRenderDevice* ownerRenderDevice, XRBufferCreateInfo const* createInfo);
 #endif
 
 public:

@@ -6,14 +6,16 @@
 #include "XRSwapchainVK.h"
 
 
-VkSurfaceKHR createSurfaceFromWindow(xr::Window* window);
+VkSurfaceKHR createSurfaceFromWindow(xr::Window const* window);
 
 void XRSwapchainVK::initialize(XRSwapchain* swapchainHandle)
 {
 	_handle = swapchainHandle;
 	XRSwapchainCreateInfo const* swapchainCreateInfo = swapchainHandle->getSwapchainCreateInfo();
 
-	VkSurfaceKHR surface = createSurfaceFromWindow(swapchainCreateInfo->_window);
+	xr::Window const* window = swapchainCreateInfo->_window;
+
+	VkSurfaceKHR surface = createSurfaceFromWindow(window);
 
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -25,7 +27,7 @@ void XRSwapchainVK::initialize(XRSwapchain* swapchainHandle)
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	vkGetPhysicalDeviceSurfaceSupportKHR()
+	vkGetPhysicalDeviceSurfaceSupportKHR();
 
 	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -43,7 +45,7 @@ void XRSwapchainVK::initialize(XRSwapchain* swapchainHandle)
 }
 
 #if XR_PLATFORM == XR_PLATFORM_WINDOWS
-VkSurfaceKHR createSurfaceFromWindow(xr::Window* window)
+VkSurfaceKHR createSurfaceFromWindow(xr::Window const* window)
 {
 	VkInstance vkInstance;
 	HWND platformNativeHandle = static_cast<HWND>(window->getPlatformNativeHandle());

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <XRFrameworkBase/XRTexture.h>
 
@@ -8,7 +8,7 @@ private:
 	GLuint _texture;
 
 public:
-	XRTextureGL() {}
+	XRTextureGL(XRRenderDevice* ownerRenderDevice) : XRTextureRHI(ownerRenderDevice) {}
 	virtual ~XRTextureGL();
 
 public:

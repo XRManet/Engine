@@ -160,7 +160,7 @@ void XRRendererTest::Initialize(XRResourceManager* resourceManager)
 	XRBufferCreateInfo bufferCreateInfoPerFrame = {
 		._size = sizeof(MatrixBlock) + sizeof(LightBlock)
 	};
-	_bufferPerFrame = xrCreateBuffer(&bufferCreateInfoPerFrame);
+	_bufferPerFrame = xrCreateBuffer(nullptr, &bufferCreateInfoPerFrame);
 }
 
 void XRRendererTest::WillUpdateRenderGraph(XRScene* scene)

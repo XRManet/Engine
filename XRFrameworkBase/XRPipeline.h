@@ -6,10 +6,12 @@
 #include <XRFrameworkBase/XRRenderCommon.h>
 #include <XRFrameworkBase/XRIndexedString.h>
 
+#include <XRFrameworkBase/RenderEngineChild.h>
+
 struct XRPipelineStateDescription;
 class XRPipeline;
 
-XRRenderAPI(xrCreatePipeline)(XRPipelineStateDescription const* createInfo)->XRPipeline*;
+XRRenderAPI(xrCreatePipeline)(XRRenderDevice* ownerRenderDevice, XRPipelineStateDescription const* createInfo)->XRPipeline*;
 
 /******************************************************************************
   GL State to Vulkan State Mapping
@@ -774,10 +776,13 @@ public:
 };
 
 class XRPipeline;
-class XRBaseExport XRPipelineManager
+class XRBaseExport XRPipelineManager : public xr::RenderDeviceChild
 {
 	std::unordered_map<xr::IndexedString<XRPipeline>, XRPipelineGroup*> _pipelines;
 	std::vector<XRPipelineCreateInfo>	_pipelineCreateInfos;
+
+public:
+	XRPipelineManager(XRRenderDevice* ownerRenderDevice) : xr::RenderDeviceChild(ownerRenderDevice) {}
 
 public:
 	inline XRPipelineGroup* GetPipelineGroup(xr::IndexedString<XRPipeline> pipelineName)

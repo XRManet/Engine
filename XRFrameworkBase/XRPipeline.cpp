@@ -147,7 +147,7 @@ bool XRPipelineManager::CreatePipeline(XRPipelineCreateInfo const& createInfo)
 			XRPipeline* pipeline = nullptr;
 			if (doCreatePipeline == true)
 			{
-				pipeline = xrCreatePipeline(&pipelineDescriptions[numAvailablePermutations]);
+				pipeline = xrCreatePipeline(getOwnerRenderDevice(), &pipelineDescriptions[numAvailablePermutations]);
 				doCreatePipeline = (pipeline != nullptr);
 			}
 

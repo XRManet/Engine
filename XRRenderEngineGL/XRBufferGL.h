@@ -5,7 +5,7 @@
 class XRBufferGL : public XRBufferRHI
 {
 public:
-	XRBufferGL() : _target(GL_NONE), _buffer(GL_NONE) {}
+	XRBufferGL(XRRenderDevice* ownerRenderDevice) : XRBufferRHI(ownerRenderDevice), _target(GL_NONE), _buffer(GL_NONE) {}
 	virtual ~XRBufferGL() {};
 
 public:

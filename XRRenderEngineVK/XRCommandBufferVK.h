@@ -11,7 +11,7 @@ class XRCommandMemoryPoolVK;
 class XRCommandBufferVK : public XRCommandBuffer
 {
 public:
-	XRCommandBufferVK();
+	XRCommandBufferVK(XRRenderDevice* ownerRenderDevice);
 	virtual ~XRCommandBufferVK();
 
 public:

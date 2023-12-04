@@ -115,8 +115,6 @@ namespace xr
 			return window;
 		} ();
 
-		Window* mainWindow = window.get();
-
 		fetcher->processLoop([&, this]() {
 
 			if (profiler::g_traceCurrent != profiler::g_traceEnabled)

@@ -177,19 +177,25 @@ XRModel* xrCreateModel(XRModelData const* loadable)
 	return new XRModelGL(loadable);
 }
 
-XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo)
+XRRenderGroup* xrCreateRenderGroup()
 {
 	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
-	auto textureGL = new XRTextureGL;
+	return new XRRenderGroupGL;
+}
+
+XRTexture* xrCreateTexture(XRRenderDevice* ownerRenderDevice, XRTextureCreateInfo const* createInfo)
+{
+	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
+	auto textureGL = new XRTextureGL(nullptr);
 	auto textureHandle = new XRTexture(createInfo);
 	textureHandle->_rhi = textureGL;
 	return textureHandle;
 }
 
-XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
+XRTexture* xrCreateTextureFromData(XRRenderDevice* ownerRenderDevice, XRTextureData const* loadable)
 {
 	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
-	auto textureGL = new XRTextureGL;
+	auto textureGL = new XRTextureGL(nullptr);
 	if (nullptr != loadable)
 		textureGL->upload(loadable);
 
@@ -198,30 +204,24 @@ XRTexture* xrCreateTextureFromData(XRTextureData const* loadable)
 	return textureHandle;
 }
 
-XRBuffer* xrCreateBuffer(XRBufferCreateInfo const* createInfo)
+XRBuffer* xrCreateBuffer(XRRenderDevice* ownerRenderDevice, XRBufferCreateInfo const* createInfo)
 {
 	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
-	auto bufferGL = new XRBufferGL;
+	auto bufferGL = new XRBufferGL(nullptr);
 	auto bufferHandle = new XRBuffer(createInfo, bufferGL);
 
 	bufferGL->Initialize(bufferHandle);
 	return bufferHandle;
 }
 
-XRPipeline* xrCreatePipeline(XRPipelineStateDescription const* description)
+XRPipeline* xrCreatePipeline(XRRenderDevice* ownerRenderDevice, XRPipelineStateDescription const* description)
 {
 	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
 	return new XRPipelineGL(description);
 }
 
-XRCommandBuffer* xrCreateCommandBuffer()
+XRCommandBuffer* xrCreateCommandBuffer(XRRenderDevice* ownerRenderDevice)
 {
 	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
-	return new XRCommandBufferGL;
-}
-
-XRRenderGroup* xrCreateRenderGroup()
-{
-	RenderEngineInitializer<DeviceAPI::OpenGL>::GetInitializer();
-	return new XRRenderGroupGL;
+	return new XRCommandBufferGL(nullptr);
 }

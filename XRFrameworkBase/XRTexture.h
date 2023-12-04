@@ -3,17 +3,21 @@
 #include "XRFrameworkBase/XRPrimitiveTypes.h"
 #include "XRFrameworkBase/XRRenderCommon.h"
 
+#include <XRFrameworkBase/RenderEngineChild.h>
+
 struct XRTextureCreateInfo;
 class XRTexture;
 class XRTextureData;
-class XRTextureRHI
+
+class XRTextureRHI : public xr::RenderDeviceChild
 {
 public:
+	XRTextureRHI(XRRenderDevice* ownerRenderDevice) : xr::RenderDeviceChild(ownerRenderDevice) {}
 	virtual ~XRTextureRHI() {}
 };
 
-XRRenderAPI(xrCreateTexture)(XRTextureCreateInfo const* createInfo)->XRTexture*;
-XRRenderAPI(xrCreateTextureFromData)(XRTextureData const* loadable)->XRTexture*;
+XRRenderAPI(xrCreateTexture)(XRRenderDevice* ownerRenderDevice, XRTextureCreateInfo const* createInfo)->XRTexture*;
+XRRenderAPI(xrCreateTextureFromData)(XRRenderDevice* ownerRenderDevice, XRTextureData const* loadable)->XRTexture*;
 
 /**
  * @struct	XRTextureProperties
@@ -72,8 +76,8 @@ class XRBaseExport XRTexture
 {
 #ifdef XRRENDERENGINE_EXPORTS
 	/** @brief	Factory function */
-	friend XRTexture* xrCreateTexture(XRTextureCreateInfo const* createInfo);
-	friend XRTexture* xrCreateTextureFromData(XRTextureData const* loadable);
+	friend XRTexture* xrCreateTexture(XRRenderDevice* ownerRenderDevice, XRTextureCreateInfo const* createInfo);
+	friend XRTexture* xrCreateTextureFromData(XRRenderDevice* ownerRenderDevice, XRTextureData const* loadable);
 #endif
 
 protected:
