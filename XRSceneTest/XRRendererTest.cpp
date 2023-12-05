@@ -14,6 +14,7 @@
 #include <XRFrameworkBase/XRCommandBuffer.h>
 #include <XRFrameworkBase/XRPipeline.h>
 #include <XRFrameworkBase/XRTexture.h>
+#include <XRFrameworkBase/XRBuffer.h>
 
 template<typename Permutation, int Count>
 struct PipelineKeyImpl : public PipelineKeyImpl<Permutation, Count - 1>

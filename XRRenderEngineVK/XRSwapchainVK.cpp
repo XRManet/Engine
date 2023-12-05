@@ -3,67 +3,89 @@
 #include <XRFrameworkBase/XRPlatform.h>
 #include <XRFrameworkBase/Window.h>
 
+#include "XRRenderEngineVK.h"
+
 #include "XRSwapchainVK.h"
 
 
-VkSurfaceKHR createSurfaceFromWindow(xr::Window const* window);
+vk::SurfaceKHR createSurfaceFromWindow(vk::Instance const& instance, xr::Window const* window);
 
 void XRSwapchainVK::initialize(XRSwapchain* swapchainHandle)
 {
-	_handle = swapchainHandle;
-	XRSwapchainCreateInfo const* swapchainCreateInfo = swapchainHandle->getSwapchainCreateInfo();
+	auto renderDevice = static_cast<XRRenderDeviceVulkan*>(getOwnerRenderDevice());
+	auto renderEngine = static_cast<XRRenderEngineVulkan*>(renderDevice->getOwnerRenderEngine());
+	
+	auto& instance = renderEngine->getInstance();
+	auto& physicalDevice = renderDevice->getPhysicalDevice();
+	auto& device = renderDevice->getDevice();
+	
 
+	_handle = swapchainHandle;
+	auto swapchainCreateInfo = swapchainHandle->getSwapchainCreateInfo();
 	xr::Window const* window = swapchainCreateInfo->_window;
 
-	VkSurfaceKHR surface = createSurfaceFromWindow(window);
-
-	VkSwapchainCreateInfoKHR createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = surface;
-	createInfo.minImageCount = 3;
-	createInfo.imageFormat = surfaceFormat.format;
-	createInfo.imageColorSpace = surfaceFormat.colorSpace;
-	createInfo.imageExtent = extent;
-	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-
-	vkGetPhysicalDeviceSurfaceSupportKHR();
-
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
-	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
-
-	if (indices.graphicsFamily != indices.presentFamily) {
-		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-		createInfo.queueFamilyIndexCount = 2;
-		createInfo.pQueueFamilyIndices = queueFamilyIndices;
+	vk::SurfaceKHR surface = createSurfaceFromWindow(instance, window);
+	auto queueFamliyProperties = physicalDevice.getQueueFamilyProperties();
+	vk::Bool32 isSupported = false;
+	for (uint32_t i = 0; i < queueFamliyProperties.size(); ++i)
+	{
+		if (isSupported == false)
+			isSupported = physicalDevice.getSurfaceSupportKHR(i, surface);
 	}
-	else {
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.queueFamilyIndexCount = 0; // Optional
-		createInfo.pQueueFamilyIndices = nullptr; // Optional
-	}
+	assert(isSupported);
+
+	auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+	auto surfaceFormats = physicalDevice.getSurfaceFormatsKHR(surface);
+	auto presentationModes = physicalDevice.getSurfacePresentModesKHR(surface);
+
+	auto foundSurfaceFormat = std::find_if(surfaceFormats.begin(), surfaceFormats.end(), [](auto const& surfaceFormat) {
+		return surfaceFormat.format == vk::Format::eR8G8B8A8Unorm;
+		});
+	if (foundSurfaceFormat == surfaceFormats.end())
+		foundSurfaceFormat = surfaceFormats.begin();
+
+	auto foundPresentationMode = std::find_if(presentationModes.begin(), presentationModes.end(), [](auto const& presentationMode) {
+		return presentationMode == vk::PresentModeKHR::eMailbox;
+		});
+	if (foundPresentationMode == presentationModes.end())
+		foundPresentationMode = std::find_if(presentationModes.begin(), presentationModes.end(), [](auto const& presentationMode) {
+		return presentationMode == vk::PresentModeKHR::eFifoRelaxed;
+			});
+	if (foundPresentationMode == presentationModes.end())
+		foundPresentationMode = presentationModes.begin();
+
+	vk::CompositeAlphaFlagBitsKHR foundCompositeAlphaBits
+		= (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eOpaque) ? vk::CompositeAlphaFlagBitsKHR::eOpaque
+		: (surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit) ? vk::CompositeAlphaFlagBitsKHR::eInherit
+		: vk::CompositeAlphaFlagBitsKHR::eOpaque;
+	;
+	vk::SwapchainCreateInfoKHR createInfo({}, surface, 3,
+		foundSurfaceFormat->format, foundSurfaceFormat->colorSpace,
+		surfaceCapabilities.currentExtent, 1,
+		vk::ImageUsageFlagBits::eColorAttachment,
+		vk::SharingMode::eExclusive, 0, nullptr,
+		surfaceCapabilities.currentTransform,
+		foundCompositeAlphaBits,
+		*foundPresentationMode);
+
+	vk::SwapchainKHR swapchain = device.createSwapchainKHR(createInfo);
+
+	_surface = surface;
+	_swapchain = swapchain;
 }
 
 #if XR_PLATFORM == XR_PLATFORM_WINDOWS
-VkSurfaceKHR createSurfaceFromWindow(xr::Window const* window)
+vk::SurfaceKHR createSurfaceFromWindow(vk::Instance const& instance, xr::Window const* window)
 {
-	VkInstance vkInstance;
 	HWND platformNativeHandle = static_cast<HWND>(window->getPlatformNativeHandle());
-
-	VkWin32SurfaceCreateInfoKHR createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	createInfo.hwnd = platformNativeHandle;
-	createInfo.hinstance = GetModuleHandle(nullptr);
-
-	VkSurfaceKHR vkSurface;
-	vkCreateWin32SurfaceKHR(vkInstance, &createInfo, nullptr, &vkSurface);
-
+	vk::Win32SurfaceCreateInfoKHR createInfo({}, GetModuleHandle(nullptr), platformNativeHandle );
+	vk::SurfaceKHR vkSurface = instance.createWin32SurfaceKHR(createInfo);
 	return vkSurface;
 }
 #else
 //#elif XR_PLATFORM == XR_PLATFORM_OSX
 #error "Not implemented yet"
-VkSurfaceKHR createSurfaceFromWindow(xr::Window* window)
+vk::SurfaceKHR createSurfaceFromWindow(vk::Instance const& instance, xr::Window const* window)
 {
 }
 #endif

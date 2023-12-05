@@ -13,14 +13,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Source Files\Linker">
-      <UniqueIdentifier>{b91737e1-a7cf-46a7-92ee-faada580411e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\RHI">
       <UniqueIdentifier>{fca85f60-8367-44a6-9c70-dd19ce2247ab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{0f95d041-36e3-46ec-b547-759b793239da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{b91737e1-a7cf-46a7-92ee-faada580411e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,8 +51,8 @@
     <ClInclude Include="XRSwapchainVK.h">
       <Filter>Source Files\RHI</Filter>
     </ClInclude>
-    <ClInclude Include="XRVulkanCommon.h">
-      <Filter>Source Files\Utility</Filter>
+    <ClInclude Include="XRRenderEngineVK.h">
+      <Filter>Source Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -63,7 +63,7 @@
       <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="XRRenderEngineVK.cpp">
-      <Filter>Source Files\Linker</Filter>
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="XRBufferVK.cpp">
       <Filter>Source Files\RHI</Filter>
@@ -85,9 +85,6 @@
     </ClCompile>
     <ClCompile Include="XRSwapchainVK.cpp">
       <Filter>Source Files\RHI</Filter>
-    </ClCompile>
-    <ClCompile Include="XRVulkanCommon.cpp">
-      <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="XRDebugVK.cpp">
       <Filter>Source Files\Utility</Filter>

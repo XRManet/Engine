@@ -96,6 +96,12 @@ constexpr int const PAGE_SIZE = 4'096;
 
 namespace xr
 {
+	template<typename T, size_t N>
+	constexpr size_t countof(T const (&)[N])
+	{
+		return N;
+	}
+
 #if defined(_WIN32)
 	inline char* strtok(char* string, const char* delimiter, char** context)
 	{

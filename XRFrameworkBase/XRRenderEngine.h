@@ -5,19 +5,42 @@
 #include <XRFrameworkBase/ApplicationChild.h>
 #include <XRFrameworkBase/RenderEngineChild.h>
 
-#include <XRFrameworkBase/XRRenderCommon.h>
-
-#include <XRFrameworkBase/XRSwapchain.h>
-
-#include <XRFrameworkBase/XRPipeline.h>
-#include <XRFrameworkBase/XRTexture.h>
-#include <XRFrameworkBase/XRBuffer.h>
+class XRPipeline;			struct XRPipelineStateDescription;
+class XRTexture;			struct XRTextureCreateInfo;
+							class XRTextureData;
+class XRBuffer;				struct XRBufferCreateInfo;
+class XRSwapchain;			struct XRSwapchainCreateInfo;
+class XRCommandBuffer;
 
 enum class DeviceAPI : unsigned
 {
 	Null,
 	OpenGL,
 	Vulkan,
+};
+
+struct XRPhysicalDeviceSelectInfo
+{
+	uint32_t			_physicalDeviceIndex = ~0u;
+
+	bool				_enablePresent = false;
+};
+
+struct XRQueueCreateInfo
+{
+	std::vector<float>	_prioritiesForGraphicsQueues;
+	std::vector<float>	_prioritiesForComputeQueues;
+	std::vector<float>	_prioritiesForTransferQueues;
+
+	bool				_presentGraphics = false;
+	bool				_presentCompute = false;
+	bool				_presentTransfer = false;
+};
+
+struct XRRenderDeviceCreateInfo
+{
+	XRPhysicalDeviceSelectInfo	_physicalDeviceSelectInfo;
+	XRQueueCreateInfo			_queueCreateInfo;
 };
 
 template<DeviceAPI API = DeviceAPI::Null>
@@ -34,7 +57,7 @@ public:
 	~XRRenderEngine() override;
 
 public:
-	virtual XRRenderDevice*		createRenderDevice() = 0;
+	virtual XRRenderDevice*		createRenderDevice(XRRenderDeviceCreateInfo* createInfo) = 0;
 	virtual XRRenderDevice*		createDefaultRenderDevice() = 0;
 };
 
@@ -45,6 +68,9 @@ class XRBaseExport XRRenderDevice : public xr::RenderEngineChild
 public:
 	XRRenderDevice(XRRenderEngine* ownerRenderEngine);
 	~XRRenderDevice() override;
+
+public:
+	virtual XRRenderDeviceCreateInfo const& getRenderDeviceCreateInfo() const = 0;
 
 public:
 	virtual XRBuffer*			createBuffer(XRBufferCreateInfo const* createInfo) = 0;

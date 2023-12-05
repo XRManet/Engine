@@ -162,10 +162,10 @@
     <ClInclude Include="XRCommandBufferVK.h" />
     <ClInclude Include="XRModelVK.h" />
     <ClInclude Include="XRPipelineVK.h" />
+    <ClInclude Include="XRRenderEngineVK.h" />
     <ClInclude Include="XRRenderGroupVK.h" />
     <ClInclude Include="XRSwapchainVK.h" />
     <ClInclude Include="XRTextureVK.h" />
-    <ClInclude Include="XRVulkanCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -184,7 +184,6 @@
     <ClCompile Include="XRRenderGroupVK.cpp" />
     <ClCompile Include="XRSwapchainVK.cpp" />
     <ClCompile Include="XRTextureVK.cpp" />
-    <ClCompile Include="XRVulkanCommon.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

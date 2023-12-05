@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include <XRFrameworkBase/XRRenderEngineBase.h>
-#include <XRFrameworkBase/ApplicationChild.h>
+
+#include "XRRenderEngineVK.h"
 #include <XRFrameworkBase/Application.h>
 
 #include "XRSwapchainVK.h"
@@ -19,40 +19,6 @@
 
 vk::DebugUtilsMessengerCreateInfoEXT xrGetDefaultDebugUtilsMessengerCreateInfo();
 
-class XRRenderEngineVulkan : public XRRenderEngineBase
-{
-public:
-	XRRenderEngineVulkan(xr::Application* application);
-	~XRRenderEngineVulkan() override;
-
-public:
-	XRRenderDevice*		createRenderDevice() override final { return nullptr; }
-	XRRenderDevice*		createDefaultRenderDevice() override final;
-
-public:
-	vk::Instance					_instance;
-	std::vector<vk::PhysicalDevice>	_physicalDevices;
-};
-
-class XRRenderDeviceVulkan : public XRRenderDeviceBase
-{
-public:
-	XRRenderDeviceVulkan(XRRenderEngine* ownerRenderEngine, vk::PhysicalDevice physicalDevice, vk::Device device)
-		: XRRenderDeviceBase(ownerRenderEngine), _physicalDevice(physicalDevice), _device(device) {}
-
-
-public:
-	XRBuffer*			createBuffer(XRBufferCreateInfo const* createInfo) override final;
-	XRTexture*			createTexture(XRTextureCreateInfo const* createInfo) override final;
-	XRTexture*			createTextureFromData(XRTextureData const* loadable) override final;
-	XRPipeline*			createPipeline(XRPipelineStateDescription const* description) override final;
-	XRCommandBuffer*	createCommandBuffer() override final;
-	XRSwapchain*		createSwapchain(XRSwapchainCreateInfo const* createInfo) override final;
-
-private:
-	vk::PhysicalDevice	_physicalDevice;
-	vk::Device			_device;
-};
 
 XRRenderEngineVulkan::XRRenderEngineVulkan(xr::Application* application)
 	: XRRenderEngineBase(application)
@@ -96,68 +62,145 @@ XRRenderEngineVulkan::~XRRenderEngineVulkan()
 	_instance.destroy();
 }
 
-XRRenderDevice* XRRenderEngineVulkan::createDefaultRenderDevice()
+auto getProperPhysicalDevice = [](auto const& physicalDevices)
 {
-	auto [physicalDevice, device] = [this]() {
-		auto getProperPhysicalDevice = [](auto const& physicalDevices) {
-			auto getScoreForPhysicalDevice = [](vk::PhysicalDevice physicalDevice) {
-				auto physicalDeviceProperty = physicalDevice.getProperties();
+	auto getScoreForPhysicalDevice = [](vk::PhysicalDevice physicalDevice) {
+		auto physicalDeviceProperty = physicalDevice.getProperties();
 
-				auto getScoreByPhysicalDeviceType = [](auto physicalDeviceType) {
-					switch (physicalDeviceType)
-					{
-					case vk::PhysicalDeviceType::eOther:			return 0;
-					case vk::PhysicalDeviceType::eIntegratedGpu:	return 2;
-					case vk::PhysicalDeviceType::eDiscreteGpu:		return 4;
-					case vk::PhysicalDeviceType::eVirtualGpu:		return 3;
-					case vk::PhysicalDeviceType::eCpu:				return 1;
-					default:										return 0;
-					}
-				};
-
-				return getScoreByPhysicalDeviceType(physicalDeviceProperty.deviceType);
-			};
-
-			int32_t maxScore = getScoreForPhysicalDevice(physicalDevices.front());
-			int32_t maxIndex = 0;
-			for (int32_t i = 1; i < physicalDevices.size(); ++i)
+		auto getScoreByPhysicalDeviceType = [](auto physicalDeviceType) {
+			switch (physicalDeviceType)
 			{
-				int32_t score = getScoreForPhysicalDevice(physicalDevices[i]);
-				if (maxScore < score)
-				{
-					maxScore = score;
-					maxIndex = i;
-				}
+			case vk::PhysicalDeviceType::eOther:			return 0;
+			case vk::PhysicalDeviceType::eIntegratedGpu:	return 2;
+			case vk::PhysicalDeviceType::eDiscreteGpu:		return 4;
+			case vk::PhysicalDeviceType::eVirtualGpu:		return 3;
+			case vk::PhysicalDeviceType::eCpu:				return 1;
+			default:										return 0;
 			}
-
-			return physicalDevices[maxIndex];
 		};
 
-		auto physicalDevice = getProperPhysicalDevice(_physicalDevices);
-		auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+		return getScoreByPhysicalDeviceType(physicalDeviceProperty.deviceType);
+	};
 
-		auto foundProperty = std::find_if(queueFamilyProperties.begin(), queueFamilyProperties.end(),
-			[](auto const& queueFamilyProperty) {
-				return queueFamilyProperty.queueFlags & vk::QueueFlagBits::eGraphics;
-			});
+	uint32_t maxScore = getScoreForPhysicalDevice(physicalDevices.front());
+	uint32_t maxIndex = 0;
+	for (uint32_t i = 1; i < physicalDevices.size(); ++i)
+	{
+		uint32_t score = getScoreForPhysicalDevice(physicalDevices[i]);
+		if (maxScore < score)
+		{
+			maxScore = score;
+			maxIndex = i;
+		}
+	}
 
-		size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(), foundProperty);
-		assert(graphicsQueueFamilyIndex < queueFamilyProperties.size());
+	return std::make_tuple(physicalDevices[maxIndex], maxIndex);
+};
 
-		float queuePriority = 0.0f;
-		auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-		auto device = physicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), deviceQueueCreateInfo));
+auto getQueueFamliyIndex = [](vk::QueueFlags flags, vk::QueueFlags ignoreFlags, auto& queueFamilyProperties)
+{
+	auto foundProperty = std::find_if(queueFamilyProperties.begin(), queueFamilyProperties.end(),
+		[flags, ignoreFlags](auto const& queueFamilyProperty) {
+			return ((queueFamilyProperty.queueFlags & flags) | (queueFamilyProperty.queueFlags & ignoreFlags)) == flags;
+		});
 
-		return std::make_tuple(physicalDevice, device);
-	} ();
+	return std::distance(queueFamilyProperties.begin(), foundProperty);
+};
+
+auto pushDeviceQueueCreateInfo = [](
+	auto& deviceQueueCreateInfos,
+	auto& queueFamilyProperties, auto& queueFamliyIndex,
+	std::vector<float>& priorities,
+	vk::QueueFlags findQueueFlag,
+	size_t numIgnoreFlags, vk::QueueFlags listIgnoreFlags[])
+{
+	if (priorities.size() != 0)
+	{
+		for (uint32_t t = 0; queueFamliyIndex >= queueFamilyProperties.size() && t < numIgnoreFlags; ++t)
+			queueFamliyIndex = getQueueFamliyIndex(findQueueFlag, listIgnoreFlags[t], queueFamilyProperties);
+	}
 	
-	return new XRRenderDeviceVulkan(this, physicalDevice, device);
+	if (queueFamliyIndex >= queueFamilyProperties.size())
+		return;
+
+	if (priorities.size() > queueFamilyProperties[queueFamliyIndex].queueCount)
+		priorities.resize(queueFamilyProperties[queueFamliyIndex].queueCount);
+
+	deviceQueueCreateInfos.push_back(vk::DeviceQueueCreateInfo({}, queueFamliyIndex, priorities));
+};
+
+XRRenderDevice* XRRenderEngineVulkan::createRenderDevice(XRRenderDeviceCreateInfo* renderDeviceCreateInfo)
+{
+	XRRenderDeviceCreateInfo createInfo = *renderDeviceCreateInfo;
+
+	auto [physicalDevice, physicalDeviceIndex]
+		= (createInfo._physicalDeviceSelectInfo._physicalDeviceIndex == ~0u)
+		? getProperPhysicalDevice(_physicalDevices)
+		: std::make_tuple(_physicalDevices[createInfo._physicalDeviceSelectInfo._physicalDeviceIndex], createInfo._physicalDeviceSelectInfo._physicalDeviceIndex);
+	
+	createInfo._physicalDeviceSelectInfo._physicalDeviceIndex = physicalDeviceIndex;
+
+	XRRenderDeviceVulkanInfo vulkanInfo = {};
+	std::vector<vk::DeviceQueueCreateInfo> deviceQueueCreateInfos;
+
+	auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+	auto queueFamilyProperties2 = physicalDevice.getQueueFamilyProperties2();
+
+	vk::QueueFlags graphicsIgnoreFlags[] = { vk::QueueFlags() };
+	vk::QueueFlags computeIgnoreFlags[] = { vk::QueueFlagBits::eGraphics, vk::QueueFlags() };
+	vk::QueueFlags transferIgnoreFlags[] = { vk::QueueFlagBits::eGraphics | vk::QueueFlagBits::eCompute, vk::QueueFlagBits::eCompute, vk::QueueFlagBits::eGraphics, vk::QueueFlags() };
+
+	pushDeviceQueueCreateInfo(deviceQueueCreateInfos, queueFamilyProperties, vulkanInfo._graphicsQueueFamilyIndex, createInfo._queueCreateInfo._prioritiesForGraphicsQueues, vk::QueueFlagBits::eGraphics, xr::countof(graphicsIgnoreFlags), graphicsIgnoreFlags);
+	pushDeviceQueueCreateInfo(deviceQueueCreateInfos, queueFamilyProperties, vulkanInfo._computeQueueFamilyIndex, createInfo._queueCreateInfo._prioritiesForComputeQueues, vk::QueueFlagBits::eCompute, xr::countof(computeIgnoreFlags), computeIgnoreFlags);
+	pushDeviceQueueCreateInfo(deviceQueueCreateInfos, queueFamilyProperties, vulkanInfo._transferQueueFamilyIndex, createInfo._queueCreateInfo._prioritiesForTransferQueues, vk::QueueFlagBits::eTransfer, xr::countof(transferIgnoreFlags), transferIgnoreFlags);
+
+	auto device = physicalDevice.createDevice(vk::DeviceCreateInfo({}, deviceQueueCreateInfos));
+	
+	vulkanInfo._availableQueueCounts.resize(queueFamilyProperties.size());
+	if (queueFamilyProperties.size() > vulkanInfo._graphicsQueueFamilyIndex)
+		vulkanInfo._availableQueueCounts[vulkanInfo._graphicsQueueFamilyIndex] = createInfo._queueCreateInfo._prioritiesForGraphicsQueues.size();
+	if (queueFamilyProperties.size() > vulkanInfo._computeQueueFamilyIndex)
+		vulkanInfo._availableQueueCounts[vulkanInfo._computeQueueFamilyIndex] = createInfo._queueCreateInfo._prioritiesForComputeQueues.size();
+	if (queueFamilyProperties.size() > vulkanInfo._transferQueueFamilyIndex)
+		vulkanInfo._availableQueueCounts[vulkanInfo._transferQueueFamilyIndex] = createInfo._queueCreateInfo._prioritiesForTransferQueues.size();
+
+	if (createInfo._physicalDeviceSelectInfo._enablePresent)
+	{
+		if (createInfo._queueCreateInfo._presentGraphics)
+			createInfo._queueCreateInfo._presentGraphics = (vulkanInfo._graphicsQueueFamilyIndex != ~0u) && (physicalDevice.getWin32PresentationSupportKHR(vulkanInfo._graphicsQueueFamilyIndex) == VK_TRUE);
+		if (createInfo._queueCreateInfo._presentCompute)
+			createInfo._queueCreateInfo._presentCompute = (vulkanInfo._computeQueueFamilyIndex != ~0u) && (physicalDevice.getWin32PresentationSupportKHR(vulkanInfo._computeQueueFamilyIndex) == VK_TRUE);
+		if (createInfo._queueCreateInfo._presentTransfer)
+			createInfo._queueCreateInfo._presentTransfer = (vulkanInfo._transferQueueFamilyIndex != ~0u) && (physicalDevice.getWin32PresentationSupportKHR(vulkanInfo._transferQueueFamilyIndex) == VK_TRUE);
+	}
+
+	return new XRRenderDeviceVulkan(this, std::move(createInfo), std::move(vulkanInfo), physicalDevice, device);
 }
 
-XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine*
+XRRenderDevice* XRRenderEngineVulkan::createDefaultRenderDevice()
 {
-	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	return new XRRenderEngineVulkan(application);
+	XRRenderDeviceCreateInfo createInfo;
+
+	auto [physicalDevice, physicalDeviceIndex] = getProperPhysicalDevice(_physicalDevices);
+	createInfo._physicalDeviceSelectInfo._physicalDeviceIndex = physicalDeviceIndex;
+
+	auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+
+	size_t graphicsQueueFamilyIndex = getQueueFamliyIndex(vk::QueueFlagBits::eGraphics, vk::QueueFlags(), queueFamilyProperties);
+	assert(graphicsQueueFamilyIndex < queueFamilyProperties.size());
+
+	createInfo._queueCreateInfo._prioritiesForGraphicsQueues.push_back(0.0f);
+
+	float queuePriority = createInfo._queueCreateInfo._prioritiesForGraphicsQueues.back();
+	auto deviceQueueCreateInfo = vk::DeviceQueueCreateInfo({}, static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
+	auto device = physicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlags(), deviceQueueCreateInfo));
+	
+	XRRenderDeviceVulkanInfo vulkanInfo = {};
+	vulkanInfo._availableQueueCounts.resize(queueFamilyProperties.size());
+	vulkanInfo._availableQueueCounts[graphicsQueueFamilyIndex] = 1;
+	vulkanInfo._graphicsQueueFamilyIndex = graphicsQueueFamilyIndex;
+
+	return new XRRenderDeviceVulkan(this, std::move(createInfo), std::move(vulkanInfo), physicalDevice, device);
 }
 
 template<>
@@ -185,6 +228,19 @@ struct RenderEngineInitializer<DeviceAPI::Vulkan>
 	}
 };
 
+template<typename T>
+class XRRHIBinder : public T
+{
+public:
+	void setRhiObject(decltype(T::_rhi) rhiObject) { T::_rhi = rhiObject; }
+};
+
+XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine*
+{
+	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
+	return new XRRenderEngineVulkan(application);
+}
+
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)
 {
 	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
@@ -207,12 +263,12 @@ XRTexture* XRRenderDeviceVulkan::createTexture(XRTextureCreateInfo const* create
 {
 	auto textureVK = new XRTextureVK(this);
 	auto textureHandle = new XRTexture(createInfo);
-	textureHandle->_rhi = textureVK;
+	static_cast<XRRHIBinder<XRTexture>*>(textureHandle)->setRhiObject(textureVK);
 	return textureHandle;
 }
 
 XRTexture* xrCreateTexture(XRRenderDevice* ownerRenderDevice, XRTextureCreateInfo const* createInfo) {
-	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createTexture(createInfo);
+	return static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createTexture(createInfo);
 }
 
 XRTexture* XRRenderDeviceVulkan::createTextureFromData(XRTextureData const* loadable)
@@ -222,12 +278,12 @@ XRTexture* XRRenderDeviceVulkan::createTextureFromData(XRTextureData const* load
 		textureVK->upload(loadable);
 
 	auto textureHandle = new XRTexture(loadable);
-	textureHandle->_rhi = textureVK;
+	static_cast<XRRHIBinder<XRTexture>*>(textureHandle)->setRhiObject(textureVK);
 	return textureHandle;
 }
 
 XRTexture* xrCreateTextureFromData(XRRenderDevice* ownerRenderDevice, XRTextureData const* loadable) {
-	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createTextureFromData(loadable);
+	return static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createTextureFromData(loadable);
 }
 
 XRBuffer* XRRenderDeviceVulkan::createBuffer(XRBufferCreateInfo const* createInfo)
@@ -241,7 +297,7 @@ XRBuffer* XRRenderDeviceVulkan::createBuffer(XRBufferCreateInfo const* createInf
 
 
 XRBuffer* xrCreateBuffer(XRRenderDevice* ownerRenderDevice, XRBufferCreateInfo const* createInfo) {
-	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createBuffer(createInfo);
+	return static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createBuffer(createInfo);
 }
 
 XRPipeline* XRRenderDeviceVulkan::createPipeline(XRPipelineStateDescription const* description)
@@ -250,7 +306,7 @@ XRPipeline* XRRenderDeviceVulkan::createPipeline(XRPipelineStateDescription cons
 }
 
 XRPipeline* xrCreatePipeline(XRRenderDevice* ownerRenderDevice, XRPipelineStateDescription const* description) {
-	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createPipeline(description);
+	return static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createPipeline(description);
 }
 
 XRCommandBuffer* XRRenderDeviceVulkan::createCommandBuffer()
@@ -259,7 +315,7 @@ XRCommandBuffer* XRRenderDeviceVulkan::createCommandBuffer()
 }
 
 XRCommandBuffer* xrCreateCommandBuffer(XRRenderDevice* ownerRenderDevice) {
-	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createCommandBuffer();
+	return static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createCommandBuffer();
 }
 
 XRSwapchain* XRRenderDeviceVulkan::createSwapchain(XRSwapchainCreateInfo const* createInfo)
@@ -272,5 +328,5 @@ XRSwapchain* XRRenderDeviceVulkan::createSwapchain(XRSwapchainCreateInfo const* 
 }
 
 XRSwapchain* xrCreateSwapchain(XRRenderDevice* ownerRenderDevice, XRSwapchainCreateInfo const* createInfo) {
-	static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createSwapchain(createInfo);
+	return static_cast<XRRenderDeviceVulkan*>(ownerRenderDevice)->createSwapchain(createInfo);
 }

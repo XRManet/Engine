@@ -13,5 +13,14 @@ public:
 class XRBaseExport XRRenderDeviceBase : public XRRenderDevice
 {
 public:
-	XRRenderDeviceBase(XRRenderEngine* ownerRenderEngine) : XRRenderDevice(ownerRenderEngine) {}
+	XRRenderDeviceBase(XRRenderEngine* ownerRenderEngine, XRRenderDeviceCreateInfo&& renderDeviceCreateInfo)
+		: XRRenderDevice(ownerRenderEngine)
+		, _renderDeviceCreateInfo()
+	{}
+
+public:
+	XRRenderDeviceCreateInfo const& getRenderDeviceCreateInfo() const override final { return _renderDeviceCreateInfo; }
+
+private:
+	XRRenderDeviceCreateInfo _renderDeviceCreateInfo;
 };
