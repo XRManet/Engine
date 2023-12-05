@@ -439,6 +439,9 @@
     <ClCompile Include="XRRenderEngine.cpp">
       <Filter>소스 파일\Engine\Render</Filter>
     </ClCompile>
+    <ClCompile Include="XRRenderEngineBase.cpp">
+      <Filter>소스 파일\Engine\Render\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="XRFrameworkBase.natvis" />
