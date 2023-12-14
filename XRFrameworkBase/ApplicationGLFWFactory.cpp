@@ -10,22 +10,22 @@
 
 namespace xr
 {
-	std::unique_ptr<Thread>&& ApplicationGLFW::createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
+	std::unique_ptr<Thread> ApplicationGLFW::createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
 	{
 		auto thread = Thread::createThread(getApplication(), threadName, launchImmediatly, threadExecution);
-		return std::move(thread);
+		return thread;
 	}
 
-	std::unique_ptr<EventFetcher>&& ApplicationGLFW::createEventFetcher(Thread* ownerThread)
+	std::unique_ptr<EventFetcher> ApplicationGLFW::createEventFetcher(Thread* ownerThread)
 	{
 		auto eventFetcher = std::unique_ptr<EventFetcher>(new EventFetcherGLFW(getApplication(), ownerThread));
-		return std::move(eventFetcher);
+		return eventFetcher;
 	}
 
-	std::unique_ptr<Window>&& ApplicationGLFW::createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription)
+	std::unique_ptr<Window> ApplicationGLFW::createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription)
 	{
 		auto window = std::unique_ptr<Window>(new WindowGLFW(getApplication(), eventFetcher, windowDescription));
-		return std::move(window);
+		return window;
 	}
 
 } // namespace xr

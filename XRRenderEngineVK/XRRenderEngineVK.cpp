@@ -20,9 +20,21 @@
 vk::DebugUtilsMessengerCreateInfoEXT xrGetDefaultDebugUtilsMessengerCreateInfo();
 
 
-XRRenderEngineVulkan::XRRenderEngineVulkan(xr::Application* application)
-	: XRRenderEngineBase(application)
+XRRenderEngineVulkan::XRRenderEngineVulkan()
+	: XRRenderEngineBase()
 {
+}
+
+XRRenderEngineVulkan::~XRRenderEngineVulkan()
+{
+	_physicalDevices.clear();
+	_instance.destroy();
+}
+
+void XRRenderEngineVulkan::initialize(xr::Application* application)
+{
+	bindApplication(application, &xr::Application::addRenderEngine, &xr::Application::removeRenderEngine);
+
 	auto instanceInfo = [](xr::Application* application)
 	{
 		const char* enableLayerNames[] = { "" };
@@ -37,7 +49,7 @@ XRRenderEngineVulkan::XRRenderEngineVulkan(xr::Application* application)
 			"XRManetEngine", VK_MAKE_VERSION(1, 0, 0),
 			VK_API_VERSION_1_3);
 
-		auto instanceInfo = vk::InstanceCreateInfo({}, &appInfo, enableLayerNames, enableExtensionNames);
+		auto instanceInfo = vk::InstanceCreateInfo({}, &appInfo);
 #if XR_PLATFORM == XR_PLATFORM_OSX
 		instanceInfo.flags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
 #endif
@@ -54,12 +66,6 @@ XRRenderEngineVulkan::XRRenderEngineVulkan(xr::Application* application)
 
 	_instance = vk::createInstance(instanceInfo.get());
 	_physicalDevices = _instance.enumeratePhysicalDevices();
-}
-
-XRRenderEngineVulkan::~XRRenderEngineVulkan()
-{
-	_physicalDevices.clear();
-	_instance.destroy();
 }
 
 auto getProperPhysicalDevice = [](auto const& physicalDevices)
@@ -238,7 +244,9 @@ public:
 XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine*
 {
 	RenderEngineInitializer<DeviceAPI::Vulkan>::GetInitializer();
-	return new XRRenderEngineVulkan(application);
+	auto renderEngine = new XRRenderEngineVulkan();
+	renderEngine->initialize(application);
+	return renderEngine;
 }
 
 XRInputLayout* xrCreateInputLayout(XRInputLayoutDesc&& inputLayoutDesc, uint32_t preferredStrideSize)

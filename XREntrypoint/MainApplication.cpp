@@ -37,11 +37,11 @@ namespace xr
 
 		auto renderEngine = std::unique_ptr<XRRenderEngine>(xrCreateRenderEngine(this));
 
-		XRFrameProcessor frameProcessor;
-		frameProcessor.Initialize();
-
 		auto sceneManager = XRSceneManager::GetInstance();
 		sceneManager->BindPrimaryScene("main");
+
+		XRFrameProcessor frameProcessor;
+		frameProcessor.Initialize();
 
 		fetcher->processLoop([&, this]() {
 			frameProcessor.UpdateFrame();

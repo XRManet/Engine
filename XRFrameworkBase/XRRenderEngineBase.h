@@ -5,7 +5,7 @@
 class XRBaseExport XRRenderEngineBase : public XRRenderEngine
 {
 public:
-	XRRenderEngineBase(xr::Application* application) : XRRenderEngine(application) {}
+	XRRenderEngineBase();
 
 public:
 };
@@ -13,13 +13,10 @@ public:
 class XRBaseExport XRRenderDeviceBase : public XRRenderDevice
 {
 public:
-	XRRenderDeviceBase(XRRenderEngine* ownerRenderEngine, XRRenderDeviceCreateInfo&& renderDeviceCreateInfo)
-		: XRRenderDevice(ownerRenderEngine)
-		, _renderDeviceCreateInfo()
-	{}
+	XRRenderDeviceBase(XRRenderEngine* ownerRenderEngine, XRRenderDeviceCreateInfo&& renderDeviceCreateInfo);
 
 public:
-	XRRenderDeviceCreateInfo const& getRenderDeviceCreateInfo() const override final { return _renderDeviceCreateInfo; }
+	XRRenderDeviceCreateInfo const& getRenderDeviceCreateInfo() const override final;
 
 private:
 	XRRenderDeviceCreateInfo _renderDeviceCreateInfo;

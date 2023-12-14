@@ -3,7 +3,7 @@
 
 #include "XRSourceBuildSystem.h"
 
-XRSourceBuildSystem* (*xrLoadShaderBuildSystem)() = nullptr;
+XRShaderBuildAPI(xrLoadShaderBuildSystem)()->XRSourceBuildSystem* = nullptr;
 
 #define XRSHADER_BUILD_SYSTEM_DEFAULT    XR_DYNAMIC_LIBRARY(XRSourceBuildSystemGLSL)
 

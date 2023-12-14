@@ -52,8 +52,9 @@ public:
 
 class XRBaseExport XRRenderEngine : public xr::ApplicationChild
 {
+protected:
+	XRRenderEngine();
 public:
-	XRRenderEngine(xr::Application* application);
 	~XRRenderEngine() override;
 
 public:
@@ -65,8 +66,9 @@ XRRenderAPI(xrCreateRenderEngine)(xr::Application* application)->XRRenderEngine*
 
 class XRBaseExport XRRenderDevice : public xr::RenderEngineChild
 {
-public:
+protected:
 	XRRenderDevice(XRRenderEngine* ownerRenderEngine);
+public:
 	~XRRenderDevice() override;
 
 public:

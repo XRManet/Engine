@@ -3,8 +3,8 @@
 #include <XRFrameworkBase/Application.h>
 #include <XRFrameworkBase/XRRenderEngine.h>
 
-XRRenderEngine::XRRenderEngine(xr::Application* application)
-	: xr::ApplicationChild(application, &xr::Application::addRenderEngine, &xr::Application::removeRenderEngine)
+XRRenderEngine::XRRenderEngine()
+	: xr::ApplicationChild()
 {
 }
 

@@ -20,6 +20,7 @@ namespace xr
 		static std::unique_ptr<Thread> createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution);
 		static std::unique_ptr<Thread> createThread(Application* ownerApplication, const char* threadName, bool launchImmediatly, ThreadExecution threadExecution);
 		static std::unique_ptr<Thread> bindThreadFromCurrent(const char* threadName, ThreadExecution threadExecution);
+		static std::unique_ptr<Thread> bindThreadFromCurrent(Application* ownerApplication, const char* threadName, ThreadExecution threadExecution);
 
 	public:
 		static bool hasThread();
@@ -27,6 +28,9 @@ namespace xr
 
 	public:
 		void execute();
+
+	public:
+		void bindApplication(Application* ownerApplication);
 
 	public:
 		void setThreadName(const char* threadName) { _threadName = threadName; setThreadName_inner(threadName); };

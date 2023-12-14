@@ -85,11 +85,11 @@ protected:
 	 * @details	_data != nullptr -> 로드된 텍스쳐. */
 	XRTextureData const* _data = nullptr;
 	/** @brief	RHI 인터페이스 */
-	XRTextureRHI* _rhi;
+	XRTextureRHI* _rhi = nullptr;
 
 	/** @brief	텍스쳐 프로퍼티 */
-	XRTextureProperties*	_properties;
-	uint32_t				_propertiesHash;
+	XRTextureProperties*	_properties = nullptr;
+	uint32_t				_propertiesHash = 0;
 
 public:
 	XRTexture(XRTextureData const* data) : _data(data) {}

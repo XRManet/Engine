@@ -44,7 +44,7 @@ namespace xr
 		HWND getHwnd() const { return _hWnd; }
 
 	private:
-		HWND _hWnd;
+		HWND _hWnd = NULL;
 	};
 
 } // namespace xr

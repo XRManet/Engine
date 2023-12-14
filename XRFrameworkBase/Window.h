@@ -68,7 +68,7 @@ namespace xr
 		std::vector<Window*> _boundWindows;
 	};
 
-	struct WindowDescription
+	struct XRBaseExport WindowDescription
 	{
 		std::string _title;
 		uint32_t _width = 0;
@@ -77,24 +77,28 @@ namespace xr
 
 	class XRBaseExport Window : public ApplicationChild
 	{
-	public:
+	protected:
 		Window(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription);
+	public:
 		virtual ~Window();
 
 	public:
-		EventFetcher* getEventFetcher() const { return _boundEventFetcher; }
-		WindowDescription& getWindowDescription() { return _windowDescription; }
-		XRSwapchain* getSwapchain() const { return _boundSwapchain.get(); }
+		EventFetcher*				getEventFetcher() const;
+		const WindowDescription&	getWindowDescription() const;
+		XRSwapchain*				getSwapchain() const;
 
 	public:
-		void attachUserContext(const std::string& key, std::unique_ptr<WindowUserContext>&& context);
-		auto& getUserContexts() const { return _userContexts; }
+		void						attachUserContext(const std::string& key, std::unique_ptr<WindowUserContext>&& context);
+		const std::unordered_map<
+			std::string,
+			std::unique_ptr<WindowUserContext>
+		>&							getUserContexts() const;
 
-		virtual void* getPlatformNativeHandle() const = 0;
+		virtual void*				getPlatformNativeHandle() const = 0;
 
 	protected:
-		void setSwapchain(XRSwapchain* swapchain);
-		void setWindowSize(uint32_t width, uint32_t height) { _windowDescription._width = width; _windowDescription._height = height; }
+		void						setSwapchain(XRSwapchain* swapchain);
+		void						setWindowSize(uint32_t width, uint32_t height);
 
 	private:
 		EventFetcher* _boundEventFetcher;

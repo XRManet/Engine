@@ -41,6 +41,16 @@ namespace xr
 		return thread;
 	}
 
+	std::unique_ptr<Thread> Thread::bindThreadFromCurrent(Application* ownerApplication, const char* threadName, ThreadExecution threadExecution)
+	{
+		std::unique_ptr<Thread> thread = bindThreadFromCurrent(threadName, threadExecution);
+		
+		if (ownerApplication != nullptr)
+			thread->bindApplication(ownerApplication);
+
+		return thread;
+	}
+
 	struct ThreadContext
 	{
 		Thread* _thread = nullptr;
@@ -101,5 +111,10 @@ namespace xr
 		: ApplicationChild(ownerApplication, &Application::addThread, &Application::removeThread)
 		, _threadExecution(threadExecution)
 	{
+	}
+
+	void Thread::bindApplication(Application* ownerApplication)
+	{
+		ApplicationChild::bindApplication(ownerApplication, &Application::addThread, &Application::removeThread);
 	}
 } // namespace xr

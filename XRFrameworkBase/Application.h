@@ -35,28 +35,28 @@ namespace xr
 
 	private:
 		void									runMainThread();
-		inline void								waitForAllThreads() { _applicationPlatform->waitForAllThreads(); }
+		inline void								waitForAllThreads();
 
 	public:
 		uint32_t								defaultMainThreadRun();
 
 	public:
-		const std::string&						getName() const { return _name; }
+		const std::string&						getName() const;
 
-		Thread*									getMainThread() { return _mainThread.get(); }
-		const std::vector<Thread*>&				getAllThreads() const { return _allThreads; }
+		Thread*									getMainThread();
+		const std::vector<Thread*>&				getAllThreads() const;
 
-		ApplicationPlatform*					getApplicationPlatform() const { return _applicationPlatform.get(); }
+		ApplicationPlatform*					getApplicationPlatform() const;
 
 
 	private:
 		static std::unique_ptr<ApplicationPlatform>	createApplicationPlatform(Application* application, PlatformType platformType);
 
 	protected:
-		inline std::unique_ptr<Thread>&&		createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution) { return std::move(_applicationPlatform->createThread(threadName, launchImmediatly, threadExecution)); }
+		std::unique_ptr<Thread>					createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution);
 
-		inline std::unique_ptr<EventFetcher>&&	createEventFetcher(Thread* ownerThread) { return std::move(_applicationPlatform->createEventFetcher(ownerThread)); }
-		inline std::unique_ptr<Window>&&		createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription) { return std::move(_applicationPlatform->createWindow(eventFetcher, windowDescription)); }
+		std::unique_ptr<EventFetcher>			createEventFetcher(Thread* ownerThread);
+		std::unique_ptr<Window>					createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription);
 
 	public:
 		virtual void							addThread(ApplicationChild* child);
@@ -74,6 +74,8 @@ namespace xr
 	private:
 		std::unique_ptr<Thread>					_mainThread;
 		std::vector<Thread*>					_allThreads;
+
+		Window*									_mainWindow = nullptr;
 
 		std::unique_ptr<ApplicationPlatform>	_applicationPlatform;
 		PlatformType							_platformType;

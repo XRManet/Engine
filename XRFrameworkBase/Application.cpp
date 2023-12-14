@@ -24,7 +24,7 @@ namespace xr
 		, _name(move(name))
 	{
 		_applicationPlatform = std::move(createApplicationPlatform(this, platformType));
-		_mainThread = Thread::bindThreadFromCurrent("Main Thread", threadExecution);
+		_mainThread = Thread::bindThreadFromCurrent(this, "Main Thread", threadExecution);
 	}
 
 	Application::~Application()
@@ -42,10 +42,35 @@ namespace xr
 		_mainThread->execute();
 	}
 
+	void Application::waitForAllThreads()
+	{
+		_applicationPlatform->waitForAllThreads();
+	}
+
+	const std::string&			Application::getName() const { return _name; }
+	Thread*						Application::getMainThread() { return _mainThread.get(); }
+	const std::vector<Thread*>&	Application::getAllThreads() const { return _allThreads; }
+	ApplicationPlatform*		Application::getApplicationPlatform() const { return _applicationPlatform.get(); }
+
 } // namespace xr
 
 namespace xr
 {
+	std::unique_ptr<Thread> Application::createThread(const char* threadName, bool launchImmediatly, ThreadExecution threadExecution)
+	{
+		return _applicationPlatform->createThread(threadName, launchImmediatly, threadExecution);
+	}
+
+	std::unique_ptr<EventFetcher> Application::createEventFetcher(Thread* ownerThread)
+	{
+		return _applicationPlatform->createEventFetcher(ownerThread);
+	}
+
+	std::unique_ptr<Window> Application::createWindow(EventFetcher* eventFetcher, WindowDescription& windowDescription)
+	{
+		return _applicationPlatform->createWindow(eventFetcher, windowDescription);
+	}
+
 	void Application::addThread(ApplicationChild* child)
 	{
 		_allThreads.push_back(static_cast<Thread*>(child));

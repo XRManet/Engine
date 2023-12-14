@@ -5,7 +5,7 @@ namespace xr
 	class Application;
 	class ApplicationPlatform;
 
-	class ApplicationChild
+	class XRBaseExport ApplicationChild
 	{
 	public:
 		ApplicationChild();
@@ -14,7 +14,7 @@ namespace xr
 
 	public:
 		void bindApplication(Application* ownerApplication, void(Application::* fpOnChildAdded)(ApplicationChild*), void(Application::* fpOnChildRemoved)(ApplicationChild*));
-		Application* getApplication() const { return _ownerApplication; }
+		Application* getApplication() const;
 		ApplicationPlatform* getApplicationPlatform() const;
 
 	private:

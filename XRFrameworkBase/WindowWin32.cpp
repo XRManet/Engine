@@ -264,7 +264,7 @@ namespace xr
 	WindowWin32::WindowWin32(Application* application, EventFetcher* eventFetcher, WindowDescription& windowDescription)
 		: Window(application, eventFetcher, windowDescription)
 	{
-		commonConstructor();
+		//commonConstructor();
 	}
 
 	void WindowWin32::commonConstructor()
@@ -304,4 +304,4 @@ namespace xr
 		return getHwnd();
 	}
 
-} // namespace xr
+} // namespace xr>	XRFrameworkBase.dll!xr::WindowWin32::commonConstructor() Line 274	C++

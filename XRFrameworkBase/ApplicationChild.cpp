@@ -41,6 +41,8 @@ namespace xr
 		(ownerApplication->*fpOnChildAdded)(this);
 	}
 
+	Application* ApplicationChild::getApplication() const { return _ownerApplication; }
+
 	ApplicationPlatform* ApplicationChild::getApplicationPlatform() const
 	{
 		assert(_ownerApplication != nullptr);

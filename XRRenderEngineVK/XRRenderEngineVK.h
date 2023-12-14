@@ -6,7 +6,7 @@
 class XRRenderEngineVulkan : public XRRenderEngineBase
 {
 public:
-	XRRenderEngineVulkan(xr::Application* application);
+	XRRenderEngineVulkan();
 	~XRRenderEngineVulkan() override;
 
 public:
@@ -15,6 +15,9 @@ public:
 
 public:
 	const vk::Instance& getInstance() const { return _instance; }
+
+public:
+	void initialize(xr::Application* application);
 
 private:
 	vk::Instance					_instance;

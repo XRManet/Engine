@@ -54,14 +54,30 @@ namespace xr
 	{
 	}
 
+	EventFetcher* Window::getEventFetcher() const { return _boundEventFetcher; }
+	const WindowDescription& Window::getWindowDescription() const { return _windowDescription; }
+	XRSwapchain* Window::getSwapchain() const { return _boundSwapchain.get(); }
+
 	void Window::attachUserContext(const std::string& key, std::unique_ptr<WindowUserContext>&& context)
 	{
 		_userContexts.emplace(key, std::move(context));
 	}
 
+	const std::unordered_map<
+		std::string,
+		std::unique_ptr<WindowUserContext>
+	>& Window::getUserContexts() const { return _userContexts; }
+
 	void Window::setSwapchain(XRSwapchain* swapchain)
 	{
 		_boundSwapchain = std::move(std::unique_ptr<XRSwapchain>(swapchain));
 	}
+
+	void Window::setWindowSize(uint32_t width, uint32_t height)
+	{
+		_windowDescription._width = width;
+		_windowDescription._height = height;
+	}
+
 
 } // namespace xr

@@ -30,10 +30,10 @@
 #endif
 
 #ifdef XRSOURCEBUILDSYSTEM_EXPORTS
-#define XRShaderBuildExport __declspec(dllexport)
+#define XRShaderBuildExport extern "C" __declspec(dllexport)
 #define XRShaderBuildAPI(ApiName) XRShaderBuildExport auto ApiName
 #else
-#define XRShaderBuildExport __declspec(dllimport)
+#define XRShaderBuildExport extern "C" __declspec(dllimport)
 #define XRShaderBuildAPI(ApiName) extern auto (*ApiName)
 #endif
 
